@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- meta charset="utf-8" -->
+		<title>Login</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<!-- link rel="stylesheet" href="style.css" -->
+		<!-- link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" -->
+		<!-- link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" -->
+	</head>
+
+	<body>
+		<div id="fb-root"></div>
+		<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0" nonce="XcqjCM36"></script>
+		<div class="login">
+			<h1>Login</h1>
+			<div class="fb-page" data-href="https://www.facebook.com/empirefishingandtackle" data-tabs="timeline" data-width="" data-height="" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/empirefishingandtackle" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/empirefishingandtackle">Empire Fishing and Tackle</a></blockquote></div>
+			<div class="fb-post" data-href="https://www.facebook.com/empirefishingandtackle/posts/pfbid02CAG68nCshQYpvdyrxowQo79h14rJsKadKLYoNmVWU1hAhDZbGnQ6QXaitEVRuRu7l?__cft__[0]=AZU18hW2FYUSw9q2tJxmJ3k0K8EcV-cIDVJBvV_GxumIUQMBEPW6yumOuLUzZxtNAq7gKgLeyRPHYtg_a3xYTcilJlKMT053dR0oytyAEo6HcDYyhnmxPCDMUsXTTJeLB1Y_28l6LTKgOmH-Hyl8h6z8wHmy13WCP36hV0BET50Z8Gmro1Yb6zKn_UqRuyNJAHrZ5E1CIX9hqgApwCa_G7z8&__tn__=%2CO%2CP-R" data-width="500" data-show-text="true"></div>
+			<div class="links">
+				<a href="{{ url_for('login') }}" class="active">Login</a>
+				<a href="{{ url_for('register') }}">Register</a>
+			</div>
+			<form action="{{ url_for('login') }}" method="post">
+				<label for="username">
+					<i class="fas fa-user"></i>
+				</label>
+				<input type="text" name="username" placeholder="Username" id="username" required>
+				<label for="password">
+					<i class="fas fa-lock"></i>
+				</label>
+				<input type="password" name="password" placeholder="Password" id="password" required>
+				<div class="msg">{{ msg }}</div>
+				<input type="submit" value="Login">
+			</form>
+		</div>
+	</body>
+</html>

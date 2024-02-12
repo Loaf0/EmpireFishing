@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="adecf12a-df01-45f3-a418-7a75b064b619" name="Changes" comment="" />
+    <list default="true" id="adecf12a-df01-45f3-a418-7a75b064b619" name="Changes" comment="Placeholder code mostly by the professor" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,8 +22,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.main.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true"
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -42,6 +44,27 @@
       <option name="presentableId" value="Default" />
       <updated>1707767485244</updated>
     </task>
+    <task id="LOCAL-00001" summary="Placeholder code mostly by the professor">
+      <option name="closed" value="true" />
+      <created>1707767584434</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1707767584434</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Placeholder code mostly by the professor">
+      <option name="closed" value="true" />
+      <created>1707767763872</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1707767763872</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Placeholder code mostly by the professor" />
+    <option name="LAST_COMMIT_MESSAGE" value="Placeholder code mostly by the professor" />
   </component>
 </project>

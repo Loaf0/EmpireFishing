@@ -13,6 +13,7 @@ app.config['MYSQL_HOST'] = 'empirefishing.database.windows.net'
 app.config['MYSQL_USER'] = 'empirefishing'
 app.config['MYSQL_PASSWORD'] = '@Stockton'
 app.config['MYSQL_DB'] = 'EmpireFishingCSCI-4485'
+# port for the empire fishing database is 1433
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -50,11 +51,11 @@ def login():
 @app.route('/logout')
 def logout():
     # Remove session data, this will log the user out
-   session.pop('loggedin', None)
-   session.pop('id', None)
-   session.pop('username', None)
-   # Redirect to login page
-   return redirect(url_for('login'))
+    session.pop('loggedin', None)
+    session.pop('id', None)
+    session.pop('username', None)
+    # Redirect to login page
+    return redirect(url_for('login'))
 
 
 # http://localhost:5000/Falsk/register - this will be the registration page, we need to use both GET and POST requests
@@ -63,7 +64,8 @@ def register():
     # Output message if something goes wrong...
     msg = ''
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+    if (request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in
+            request.form):
         # Create variables for easy access
         username = request.form['username']
         password = request.form['password']
@@ -84,10 +86,10 @@ def register():
             msg = 'Please fill out the form!'
         else:
             # Account doesnt exists and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO users (username, password, email) VALUES ( %s, %s, %s)', (username, password, email,))
+            cursor.execute('INSERT INTO users (username, password, email) VALUES ( %s, %s, %s)',
+                           (username, password, email,))
             mysql.connection.commit()
             msg = 'You have successfully registered!'
-
 
     elif request.method == 'POST':
         # Form is empty... (no POST data)
@@ -98,5 +100,3 @@ def register():
 
 if __name__ == '__main__':
     app.run()
-
-# test

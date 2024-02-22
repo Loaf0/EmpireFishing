@@ -9,10 +9,10 @@ app = Flask(__name__)
 app.secret_key = 'your secret key'
 
 # Enter your database connection details below
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
-app.config['MYSQL_DB'] = 'test'
+app.config['MYSQL_HOST'] = 'empirefishing.database.windows.net'
+app.config['MYSQL_USER'] = 'empirefishing'
+app.config['MYSQL_PASSWORD'] = '@Stockton'
+app.config['MYSQL_DB'] = 'EmpireFishingCSCI-4485'
 
 # Intialize MySQL
 mysql = MySQL(app)

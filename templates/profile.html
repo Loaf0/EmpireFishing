@@ -1062,19 +1062,19 @@
             />
             <div data-thq="thq-navbar-nav" class="profile-desktop-menu">
               <nav class="profile-links">
-                <span>Home</span>
-                <span class="profile-nav2 bodySmall">Live Bait</span>
-                <span class="profile-nav3 bodySmall">Community</span>
-                <span class="profile-nav4 bodySmall">Profile</span>
+                <span><a href="{{ url_for('home') }}">Home</a></span>
+                <span class="profile-nav2 bodySmall"><a href="{{ url_for('live_bait') }}">Live Bait</a></span>
+                <span class="profile-nav3 bodySmall"><a href="thislinkdoesntwork"> Community </a></span>
+                <span class="profile-nav4 bodySmall"><a href="{{ url_for('profile') }}"> Profile </a></span>
                 <span class="profile-nav5">
-                  <span class="bodySmall">Line Spooling</span>
+                  <span class="bodySmall"><a href="thislinkdoesntwork"> Line Spooling</a></span>
                   <br />
                 </span>
-                <span class="profile-nav6 bodySmall">Admin</span>
+                <span class="profile-nav6 bodySmall"><a href="thislinkdoesntwork">Admin</a></span>
               </nav>
               <div class="profile-buttons">
-                <button class="profile-login buttonFlat">Login</button>
-                <button class="buttonFilled">Register</button>
+                <button class="profile-login buttonFlat"><a href="{{ url_for('login') }}">Login</a></button>
+                <button class="buttonFilled"><a href="{{ url_for('register') }}">Register</a></button>
               </div>
             </div>
             <div data-thq="thq-burger-menu" class="profile-burger-menu">

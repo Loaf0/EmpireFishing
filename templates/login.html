@@ -1166,27 +1166,45 @@
                   </span>
                 </span>
               </span>
-              <span class="login-text16">Enter Email:</span>
-              <input
-                type="text"
-                name="Email"
-                required="true"
-                placeholder="username"
-                autocomplete="email"
-                class="login-textinput input"
-              />
-              <span class="login-text17">Enter password:&nbsp;</span>
-              <input
-                type="password"
-                required="true"
-                placeholder="password"
-                autocomplete="current-password"
-                class="login-textinput1 input"
-              />
-              <div class="login-btn-group">
-                <button class="buttonFlat">Login</button>
-                <button class="buttonFilled">Register</button>
-              </div>
+              <form action="{{ url_for('login') }}" method="post">
+                <span class="login-text16">Enter Username:</span>
+                <br>
+
+                <label for="username">
+					<i class="fas fa-lock"></i>
+                <input
+                  type="text"
+                  name="username"
+                  required
+                  placeholder="username"
+                  autocomplete="username"
+                  class="login-textinput input"
+                />
+                <br>
+                <span class="login-text17">Enter password:&nbsp;</span>
+                <br>
+
+                <label for="password">
+					<i class="fas fa-lock"></i>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  placeholder="password"
+                  autocomplete="current-password"
+                  class="login-textinput1 input"
+                />
+
+                <br>
+                <div class="msg">{{ msg }}</div>
+                <br>
+
+                <div class="login-btn-group">
+                  <input type="submit" value="login" class="buttonFlat">
+                  <a href="{{ url_for('register') }}"> Register </a>
+                </div>
+
+              </form>
             </div>
           </div>
         </div>

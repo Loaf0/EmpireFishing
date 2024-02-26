@@ -167,7 +167,7 @@
   background-image: url('https://empirefishingandtackle.com/files/2022/06/1655401500743_stephen_momot_uivgzidhvyw_unsplash.jpg?w=1440&h=598&a=t');
 }
 .register-container1 {
-  width: 500px;
+  width: auto;
   height: auto;
   display: flex;
   opacity: 0.95;
@@ -266,6 +266,9 @@
   flex: 0 0 auto;
   width: auto;
   height: auto;
+  align-self: center;
+  align-items: center;
+  margin-left: 10%;
   display: flex;
   align-items: flex-start;
 }

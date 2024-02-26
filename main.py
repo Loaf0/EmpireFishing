@@ -36,14 +36,7 @@ def live_bait():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     msg = ''
-
-    # debug
-    # cursor = conn.cursor()
-    # cursor.execute('SELECT * FROM userdata')
-    # Fetch one record and return result
-    # account = cursor.fetchone()
-    # print(account)
-
+    
     # check if username and password were received
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
 
@@ -56,7 +49,7 @@ def login():
 
         # Fetch one record and return result
         account = cursor.fetchone()
-        print(account)
+        
         if account:
             # Create session data, we can access this data in other routes
             session['loggedin'] = True

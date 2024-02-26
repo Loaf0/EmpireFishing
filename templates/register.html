@@ -1141,47 +1141,53 @@
             </div>
           </header>
         </div>
+
         <div class="register-hero">
           <div class="register-hero1 heroContainer">
             <div class="register-container1">
-              <div class="register-container2">
-                <div class="register-email-pass">
-                  <span class="register-text02">Enter Email:</span>
-                  <input
-                    type="text"
-                    name="Email"
-                    required="true"
-                    placeholder="username"
-                    autocomplete="email"
-                    class="register-textinput input"
-                  />
-                  <span class="register-text03">Enter password:&nbsp;</span>
-                  <input
-                    type="password"
-                    required="true"
-                    placeholder="password"
-                    autocomplete="current-password"
-                    class="register-textinput1 input"
-                  />
+              <form>
+                <div class="register-container2">
+                  <div class="register-email-pass">
+                    <span class="register-text02">Enter Email:</span>
+                    <input
+                      type="text"
+                      name="Email"
+                      required
+                      placeholder="username"
+                      autocomplete="email"
+                      class="register-textinput input"
+                    />
+                    <span class="register-text03">Enter password:&nbsp;</span>
+                    <input
+                      type="password"
+                      name="password"
+                      required
+                      placeholder="password"
+                      autocomplete="current-password"
+                      class="register-textinput1 input"
+                    />
+                  </div>
+                  <div class="register-user-number">
+                    <span class="register-text04">Enter Username:&nbsp;</span>
+                    <input
+                      type="password"
+                      name="username"
+                      required
+                      placeholder="name"
+                      autocomplete="username"
+                      class="register-textinput2 input"
+                    />
+                    <span class="register-text05">Enter Phone Number:&nbsp;</span>
+                    <input
+                      type="password"
+                      name="phone"
+                      required
+                      placeholder="555-555-5555"
+                      class="register-textinput3 input"
+                    />
+                  </div>
                 </div>
-                <div class="register-user-number">
-                  <span class="register-text04">Enter Username:&nbsp;</span>
-                  <input
-                    type="password"
-                    required="true"
-                    placeholder="name"
-                    autocomplete="username"
-                    class="register-textinput2 input"
-                  />
-                  <span class="register-text05">Enter Phone Number:&nbsp;</span>
-                  <input
-                    type="password"
-                    required="true"
-                    placeholder="555-555-5555"
-                    class="register-textinput3 input"
-                  />
-                </div>
-              </div>
+
               <div class="register-container3">
                 <div class="register-container4">
                   <span class="register-text06">
@@ -1191,36 +1197,15 @@
                 <div class="register-container5">
                   <input
                     type="checkbox"
-                    checked="true"
+                    name="consent"
+                    checked
                     class="register-checkbox"
                   />
                 </div>
               </div>
-              <span class="register-hero-sub-heading bodyLarge">
-                <span>
-                  <span>
-                    <span>Your One-Stop Shop for Fishing Gear</span>
-                    <span></span>
-                  </span>
-                  <span>
-                    <span></span>
-                    <span></span>
-                  </span>
-                </span>
-                <span>
-                  <span>
-                    <span></span>
-                    <span></span>
-                  </span>
-                  <span>
-                    <span></span>
-                    <span></span>
-                  </span>
-                </span>
-              </span>
-              <button class="register-hero-button1 buttonFilled">
-                Register
-              </button>
+                <input type="submit" class="buttonFlat" style="margin-left: 40%; margin-right: 40%; align-self: center;
+  align-items: center;">
+              </form>
               <div class="register-btn-group"></div>
             </div>
           </div>

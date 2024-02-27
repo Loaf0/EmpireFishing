@@ -1,5 +1,5 @@
 from datetime import date
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, abort
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
@@ -29,9 +29,32 @@ def error404():
     return render_template("404.html")
 
 
-@app.route('/live-bait')
+@app.route('/bait-editor', methods=['GET', 'POST'])
+def bait_editor():
+    if 'loggedin' not in session.keys():
+        return redirect(url_for('login'))
+
+    username = session['username']
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
+    account = cursor.fetchone()
+
+    if not account['admin']:
+        abort(403)
+
+    cursor.execute('SELECT * FROM bait')
+    baits = cursor.fetchall()
+
+    return render_template("bait-editor.html", baits=baits)
+
+
+@app.route('/bait')
 def live_bait():
-    return render_template("live-bait.html")
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM bait')
+    baits = cursor.fetchall()
+
+    return render_template("bait.html", baits=baits)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -107,7 +130,7 @@ def register():
 
         # Check if account exists using MySQL
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username, ))
+        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
         account = cursor.fetchone()
 
         # If account exists show error and validation checks

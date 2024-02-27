@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bait Editor (placeholder)</title>
+</head>
+<body>
+ <table>
+  <tr>
+    <th>Name</th>
+    <th>Quantity</th>
+    <th>Description</th>
+  </tr>
+     {% for bait in baits %}
+        <tr>
+            <td>{{ bait['name'] }}</td>
+            <td>{{ bait['quantity'] }}</td>
+            <td>{{ bait['description'] }}</td>
+        </tr>
+    {% endfor %}
+
+</table>
+</body>
+</html>

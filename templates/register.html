@@ -1145,16 +1145,16 @@
         <div class="register-hero">
           <div class="register-hero1 heroContainer">
             <div class="register-container1">
-              <form>
+
+              <form action="{{ url_for('register') }}" method="post" autocomplete="off">
                 <div class="register-container2">
                   <div class="register-email-pass">
                     <span class="register-text02">Enter Email:</span>
                     <input
                       type="text"
-                      name="Email"
+                      name="email"
                       required
-                      placeholder="username"
-                      autocomplete="email"
+                      placeholder="email"
                       class="register-textinput input"
                     />
                     <span class="register-text03">Enter password:&nbsp;</span>
@@ -1163,23 +1163,21 @@
                       name="password"
                       required
                       placeholder="password"
-                      autocomplete="current-password"
                       class="register-textinput1 input"
                     />
                   </div>
                   <div class="register-user-number">
                     <span class="register-text04">Enter Username:&nbsp;</span>
                     <input
-                      type="password"
+                      type="text"
                       name="username"
                       required
-                      placeholder="name"
-                      autocomplete="username"
+                      placeholder="username"
                       class="register-textinput2 input"
                     />
                     <span class="register-text05">Enter Phone Number:&nbsp;</span>
                     <input
-                      type="password"
+                      type="text"
                       name="phone"
                       required
                       placeholder="555-555-5555"
@@ -1188,23 +1186,27 @@
                   </div>
                 </div>
 
-              <div class="register-container3">
-                <div class="register-container4">
-                  <span class="register-text06">
-                    Do you consent to promotional emails?&nbsp;
-                  </span>
+                <div class="register-container3">
+                  <div class="register-container4">
+                    <span class="register-text06">
+                      Do you consent to promotional emails?&nbsp;
+                    </span>
+                  </div>
+                  <div class="register-container5">
+                    <input
+                      type="checkbox"
+                      name="consent"
+                      checked
+                      class="register-checkbox"
+                    />
+                  </div>
                 </div>
-                <div class="register-container5">
-                  <input
-                    type="checkbox"
-                    name="consent"
-                    checked
-                    class="register-checkbox"
-                  />
-                </div>
-              </div>
-                <input type="submit" class="buttonFlat" style="margin-left: 40%; margin-right: 40%; align-self: center;
-  align-items: center;">
+                <br>
+                <div class="msg" style="text-align: center;
+                  align-items: center;">{{ msg }}</div>
+                <br>
+                <input type="submit" value="register" class="buttonFlat" style="margin-left: 40%; margin-right: 40%; align-self: center;
+                  align-items: center;">
               </form>
               <div class="register-btn-group"></div>
             </div>

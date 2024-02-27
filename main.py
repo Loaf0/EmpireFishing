@@ -29,8 +29,16 @@ def error404():
     return render_template("404.html")
 
 
-@app.route('/bait-editor', methods=['GET', 'POST'])
+@app.route('/bait-editor')
 def bait_editor():
+    return render_template("bait-editor.html")
+
+@app.route('/admin')
+def admin():
+    return render_template("admin.html")
+
+@app.route('/temp-bait-editor', methods=['GET', 'POST'])
+def temp_bait_editor():
     if 'loggedin' not in session.keys():
         return redirect(url_for('login'))
 
@@ -45,7 +53,7 @@ def bait_editor():
     cursor.execute('SELECT * FROM bait')
     baits = cursor.fetchall()
 
-    return render_template("bait-editor.html", baits=baits)
+    return render_template("temp-bait-editor.html", baits=baits)
 
 
 @app.route('/bait')

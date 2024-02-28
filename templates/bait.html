@@ -1149,13 +1149,13 @@
                 <table>
                   <tr>
                       <th>Name</th>
-                      <th>Quantity</th>
+                      <th>Available?</th>
                       <th>Description</th>
                   </tr>
                      {% for bait in baits %}
                         <tr>
                             <td>{{ bait['name'] }}</td>
-                            <td>{{ bait['quantity'] }}</td>
+                            <td>{{ bait['availability'] }}</td>
                             <td>{{ bait['description'] }}</td>
                         </tr>
                     {% endfor %}

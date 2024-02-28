@@ -31,6 +31,8 @@ def error404():
 
 @app.route('/bait-editor', methods=['GET', 'POST'])
 def bait_editor():
+    msg = ''
+
     if 'loggedin' not in session.keys():
         return redirect(url_for('login'))
 
@@ -42,10 +44,41 @@ def bait_editor():
     if not account['admin']:
         abort(403)
 
+    if request.method == 'POST':
+        # insert/modify items:
+        insert_name = request.form['insert-name']
+        insert_availability = 'insert-availability' in request.form
+        insert_description = request.form['insert-description']
+
+        if insert_name:
+            cursor.execute('SELECT * FROM bait WHERE name = ?', (insert_name,))
+            found_bait = cursor.fetchone()
+
+            if found_bait:
+                cursor.execute('UPDATE bait SET availability = ? WHERE name = ?', (int(insert_availability), insert_name))
+
+                if insert_description:
+                    cursor.execute('UPDATE bait SET description = ? WHERE name = ?', (insert_description, insert_name))
+
+                msg = 'Updated bait %s.' % insert_name
+            else:
+                cursor.execute('INSERT INTO bait (name, availability, description) VALUES (?, ?, ?)', (insert_name, int(insert_availability), insert_description))
+                msg = 'Added new bait %s.' % insert_name
+
+        # remove items
+        remove_name = request.form['remove-name']
+
+        if remove_name:
+            cursor.execute('DELETE FROM bait WHERE name = ?', (remove_name,))
+            msg = 'Removed bait %s.' % remove_name
+
+    # fetch current bait table
     cursor.execute('SELECT * FROM bait')
     baits = cursor.fetchall()
 
-    return render_template("bait-editor.html", baits=baits)
+    conn.commit()
+
+    return render_template("bait-editor.html", msg=msg, baits=baits)
 
 
 @app.route('/bait')

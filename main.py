@@ -161,14 +161,14 @@ def register():
         password = request.form['password']
         email = request.form['email']
         phone = request.form['phone']
-        if request.form['consent']:  # 1 yes 0 no
+        if request.form.get('consent'):  # 1 yes 0 no
             consent = 1
         else:
             consent = 0
 
         # Check if account exists using MySQL
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
+        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username, ))
         account = cursor.fetchone()
 
         # If account exists show error and validation checks
@@ -185,9 +185,13 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form!'
         else:
+            cursor.execute('SELECT MAX(id) FROM userdata')
+            user_id = int(cursor.fetchone()[0]) + 1
+
             # Account doesn't exist and the form data is valid, now insert new account into accounts table
             cursor.execute('INSERT INTO userdata VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)',
-                           (username, password, email, consent, phone, 0, id, date.today()))
+                           (username, password, email, consent, phone, 0, user_id, date.today()))
+
             # today sets the account creation date, zero is for not admin
             conn.commit()
             msg = 'You have successfully registered!'

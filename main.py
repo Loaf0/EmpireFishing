@@ -29,6 +29,11 @@ def error404():
     return render_template("404.html")
 
 
+@app.route('/admin')
+def admin():
+    return render_template("admin.html")
+
+
 @app.route('/bait-editor', methods=['GET', 'POST'])
 def bait_editor():
     msg = ''

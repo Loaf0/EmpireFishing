@@ -31,6 +31,17 @@ def error404():
 
 @app.route('/admin')
 def admin():
+    if 'loggedin' not in session.keys():
+        return redirect(url_for('login'))
+
+    username = session['username']
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
+    account = cursor.fetchone()
+
+    if not account['admin']:
+        abort(403)
+
     return render_template("admin.html")
 
 
@@ -135,15 +146,27 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
     # if user is not logged in, return to login screen
     if 'loggedin' not in session.keys():
         return redirect(url_for('login'))
 
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM userdata WHERE username = ?', (session['username'], ))
+    account = cursor.fetchone()
+
     username = session['username']
-    email = "(placeholder)"
-    phone = "(placeholder)"
+    email = account['email']
+    phone = account['phone']
+
+    if request.form.get('consent'):  # 1 yes 0 no
+        consent = 1
+    else:
+        consent = 0
+
+    cursor.execute('UPDATE userdata SET email_consent = ? WHERE username = ?;', (consent, username))
+    conn.commit()
 
     return render_template("profile.html", username=username, email=email, phone=phone)
 
@@ -185,14 +208,13 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form!'
         else:
-            cursor.execute('SELECT MAX(id) FROM userdata')
-            user_id = int(cursor.fetchone()[0]) + 1
 
             # Account doesn't exist and the form data is valid, now insert new account into accounts table
-            cursor.execute('INSERT INTO userdata VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)',
-                           (username, password, email, consent, phone, 0, user_id, date.today()))
+            cursor.execute('INSERT INTO userdata VALUES ( ?, ?, ?, ?, ?, ?, ?)',
+                           (username, password, email, consent, phone, 0, date.today()))
 
             # today sets the account creation date, zero is for not admin
+
             conn.commit()
             msg = 'You have successfully registered!'
 

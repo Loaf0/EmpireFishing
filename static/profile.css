@@ -202,7 +202,7 @@
 }
 .profile-hero-button1 {
   bottom: var(--dl-space-space-oneandhalfunits);
-  position: absolute;
+  position: relative;
   align-self: center;
 }
 .profile-container02 {

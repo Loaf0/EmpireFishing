@@ -159,16 +159,15 @@ def profile():
     username = session['username']
     email = account['email']
     phone = account['phone']
+    consent = account['consent']
 
-    if request.form.get('consent'):  # 1 yes 0 no
-        consent = 1
-    else:
-        consent = 0
+    if request.method == 'POST' and 'consent' in request.form:
+        consent = request.form['consent'] == 'on'
 
-    cursor.execute('UPDATE userdata SET email_consent = ? WHERE username = ?;', (consent, username))
-    conn.commit()
+        cursor.execute('UPDATE userdata SET email_consent = ? WHERE username = ?;', (int(consent), username))
+        conn.commit()
 
-    return render_template("profile.html", username=username, email=email, phone=phone)
+    return render_template("profile.html", username=username, email=email, phone=phone, consent=consent)
 
 
 @app.route('/register', methods=['GET', 'POST'])

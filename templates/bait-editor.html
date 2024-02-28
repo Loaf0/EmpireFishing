@@ -1237,7 +1237,23 @@
             <div class="bait-editor-container1">
               <h1 class="bait-editor-text02">Bait Table Editor</h1>
             </div>
+            <form action="{{ url_for('bait_editor') }}" method="post">
+         <h1>Insert/modify item:</h1>
+         <p>(note: bait availability will be overwritten)</p>
+         <p>Name:</p> <input type="text" name="insert-name" />
+         <p>Availability:</p> <input type="checkbox" name="insert-availability" />
+         <p>Description:</p> <input type="text" name="insert-description" />
 
+         <h1>Remove item from list:</h1>
+         <p>Name:</p> <input type="text" name="remove-name" />
+
+         <br>
+         <input type="submit" class="buttonFlat">
+
+         <p>{{ msg }}</p>
+            </form>
+            <div class="bait-editor-container3"></div>
+            <div class="bait-editor-container4">
             </div>
           </div>
         </div>

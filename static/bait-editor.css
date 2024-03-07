@@ -1,6 +1,5 @@
 .bait-editor-container {
   width: 100%;
-  
   display: flex;
   overflow: auto;
   min-height: 100vh;
@@ -187,7 +186,6 @@
   font-weight: 400;
 }
 .bait-editor-container2 {
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   gap: var(--dl-space-space-halfunit);
   width: auto;
   height: auto;
@@ -198,7 +196,7 @@
   align-items: center;
   padding-top: var(--dl-space-space-unit);
   border-color: var(--dl-color-gray-black);
-  border-width: thin;
+  border-width: 1px;
   padding-left: var(--dl-space-space-unit);
   padding-right: var(--dl-space-space-unit);
   flex-direction: column;

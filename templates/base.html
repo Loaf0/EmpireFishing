@@ -1165,10 +1165,17 @@
                 {% endif %}
               </nav>
               <div class="home-buttons">
+                {% if session['loggedin'] %}
+                <button type="button" class="home-login buttonFlat">
+                  <a>Welcome, {{ session['username'] }}!</a>
+                </button>
+                <button class="buttonFilled"><a href="{{ url_for('logout') }}">Logout</a></button>
+                {% else %}
                 <button type="button" class="home-login buttonFlat">
                   <a href="{{ url_for('login') }}">Login</a>
                 </button>
                 <button class="buttonFilled"><a href="{{ url_for('register') }}">Register</a></button>
+                {% endif %}
               </div>
             </div>
             <div data-thq="thq-burger-menu" class="home-burger-menu">

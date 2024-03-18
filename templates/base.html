@@ -1247,11 +1247,17 @@
               />
             </div>
             <nav class="home-nav1">
-              <span class="home-nav12 bodySmall">Home</span>
-              <span class="home-nav22 bodySmall">Shop</span>
-              <span class="home-nav32 bodySmall">Community</span>
-              <span class="home-nav42 bodySmall">Profile</span>
-              <span class="home-nav52 bodySmall">Admin</span>
+              <span><a href="{{ url_for('home') }}">Home</a></span>
+                <span class="home-navbottom bodySmall"><a href="{{ url_for('live_bait') }}"> Bait </a></span>
+                <span class="home-navbottom bodySmall"><a href="thislinkdoesntwork"> Community </a></span>
+                <span class="home-navbottom bodySmall"><a href="{{ url_for('profile') }}"> Profile </a></span>
+                <span class="home-navbottom">
+                  <span class="bodySmall"><a href="thislinkdoesntwork"> Line Spooling</a></span>
+                  <br />
+                </span>
+                {% if session['admin'] %}
+                <span class="home-navbottom bodySmall"><a href="{{ url_for('admin') }}">Admin</a></span>
+                {% endif %}
             </nav>
             <div class="home-separator"></div>
             <div class="home-container7">

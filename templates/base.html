@@ -1166,15 +1166,13 @@
               </nav>
               <div class="home-buttons">
                 {% if session['loggedin'] %}
-                <button type="button" class="home-login buttonFlat">
+                <button type="button" class="home-login buttonFlat" style="cursor: default">
                   <a>Welcome, {{ session['username'] }}!</a>
                 </button>
-                <button class="buttonFilled"><a href="{{ url_for('logout') }}">Logout</a></button>
+                <a href="{{ url_for('logout') }}"><button class="buttonFilled">Logout</button></a>
                 {% else %}
-                <button type="button" class="home-login buttonFlat">
-                  <a href="{{ url_for('login') }}">Login</a>
-                </button>
-                <button class="buttonFilled"><a href="{{ url_for('register') }}">Register</a></button>
+                <a href="{{ url_for('login') }}"><button type="button" class="home-login buttonFlat">Login</button></a>
+                <a href="{{ url_for('register') }}"><button class="buttonFilled">Register</button></a>
                 {% endif %}
               </div>
             </div>

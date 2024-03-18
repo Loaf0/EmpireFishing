@@ -401,3 +401,7 @@
     margin-bottom: var(--dl-space-space-oneandhalfunits);
   }
 }
+
+a button {
+  cursor: pointer;
+}

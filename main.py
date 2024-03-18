@@ -19,7 +19,7 @@ conn = odbc.connect(connection_string)
 mysql = MySQL(app)
 
 
-def require_login_status(must_be_logged_out=False, admin=False):
+def require_login_status(must_be_logged_out=False, must_be_admin=False):
     # if user needs to be logged in but isn't, return to login page
     if 'loggedin' not in session.keys() and not must_be_logged_out:
         return redirect(url_for('login'))
@@ -29,38 +29,32 @@ def require_login_status(must_be_logged_out=False, admin=False):
         return redirect(url_for('profile'))
 
     # if user is logged in but isn't an admin, return 403 for admin-only pages
-    if admin:
-        username = session['username']
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
-        account = cursor.fetchone()
-
-        if not account['admin']:
-            abort(403)
+    if must_be_admin and not session['admin']:
+        abort(403)
 
 
 @app.route('/')
 def home():
-    return render_template("index.html")
+    return render_template("index.html", session=session)
 
 
 @app.errorhandler(404)
 def error404(error):
-    return render_template("404.html")
+    return render_template("404.html", session=session)
 
 
 @app.route('/admin')
 def admin():
-    login_status = require_login_status(admin=True)
+    login_status = require_login_status(must_be_admin=True)
     if login_status is not None:
         return login_status
 
-    return render_template("admin.html")
+    return render_template("admin.html", session=session)
 
 
 @app.route('/bait-editor', methods=['GET', 'POST'])
 def bait_editor():
-    login_status = require_login_status(admin=True)
+    login_status = require_login_status(must_be_admin=True)
     if login_status is not None:
         return login_status
 
@@ -102,7 +96,7 @@ def bait_editor():
 
     conn.commit()
 
-    return render_template("bait-editor.html", msg=msg, baits=baits)
+    return render_template("bait-editor.html", session=session, msg=msg, baits=baits)
 
 
 @app.route('/bait')
@@ -111,7 +105,7 @@ def live_bait():
     cursor.execute('SELECT * FROM bait')
     baits = cursor.fetchall()
 
-    return render_template("bait.html", baits=baits)
+    return render_template("bait.html", session=session, baits=baits)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -141,13 +135,16 @@ def login():
             session['id'] = account['id']
             session['username'] = account['username']
 
+            # add admin attribute to session if user is an admin
+            session['admin'] = bool(account['admin'])
+
             # Redirect to profile
             return redirect(url_for('profile'))
         else:
             # Account doesn't exist or username/password incorrect
             msg = 'Incorrect username/password!'
             # Show the login form with message (if any)
-    return render_template('login.html', msg=msg)
+    return render_template('login.html', session=session, msg=msg)
 
 
 @app.route('/logout')
@@ -179,7 +176,7 @@ def profile():
         cursor.execute('UPDATE userdata SET email_consent = ? WHERE username = ?;', (int(consent), username))
         conn.commit()
 
-    return render_template("profile.html", username=username, email=email, phone=phone, consent=consent)
+    return render_template("profile.html", session=session, username=username, email=email, phone=phone, consent=consent)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -237,7 +234,7 @@ def register():
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'
     # Show registration form with message (if any)
-    return render_template('register.html', msg=msg)
+    return render_template('register.html', session=session, msg=msg)
 
 
 if __name__ == '__main__':

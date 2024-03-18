@@ -1160,7 +1160,9 @@
                   <span class="bodySmall"><a href="thislinkdoesntwork"> Line Spooling</a></span>
                   <br />
                 </span>
+                {% if session['admin'] %}
                 <span class="home-nav6 bodySmall"><a href="{{ url_for('admin') }}">Admin</a></span>
+                {% endif %}
               </nav>
               <div class="home-buttons">
                 <button type="button" class="home-login buttonFlat">

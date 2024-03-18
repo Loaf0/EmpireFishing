@@ -19,6 +19,26 @@ conn = odbc.connect(connection_string)
 mysql = MySQL(app)
 
 
+def require_login_status(must_be_logged_out=False, admin=False):
+    # if user needs to be logged in but isn't, return to login page
+    if 'loggedin' not in session.keys() and not must_be_logged_out:
+        return redirect(url_for('login'))
+
+    # if user is logged in but shouldn't be, return to profile page
+    if 'loggedin' in session.keys() and must_be_logged_out:
+        return redirect(url_for('profile'))
+
+    # if user is logged in but isn't an admin, return 403 for admin-only pages
+    if admin:
+        username = session['username']
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
+        account = cursor.fetchone()
+
+        if not account['admin']:
+            abort(403)
+
+
 @app.route('/')
 def home():
     return render_template("index.html")
@@ -31,34 +51,22 @@ def error404(error):
 
 @app.route('/admin')
 def admin():
-    if 'loggedin' not in session.keys():
-        return redirect(url_for('login'))
-
-    username = session['username']
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
-    account = cursor.fetchone()
-
-    if not account['admin']:
-        abort(403)
+    login_status = require_login_status(admin=True)
+    if login_status is not None:
+        return login_status
 
     return render_template("admin.html")
 
 
 @app.route('/bait-editor', methods=['GET', 'POST'])
 def bait_editor():
+    login_status = require_login_status(admin=True)
+    if login_status is not None:
+        return login_status
+
     msg = ''
 
-    if 'loggedin' not in session.keys():
-        return redirect(url_for('login'))
-
-    username = session['username']
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
-    account = cursor.fetchone()
-
-    if not account['admin']:
-        abort(403)
 
     if request.method == 'POST':
         # insert/modify items:
@@ -108,6 +116,10 @@ def live_bait():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    login_status = require_login_status(must_be_logged_out=True)
+    if login_status is not None:
+        return login_status
+
     msg = ''
 
     # check if username and password were received
@@ -148,9 +160,9 @@ def logout():
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    # if user is not logged in, return to login screen
-    if 'loggedin' not in session.keys():
-        return redirect(url_for('login'))
+    login_status = require_login_status()
+    if login_status is not None:
+        return login_status
 
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM userdata WHERE username = ?', (session['username'], ))
@@ -172,6 +184,10 @@ def profile():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    login_status = require_login_status(must_be_logged_out=True)
+    if login_status is not None:
+        return login_status
+
     # Output message if something goes wrong...
     msg = ''
     # Check if "username", "password" and "email" POST requests exist (user submitted form)

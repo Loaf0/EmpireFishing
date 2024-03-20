@@ -38,6 +38,8 @@ def home():
     return render_template("index.html", session=session)
 
 
+
+
 @app.errorhandler(404)
 def error404(error):
     return render_template("404.html", session=session)
@@ -107,6 +109,9 @@ def live_bait():
 
     return render_template("bait.html", session=session, baits=baits)
 
+@app.route('/fishingSpots')
+def fishingSpots():
+    return render_template("fishingSpots.html", session=session)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

@@ -1,5 +1,6 @@
 from datetime import date
 from flask import Flask, render_template, request, redirect, url_for, session, abort
+from flask_googlemaps import GoogleMaps # pip install Flask Jinja2
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
@@ -18,6 +19,8 @@ connection_string = (
 conn = odbc.connect(connection_string)
 
 mysql = MySQL(app)
+
+GoogleMaps(app, key="AIzaSyCpsD5tBlCs42-ATKcOLdeZ8pYswGCASN0")
 
 
 def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):

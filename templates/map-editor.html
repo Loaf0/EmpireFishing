@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Bait Editor{% endblock %}
+{% block content %}
+<link href="../static/bait-editor.css" rel="stylesheet" />
+      <link href="../static/bait.css" rel="stylesheet" />
+
+<div class="bait-editor-hero">
+          <div class="bait-editor-hero1 heroContainer" >
+            <div class="bait-editor-container1">
+              <h1 class="bait-editor-text02">Map Editor</h1>
+            </div>
+                <form action="{{ url_for('bait_editor') }}" method="post">
+                <div class="bait-editor-container2" style="background-color:lightgray;">
+                  <h2 class="bait-editor-text03">Insert/modify item:</h2>
+                <hr>
+                 <p >(note: bait availability will be overwritten)</p>
+                 <p >Name:</p> <input type="text" name="insert-name" class="input"/>
+                 <p >Availability:</p> <input type="checkbox" name="insert-availability" />
+                 <p >Description:</p> <input type="text" name="insert-description" class="input"/>
+                <hr>
+                 <h2 class="bait-editor-text03">Remove item from list:</h2>
+                 <p>Name:</p> <input type="text" name="remove-name" class="input"/>
+
+                 <br>
+                 <input type="submit" class="buttonFlat">
+
+                 <p style="text-align: center">{{ msg }}</p>
+                </form>
+              <div>
+            </div>
+        </div>
+            </div>
+          </div>
+        </div>
+{% endblock %}

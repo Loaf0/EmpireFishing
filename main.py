@@ -101,6 +101,16 @@ def bait_editor():
 
     return render_template("bait-editor.html", session=session, msg=msg, baits=baits)
 
+@app.route('/map-editor', methods=['GET', 'POST'])
+def map_editor():
+    login_status = require_login_status(must_be_admin=True)
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    return render_template("map-editor.html", session=session, msg=msg)
+
 
 @app.route('/bait')
 def live_bait():

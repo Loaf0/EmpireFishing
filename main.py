@@ -1,6 +1,6 @@
 from datetime import date
 from flask import Flask, render_template, request, redirect, url_for, session, abort
-from flask_googlemaps import GoogleMaps # pip install Flask Jinja2
+from flask_googlemaps import GoogleMaps, Map  # pip install Flask Jinja2
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
@@ -190,6 +190,29 @@ def brands_list():
 
 @app.route('/fishingSpots')
 def fishingSpots():
+    Map(
+        identifier="Fishing Locations Near You",
+        lat=37.4419,
+        lng=-122.1419,
+        markers=[
+            {
+                'lat': 37.4500,
+                'lng': -122.1350,
+                'label': "X"
+            },
+            {
+                'lat': 37.4419,
+                'lng': -122.1419,
+                'label': "Y"
+            },
+            {
+                'lat': 37.4300,
+                'lng': -122.1400,
+                'label': "Z"
+            }
+        ]
+    )
+
     return render_template("fishingSpots.html", session=session)
 
 

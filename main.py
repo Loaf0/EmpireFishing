@@ -19,14 +19,14 @@ conn = odbc.connect(connection_string)
 mysql = MySQL(app)
 
 
-def require_login_status(must_be_logged_out=False, must_be_admin=False):
+def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):
     # if user needs to be logged in but isn't, return to login page
     if 'loggedin' not in session.keys() and not must_be_logged_out:
-        return redirect(url_for('login'))
+        return redirect(url_for('login') + '?destination=' + destination)
 
     # if user is logged in but shouldn't be, return to profile page
     if 'loggedin' in session.keys() and must_be_logged_out:
-        return redirect(url_for('profile'))
+        return redirect('/' + destination)
 
     # if user is logged in but isn't an admin, return 403 for admin-only pages
     if must_be_admin and not session['admin']:
@@ -45,7 +45,7 @@ def error404(error):
 
 @app.route('/admin')
 def admin():
-    login_status = require_login_status(must_be_admin=True)
+    login_status = require_login_status(must_be_admin=True, destination='admin')
     if login_status is not None:
         return login_status
 
@@ -54,7 +54,7 @@ def admin():
 
 @app.route('/bait-editor', methods=['GET', 'POST'])
 def bait_editor():
-    login_status = require_login_status(must_be_admin=True)
+    login_status = require_login_status(must_be_admin=True, destination='bait-editor')
     if login_status is not None:
         return login_status
 
@@ -108,19 +108,26 @@ def live_bait():
     return render_template("bait.html", session=session, baits=baits)
 
 
+@app.route('/home')
+def home_redirect():
+    return redirect('/')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    login_status = require_login_status(must_be_logged_out=True)
+    destination = request.args.get('destination', default='profile')
+
+    login_status = require_login_status(must_be_logged_out=True, destination=destination)
     if login_status is not None:
         return login_status
 
     msg = ''
 
     # check if username and password were received
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'destination' in request.form:
         username = request.form['username']
         password = request.form['password']
+        destination = request.form['destination']
 
         # Check if account exists using MySQL - Grabs from userdata table on Azure SQL Server
         cursor = conn.cursor()
@@ -138,13 +145,13 @@ def login():
             # add admin attribute to session if user is an admin
             session['admin'] = bool(account['admin'])
 
-            # Redirect to profile
-            return redirect(url_for('profile'))
+            # Redirect to desired page (profile by default)
+            return redirect('/' + destination)
         else:
             # Account doesn't exist or username/password incorrect
             msg = 'Incorrect username/password!'
             # Show the login form with message (if any)
-    return render_template('login.html', session=session, msg=msg)
+    return render_template('login.html', destination=destination, session=session, msg=msg)
 
 
 @app.route('/logout')

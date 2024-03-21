@@ -3,8 +3,11 @@ from flask import Flask, render_template, request, redirect, url_for, session, a
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
+from flask_googlemaps import GoogleMaps
 
 app = Flask(__name__)
+
+GoogleMaps(app, key="AIzaSyCpsD5tBlCs42-ATKcOLdeZ8pYswGCASN0")
 
 app.secret_key = 'your secret key'
 
@@ -19,46 +22,50 @@ conn = odbc.connect(connection_string)
 mysql = MySQL(app)
 
 
+def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):
+    # if user needs to be logged in but isn't, return to login page
+    if 'loggedin' not in session.keys() and not must_be_logged_out:
+        return redirect(url_for('login') + '?destination=' + destination)
+
+    # if user is logged in but shouldn't be, return to profile page
+    if 'loggedin' in session.keys() and must_be_logged_out:
+        return redirect('/' + destination)
+
+    # if user is logged in but isn't an admin, return 403 for admin-only pages
+    if must_be_admin and not session['admin']:
+        abort(403)
+
+
 @app.route('/')
 def home():
-    return render_template("index.html")
+    return render_template("index.html", session=session)
+
+
 
 
 @app.errorhandler(404)
 def error404(error):
-    return render_template("404.html")
+    return render_template("404.html", session=session)
 
 
 @app.route('/admin')
 def admin():
-    if 'loggedin' not in session.keys():
-        return redirect(url_for('login'))
+    login_status = require_login_status(must_be_admin=True, destination='admin')
+    if login_status is not None:
+        return login_status
 
-    username = session['username']
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
-    account = cursor.fetchone()
-
-    if not account['admin']:
-        abort(403)
-
-    return render_template("admin.html")
+    return render_template("admin.html", session=session)
 
 
 @app.route('/bait-editor', methods=['GET', 'POST'])
 def bait_editor():
+    login_status = require_login_status(must_be_admin=True, destination='bait-editor')
+    if login_status is not None:
+        return login_status
+
     msg = ''
 
-    if 'loggedin' not in session.keys():
-        return redirect(url_for('login'))
-
-    username = session['username']
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
-    account = cursor.fetchone()
-
-    if not account['admin']:
-        abort(403)
 
     if request.method == 'POST':
         # insert/modify items:
@@ -94,7 +101,7 @@ def bait_editor():
 
     conn.commit()
 
-    return render_template("bait-editor.html", msg=msg, baits=baits)
+    return render_template("bait-editor.html", session=session, msg=msg, baits=baits)
 
 
 @app.route('/bait')
@@ -103,18 +110,32 @@ def live_bait():
     cursor.execute('SELECT * FROM bait')
     baits = cursor.fetchall()
 
-    return render_template("bait.html", baits=baits)
+    return render_template("bait.html", session=session, baits=baits)
+
+@app.route('/fishingSpots')
+def fishingSpots():
+    return render_template("fishingSpots.html", session=session)
+
+@app.route('/home')
+def home_redirect():
+    return redirect('/')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    destination = request.args.get('destination', default='profile')
+
+    login_status = require_login_status(must_be_logged_out=True, destination=destination)
+    if login_status is not None:
+        return login_status
+
     msg = ''
 
     # check if username and password were received
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'destination' in request.form:
         username = request.form['username']
         password = request.form['password']
+        destination = request.form['destination']
 
         # Check if account exists using MySQL - Grabs from userdata table on Azure SQL Server
         cursor = conn.cursor()
@@ -129,13 +150,16 @@ def login():
             session['id'] = account['id']
             session['username'] = account['username']
 
-            # Redirect to profile
-            return redirect(url_for('profile'))
+            # add admin attribute to session if user is an admin
+            session['admin'] = bool(account['admin'])
+
+            # Redirect to desired page (profile by default)
+            return redirect('/' + destination)
         else:
             # Account doesn't exist or username/password incorrect
             msg = 'Incorrect username/password!'
             # Show the login form with message (if any)
-    return render_template('login.html', msg=msg)
+    return render_template('login.html', destination=destination, session=session, msg=msg)
 
 
 @app.route('/logout')
@@ -143,14 +167,15 @@ def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('username', None)
+    session.pop('admin', None)
     return redirect(url_for('home'))
 
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    # if user is not logged in, return to login screen
-    if 'loggedin' not in session.keys():
-        return redirect(url_for('login'))
+    login_status = require_login_status()
+    if login_status is not None:
+        return login_status
 
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM userdata WHERE username = ?', (session['username'], ))
@@ -167,11 +192,15 @@ def profile():
         cursor.execute('UPDATE userdata SET email_consent = ? WHERE username = ?;', (int(consent), username))
         conn.commit()
 
-    return render_template("profile.html", username=username, email=email, phone=phone, consent=consent)
+    return render_template("profile.html", session=session, username=username, email=email, phone=phone, consent=consent)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    login_status = require_login_status(must_be_logged_out=True)
+    if login_status is not None:
+        return login_status
+
     # Output message if something goes wrong...
     msg = ''
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
@@ -221,7 +250,7 @@ def register():
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'
     # Show registration form with message (if any)
-    return render_template('register.html', msg=msg)
+    return render_template('register.html', session=session, msg=msg)
 
 
 if __name__ == '__main__':

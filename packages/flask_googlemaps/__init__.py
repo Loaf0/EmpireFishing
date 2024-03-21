@@ -5,10 +5,9 @@ __version__ = "0.4.0"
 from json import dumps
 import requests as rq
 from markupsafe import Markup
-import requests
 from flask import Blueprint, g, render_template
 
-from flask_googlemaps.icons import dots
+from packages.flask_googlemaps.icons import dots
 
 DEFAULT_ICON = dots.red
 DEFAULT_CLUSTER_IMAGE_PATH = "static/images/m"

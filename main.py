@@ -1,6 +1,6 @@
 from datetime import date
 from flask import Flask, render_template, request, redirect, url_for, session, abort
-from flask_googlemaps import GoogleMaps, Map  # pip install Flask Jinja2
+from packages.flask_googlemaps import GoogleMaps, Map  # pip install Flask Jinja2
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re

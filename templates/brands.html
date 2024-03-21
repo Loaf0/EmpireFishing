@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Bait{% endblock %}
+{% block content %}
+<link href="../static/brands.css" rel="stylesheet" />
+
+<div class="live-bait-hero">
+          <div class="live-bait-hero1 heroContainer">
+            <div class="live-bait-container1">
+              <h1 class="live-bait-text2">View Bait</h1>
+              <div class="live-bait-table">
+                <table>
+                  <tr>
+                      <th class="table-header">Logo</th>
+                      <th class="table-header">Name</th>
+                      <th class="table-header" id="column3">Description</th>
+                  </tr>
+                     {% for bait in baits %}
+                        <tr>
+                            <td>{{ bait['name'] }}</td>
+                            <td>{{ bait['availability'] }}</td>
+                            <td>{{ bait['description'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+{% endblock %}

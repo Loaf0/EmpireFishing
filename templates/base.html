@@ -1156,17 +1156,25 @@
                 <span class="home-nav2 bodySmall"><a href="{{ url_for('live_bait') }}"> Bait </a></span>
                 <span class="home-nav3 bodySmall"><a href="thislinkdoesntwork"> Community </a></span>
                 <span class="home-nav4 bodySmall"><a href="{{ url_for('profile') }}"> Profile </a></span>
+                <span class="home-nav4 bodySmall"><a href="{{ url_for('fishingSpots') }}"> Fishing Locations </a></span>
                 <span class="home-nav5">
                   <span class="bodySmall"><a href="thislinkdoesntwork"> Line Spooling</a></span>
                   <br />
                 </span>
+                {% if session['admin'] %}
                 <span class="home-nav6 bodySmall"><a href="{{ url_for('admin') }}">Admin</a></span>
+                {% endif %}
               </nav>
               <div class="home-buttons">
-                <button type="button" class="home-login buttonFlat">
-                  <a href="{{ url_for('login') }}">Login</a>
+                {% if session['loggedin'] %}
+                <button type="button" class="home-login buttonFlat" style="cursor: default">
+                  <a>Welcome, {{ session['username'] }}!</a>
                 </button>
-                <button class="buttonFilled"><a href="{{ url_for('register') }}">Register</a></button>
+                <a href="{{ url_for('logout') }}"><button class="buttonFilled">Logout</button></a>
+                {% else %}
+                <a href="{{ url_for('login') }}"><button type="button" class="home-login buttonFlat">Login</button></a>
+                <a href="{{ url_for('register') }}"><button class="buttonFilled">Register</button></a>
+                {% endif %}
               </div>
             </div>
             <div data-thq="thq-burger-menu" class="home-burger-menu">
@@ -1245,11 +1253,17 @@
               />
             </div>
             <nav class="home-nav1">
-              <span class="home-nav12 bodySmall">Home</span>
-              <span class="home-nav22 bodySmall">Shop</span>
-              <span class="home-nav32 bodySmall">Community</span>
-              <span class="home-nav42 bodySmall">Profile</span>
-              <span class="home-nav52 bodySmall">Admin</span>
+              <span><a href="{{ url_for('home') }}">Home</a></span>
+                <span class="home-navbottom bodySmall"><a href="{{ url_for('live_bait') }}"> Bait </a></span>
+                <span class="home-navbottom bodySmall"><a href="thislinkdoesntwork"> Community </a></span>
+                <span class="home-navbottom bodySmall"><a href="{{ url_for('profile') }}"> Profile </a></span>
+                <span class="home-navbottom">
+                  <span class="bodySmall"><a href="thislinkdoesntwork"> Line Spooling</a></span>
+                  <br />
+                </span>
+                {% if session['admin'] %}
+                <span class="home-navbottom bodySmall"><a href="{{ url_for('admin') }}">Admin</a></span>
+                {% endif %}
             </nav>
             <div class="home-separator"></div>
             <div class="home-container7">

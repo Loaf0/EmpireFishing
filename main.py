@@ -1,13 +1,11 @@
 from datetime import date
 from flask import Flask, render_template, request, redirect, url_for, session, abort
+from flask_googlemaps import GoogleMaps # pip install Flask Jinja2
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
-from flask_googlemaps import GoogleMaps
 
 app = Flask(__name__)
-
-GoogleMaps(app, key="AIzaSyCpsD5tBlCs42-ATKcOLdeZ8pYswGCASN0")
 
 app.secret_key = 'your secret key'
 
@@ -21,15 +19,17 @@ conn = odbc.connect(connection_string)
 
 mysql = MySQL(app)
 
+GoogleMaps(app, key="AIzaSyCpsD5tBlCs42-ATKcOLdeZ8pYswGCASN0")
 
-def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):
+
+def require_login_status(must_be_logged_out=False, must_be_admin=False):
     # if user needs to be logged in but isn't, return to login page
     if 'loggedin' not in session.keys() and not must_be_logged_out:
-        return redirect(url_for('login') + '?destination=' + destination)
+        return redirect(url_for('login'))
 
     # if user is logged in but shouldn't be, return to profile page
     if 'loggedin' in session.keys() and must_be_logged_out:
-        return redirect('/' + destination)
+        return redirect(url_for('profile'))
 
     # if user is logged in but isn't an admin, return 403 for admin-only pages
     if must_be_admin and not session['admin']:
@@ -41,8 +41,6 @@ def home():
     return render_template("index.html", session=session)
 
 
-
-
 @app.errorhandler(404)
 def error404(error):
     return render_template("404.html", session=session)
@@ -50,7 +48,7 @@ def error404(error):
 
 @app.route('/admin')
 def admin():
-    login_status = require_login_status(must_be_admin=True, destination='admin')
+    login_status = require_login_status(must_be_admin=True)
     if login_status is not None:
         return login_status
 
@@ -59,7 +57,7 @@ def admin():
 
 @app.route('/bait-editor', methods=['GET', 'POST'])
 def bait_editor():
-    login_status = require_login_status(must_be_admin=True, destination='bait-editor')
+    login_status = require_login_status(must_be_admin=True)
     if login_status is not None:
         return login_status
 
@@ -116,26 +114,19 @@ def live_bait():
 def fishingSpots():
     return render_template("fishingSpots.html", session=session)
 
-@app.route('/home')
-def home_redirect():
-    return redirect('/')
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    destination = request.args.get('destination', default='profile')
-
-    login_status = require_login_status(must_be_logged_out=True, destination=destination)
+    login_status = require_login_status(must_be_logged_out=True)
     if login_status is not None:
         return login_status
 
     msg = ''
 
     # check if username and password were received
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'destination' in request.form:
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+
         username = request.form['username']
         password = request.form['password']
-        destination = request.form['destination']
 
         # Check if account exists using MySQL - Grabs from userdata table on Azure SQL Server
         cursor = conn.cursor()
@@ -153,13 +144,13 @@ def login():
             # add admin attribute to session if user is an admin
             session['admin'] = bool(account['admin'])
 
-            # Redirect to desired page (profile by default)
-            return redirect('/' + destination)
+            # Redirect to profile
+            return redirect(url_for('profile'))
         else:
             # Account doesn't exist or username/password incorrect
             msg = 'Incorrect username/password!'
             # Show the login form with message (if any)
-    return render_template('login.html', destination=destination, session=session, msg=msg)
+    return render_template('login.html', session=session, msg=msg)
 
 
 @app.route('/logout')

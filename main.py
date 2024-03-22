@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, a
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
+import os
 
 app = Flask(__name__)
 
@@ -36,8 +37,6 @@ def require_login_status(must_be_logged_out=False, must_be_admin=False, destinat
 @app.route('/')
 def home():
     return render_template("index.html", session=session)
-
-
 
 
 @app.errorhandler(404)
@@ -108,6 +107,14 @@ def live_bait():
     baits = cursor.fetchall()
 
     return render_template("bait.html", session=session, baits=baits)
+
+@app.route('/brands')
+def brands_list():
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM brands')
+    brands = cursor.fetchall()
+
+    return render_template("brands.html", session=session, brands=brands)
 
 @app.route('/fishingSpots')
 def fishingSpots():

@@ -113,6 +113,10 @@ def live_bait():
 def fishingSpots():
     return render_template("fishingSpots.html", session=session)
 
+@app.route('/Brands')
+def Brands():
+    return render_template("brands.html", session=session)
+
 @app.route('/home')
 def home_redirect():
     return redirect('/')

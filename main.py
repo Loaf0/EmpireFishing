@@ -108,6 +108,59 @@ def live_bait():
 
     return render_template("bait.html", session=session, baits=baits)
 
+
+@app.route('/brand-editor', methods=['GET', 'POST'])
+def brand_editor():
+    login_status = require_login_status(must_be_admin=True, destination='brand-editor')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        # insert/modify items:
+        insert_logo = request.files.getlist('insert-logo')
+        insert_logo_name = insert_logo[0].filename
+        insert_name = request.form.get('insert-name')
+        insert_description = request.form.get('insert-description')
+
+        if insert_name:
+            cursor.execute('SELECT * FROM brands WHERE name = ?', (insert_name,))
+            found_brand = cursor.fetchone()
+
+            if found_brand:
+                if insert_logo_name:
+                    cursor.execute('UPDATE brands SET logo = ? WHERE name = ?', (insert_logo_name, insert_name))
+
+                if insert_description:
+                    cursor.execute('UPDATE brands SET description = ? WHERE name = ?', (insert_description, insert_name))
+
+                msg = 'Updated brand %s.' % insert_name
+            else:
+                cursor.execute('INSERT INTO brands (logo, name, description) VALUES (?, ?, ?)', (insert_logo_name, insert_name, insert_description))
+                msg = 'Added new brand %s.' % insert_name
+
+        # remove items
+        remove_name = request.form.get('remove-name')
+
+        if remove_name:
+            cursor.execute('SELECT * FROM brands WHERE name = ?', (remove_name,))
+            brand_logo_to_remove = cursor.fetchone()['logo']
+
+            cursor.execute('DELETE FROM brands WHERE name = ?', (remove_name,))
+            msg = 'Removed brand %s.' % remove_name
+
+    # fetch current brand table
+    cursor.execute('SELECT * FROM brands')
+    brands = cursor.fetchall()
+
+    conn.commit()
+
+    return render_template("brand-editor.html", session=session, msg=msg, brands=brands)
+
+
 @app.route('/brands')
 def brands_list():
     cursor = conn.cursor()

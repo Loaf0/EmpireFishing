@@ -4,20 +4,20 @@
 <link href="../static/brand-editor.css" rel="stylesheet" />
       <link href="../static/brands.css" rel="stylesheet" />
 
-<div class="bait-editor-hero">
-          <div class="bait-editor-hero1 heroContainer" >
-            <div class="bait-editor-container1">
-              <h1 class="bait-editor-text02">Brand Table Editor</h1>
+<div class="brand-editor-hero">
+          <div class="brand-editor-hero1 heroContainer" >
+            <div class="brand-editor-container1">
+              <h1 class="brand-editor-text02">Brand Table Editor</h1>
             </div>
                 <form action="{{ url_for('brand_editor') }}" method="post" enctype="multipart/form-data">
-                <div class="bait-editor-container2" style="background-color:lightgray;">
-                  <h2 class="bait-editor-text03">Insert/modify item:</h2>
+                <div class="brand-editor-container2" style="background-color:lightgray;">
+                  <h2 class="brand-editor-text03">Insert/modify item:</h2>
                 <hr>
                  <p >Logo:</p> <input type="file" name="insert-logo" accept="image/*"/>
                  <p >Name:</p> <input type="text" name="insert-name" class="input" />
                  <p >Description:</p> <input type="text" name="insert-description" class="input"/>
                 <hr>
-                 <h2 class="bait-editor-text03">Remove item from list:</h2>
+                 <h2 class="brand-editor-text03">Remove item from list:</h2>
                  <p>Name:</p> <input type="text" name="remove-name" class="input"/>
 
                  <br>

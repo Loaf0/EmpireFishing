@@ -154,9 +154,6 @@ def brand_editor():
         remove_name = request.form.get('remove-name')
 
         if remove_name:
-            cursor.execute('SELECT * FROM brands WHERE name = ?', (remove_name,))
-            brand_logo_to_remove = cursor.fetchone()['logo']
-
             cursor.execute('DELETE FROM brands WHERE name = ?', (remove_name,))
             msg = 'Removed brand %s.' % remove_name
 
@@ -177,13 +174,11 @@ def brands_list():
 
     return render_template("brands.html", session=session, brands=brands)
 
+
 @app.route('/fishingSpots')
 def fishingSpots():
     return render_template("fishingSpots.html", session=session)
 
-@app.route('/Brands')
-def Brands():
-    return render_template("brands.html", session=session)
 
 @app.route('/home')
 def home_redirect():

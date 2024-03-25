@@ -121,8 +121,8 @@ def brand_editor():
 
     if request.method == 'POST':
         # insert/modify items:
-        insert_logo = request.files.getlist('insert-logo')
-        insert_logo_name = insert_logo[0].filename
+        insert_logo = request.files.getlist('insert-logo')[0]
+        insert_logo_name = insert_logo.filename
         insert_name = request.form.get('insert-name')
         insert_description = request.form.get('insert-description')
 
@@ -141,6 +141,14 @@ def brand_editor():
             else:
                 cursor.execute('INSERT INTO brands (logo, name, description) VALUES (?, ?, ?)', (insert_logo_name, insert_name, insert_description))
                 msg = 'Added new brand %s.' % insert_name
+
+            # upload logo to brands folder
+            if insert_logo:
+                # create brands folder if it doesn't already exist
+                if not os.path.exists("static/images/brands"):
+                    os.mkdir("static/images/brands")
+
+                insert_logo.save("static/images/brands/" + insert_logo_name)
 
         # remove items
         remove_name = request.form.get('remove-name')

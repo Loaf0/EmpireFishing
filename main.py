@@ -188,32 +188,11 @@ def brands_list():
     return render_template("brands.html", session=session, brands=brands)
 
 
-@app.route('/fishingSpots')
+@app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():
-    Map(
-        identifier="Fishing Locations Near You",
-        lat=37.4419,
-        lng=-122.1419,
-        markers=[
-            {
-                'lat': 37.4500,
-                'lng': -122.1350,
-                'label': "X"
-            },
-            {
-                'lat': 37.4419,
-                'lng': -122.1419,
-                'label': "Y"
-            },
-            {
-                'lat': 37.4300,
-                'lng': -122.1400,
-                'label': "Z"
-            }
-        ]
-    )
+    locations = []  # long list of coordinates
 
-    return render_template("fishingSpots.html", session=session)
+    return render_template("fishingSpots.html")
 
 
 @app.route('/home')

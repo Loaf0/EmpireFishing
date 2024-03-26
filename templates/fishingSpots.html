@@ -7,8 +7,45 @@
           <div class="live-bait-hero1 heroContainer">
             <div class="live-bait-container1">
               <h1 class="live-bait-text2"> Fishing Map </h1>
-
+                <div id="map" ></div>
             </div>
           </div>
         </div>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpsD5tBlCs42-ATKcOLdeZ8pYswGCASN0&map_ids=cc841db38dc214c6&callback=initMap">
+</script>
+
+<script>
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 39.603400, lng: -74.341130},
+        zoom: 12
+    });
+
+    var locations = [
+        {lat: 39.603400, lng: -74.341130, label: 'A'},
+        {lat: 39.603500, lng: -74.341230, label: 'B'},
+        {lat: 39.603600, lng: -74.341330, label: 'C'}
+    ];
+
+    for (const location of locations) {
+        var marker = new google.maps.Marker({
+            position: {lat: location.lat, lng: location.lng},
+            map: map,
+            label: location.label
+        });
+    }
+}
+
+
+
+</script>
+
+
+<style>
+    #map {
+        height: 500px; /* Adjust height as needed */
+        width: 80%;   /* Adjust width as needed */
+    }
+</style>
+
 {% endblock %}

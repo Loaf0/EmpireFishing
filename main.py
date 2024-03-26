@@ -4,6 +4,7 @@ from packages.flask_googlemaps import GoogleMaps, Map  # pip install Flask Jinja
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
+import os
 
 app = Flask(__name__)
 
@@ -22,14 +23,14 @@ mysql = MySQL(app)
 GoogleMaps(app, key="AIzaSyCpsD5tBlCs42-ATKcOLdeZ8pYswGCASN0")
 
 
-def require_login_status(must_be_logged_out=False, must_be_admin=False):
+def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):
     # if user needs to be logged in but isn't, return to login page
     if 'loggedin' not in session.keys() and not must_be_logged_out:
-        return redirect(url_for('login'))
+        return redirect(url_for('login') + '?destination=' + destination)
 
     # if user is logged in but shouldn't be, return to profile page
     if 'loggedin' in session.keys() and must_be_logged_out:
-        return redirect(url_for('profile'))
+        return redirect('/' + destination)
 
     # if user is logged in but isn't an admin, return 403 for admin-only pages
     if must_be_admin and not session['admin']:
@@ -48,7 +49,7 @@ def error404(error):
 
 @app.route('/admin')
 def admin():
-    login_status = require_login_status(must_be_admin=True)
+    login_status = require_login_status(must_be_admin=True, destination='admin')
     if login_status is not None:
         return login_status
 
@@ -57,7 +58,7 @@ def admin():
 
 @app.route('/bait-editor', methods=['GET', 'POST'])
 def bait_editor():
-    login_status = require_login_status(must_be_admin=True)
+    login_status = require_login_status(must_be_admin=True, destination='bait-editor')
     if login_status is not None:
         return login_status
 
@@ -120,46 +121,100 @@ def live_bait():
 
     return render_template("bait.html", session=session, baits=baits)
 
-@app.route('/fishingSpots')
-def fishingSpots():
-    Map(
-        identifier="Fishing Locations Near You",
-        lat=37.4419,
-        lng=-122.1419,
-        markers=[
-            {
-                'lat': 37.4500,
-                'lng': -122.1350,
-                'label': "X"
-            },
-            {
-                'lat': 37.4419,
-                'lng': -122.1419,
-                'label': "Y"
-            },
-            {
-                'lat': 37.4300,
-                'lng': -122.1400,
-                'label': "Z"
-            }
-        ]
-    )
 
-    return render_template("fishingSpots.html", session=session)
+@app.route('/brand-editor', methods=['GET', 'POST'])
+def brand_editor():
+    login_status = require_login_status(must_be_admin=True, destination='brand-editor')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        # insert/modify items:
+        insert_logo = request.files.getlist('insert-logo')[0]
+        insert_logo_name = insert_logo.filename
+        insert_name = request.form.get('insert-name')
+        insert_description = request.form.get('insert-description')
+
+        if insert_name:
+            cursor.execute('SELECT * FROM brands WHERE name = ?', (insert_name,))
+            found_brand = cursor.fetchone()
+
+            if found_brand:
+                if insert_logo_name:
+                    cursor.execute('UPDATE brands SET logo = ? WHERE name = ?', (insert_logo_name, insert_name))
+
+                if insert_description:
+                    cursor.execute('UPDATE brands SET description = ? WHERE name = ?', (insert_description, insert_name))
+
+                msg = 'Updated brand %s.' % insert_name
+            else:
+                cursor.execute('INSERT INTO brands (logo, name, description) VALUES (?, ?, ?)', (insert_logo_name, insert_name, insert_description))
+                msg = 'Added new brand %s.' % insert_name
+
+            # upload logo to brands folder
+            if insert_logo:
+                # create brands folder if it doesn't already exist
+                if not os.path.exists("static/images/brands"):
+                    os.mkdir("static/images/brands")
+
+                insert_logo.save("static/images/brands/" + insert_logo_name)
+
+        # remove items
+        remove_name = request.form.get('remove-name')
+
+        if remove_name:
+            cursor.execute('DELETE FROM brands WHERE name = ?', (remove_name,))
+            msg = 'Removed brand %s.' % remove_name
+
+    # fetch current brand table
+    cursor.execute('SELECT * FROM brands')
+    brands = cursor.fetchall()
+
+    conn.commit()
+
+    return render_template("brand-editor.html", session=session, msg=msg, brands=brands)
+
+
+@app.route('/brands')
+def brands_list():
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM brands')
+    brands = cursor.fetchall()
+
+    return render_template("brands.html", session=session, brands=brands)
+
+
+@app.route('/fishingSpots', methods=['GET', 'POST'])
+def fishingSpots():
+    locations = []  # long list of coordinates
+
+    return render_template("fishingSpots.html")
+
+
+@app.route('/home')
+def home_redirect():
+    return redirect('/')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    login_status = require_login_status(must_be_logged_out=True)
+    destination = request.args.get('destination', default='profile')
+
+    login_status = require_login_status(must_be_logged_out=True, destination=destination)
     if login_status is not None:
         return login_status
 
     msg = ''
 
     # check if username and password were received
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'destination' in request.form:
         username = request.form['username']
         password = request.form['password']
+        destination = request.form['destination']
 
         # Check if account exists using MySQL - Grabs from userdata table on Azure SQL Server
         cursor = conn.cursor()
@@ -177,13 +232,13 @@ def login():
             # add admin attribute to session if user is an admin
             session['admin'] = bool(account['admin'])
 
-            # Redirect to profile
-            return redirect(url_for('profile'))
+            # Redirect to desired page (profile by default)
+            return redirect('/' + destination)
         else:
             # Account doesn't exist or username/password incorrect
             msg = 'Incorrect username/password!'
             # Show the login form with message (if any)
-    return render_template('login.html', session=session, msg=msg)
+    return render_template('login.html', destination=destination, session=session, msg=msg)
 
 
 @app.route('/logout')

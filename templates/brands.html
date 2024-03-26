@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Brands{% endblock %}
+{% block content %}
+<link href="../static/brands.css" rel="stylesheet" />
+
+<div class="brands-hero">
+          <div class="brands-hero1 heroContainer">
+            <div class="brands-container1">
+              <h1 class="brands-text2">Brands</h1>
+              <div class="brands-table">
+                <table>
+                  <tr>
+                      <th class="table-header">Logo</th>
+                      <th class="table-header">Name</th>
+                      <th class="table-header" id="column3">Description</th>
+                  </tr>
+                     {% for brand in brands %}
+                        <tr>
+                            <td><img src="static/images/brands/{{ brand['logo'] }}" alt="{{ brand['name'] }}" style="width:100%"></td>
+                            <td>{{ brand['name'] }}</td>
+                            <td>{{ brand['description'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+{% endblock %}

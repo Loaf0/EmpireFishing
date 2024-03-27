@@ -195,7 +195,6 @@ def brands_list():
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():
-
     # add SQL query to fill lat long and label arrays
     lat = [39.603400, 39.603440]
     long = [-74.341130, -74.341140]

@@ -1,5 +1,5 @@
 from datetime import date
-from flask import Flask, render_template, request, redirect, url_for, session, abort
+from flask import Flask, render_template, request, redirect, url_for, session, abort, json
 from packages.flask_googlemaps import GoogleMaps, Map  # pip install Flask Jinja2
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
@@ -77,14 +77,16 @@ def bait_editor():
             found_bait = cursor.fetchone()
 
             if found_bait:
-                cursor.execute('UPDATE bait SET availability = ? WHERE name = ?', (int(insert_availability), insert_name))
+                cursor.execute('UPDATE bait SET availability = ? WHERE name = ?',
+                               (int(insert_availability), insert_name))
 
                 if insert_description:
                     cursor.execute('UPDATE bait SET description = ? WHERE name = ?', (insert_description, insert_name))
 
                 msg = 'Updated bait %s.' % insert_name
             else:
-                cursor.execute('INSERT INTO bait (name, availability, description) VALUES (?, ?, ?)', (insert_name, int(insert_availability), insert_description))
+                cursor.execute('INSERT INTO bait (name, availability, description) VALUES (?, ?, ?)',
+                               (insert_name, int(insert_availability), insert_description))
                 msg = 'Added new bait %s.' % insert_name
 
         # remove items
@@ -101,6 +103,7 @@ def bait_editor():
     conn.commit()
 
     return render_template("bait-editor.html", session=session, msg=msg, baits=baits)
+
 
 @app.route('/map-editor', methods=['GET', 'POST'])
 def map_editor():
@@ -148,11 +151,13 @@ def brand_editor():
                     cursor.execute('UPDATE brands SET logo = ? WHERE name = ?', (insert_logo_name, insert_name))
 
                 if insert_description:
-                    cursor.execute('UPDATE brands SET description = ? WHERE name = ?', (insert_description, insert_name))
+                    cursor.execute('UPDATE brands SET description = ? WHERE name = ?',
+                                   (insert_description, insert_name))
 
                 msg = 'Updated brand %s.' % insert_name
             else:
-                cursor.execute('INSERT INTO brands (logo, name, description) VALUES (?, ?, ?)', (insert_logo_name, insert_name, insert_description))
+                cursor.execute('INSERT INTO brands (logo, name, description) VALUES (?, ?, ?)',
+                               (insert_logo_name, insert_name, insert_description))
                 msg = 'Added new brand %s.' % insert_name
 
             # upload logo to brands folder
@@ -190,9 +195,21 @@ def brands_list():
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():
-    locations = []  # long list of coordinates
+    lat = [39.603400, 39.603440]
+    long = [-74.341130, -74.341140]
+    label = ['A', 'B']
 
-    return render_template("fishingSpots.html")
+    locations = 'let locations = ['
+    count = 0
+    while count < len(label):
+
+        locations += '{"lat":' + str(lat[count]) + ',"long":' + str(long[count]) + ',"label":' + str(
+            label[count]) + '"},'
+        count += 1
+    locations += "]"
+    print(locations)
+
+    return render_template("fishingSpots.html", locations=)
 
 
 @app.route('/home')
@@ -257,7 +274,7 @@ def profile():
         return login_status
 
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM userdata WHERE username = ?', (session['username'], ))
+    cursor.execute('SELECT * FROM userdata WHERE username = ?', (session['username'],))
     account = cursor.fetchone()
 
     username = session['username']
@@ -271,7 +288,8 @@ def profile():
         cursor.execute('UPDATE userdata SET email_consent = ? WHERE username = ?;', (int(consent), username))
         conn.commit()
 
-    return render_template("profile.html", session=session, username=username, email=email, phone=phone, consent=consent)
+    return render_template("profile.html", session=session, username=username, email=email, phone=phone,
+                           consent=consent)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -298,7 +316,7 @@ def register():
 
         # Check if account exists using MySQL
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username, ))
+        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
         account = cursor.fetchone()
 
         # If account exists show error and validation checks

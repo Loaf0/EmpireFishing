@@ -1,6 +1,6 @@
 from datetime import date
 from flask import Flask, render_template, request, redirect, url_for, session, abort
-from packages.flask_googlemaps import GoogleMaps, Map  # pip install Flask Jinja2
+from packages.flask_googlemaps import GoogleMaps, Map # pip install Flask Jinja2
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
@@ -111,6 +111,52 @@ def map_editor():
     msg = ''
 
     return render_template("map-editor.html", session=session, msg=msg)
+
+@app.route('/marker-editor', methods=['GET', 'POST'])
+def marker_editor():
+    login_status = require_login_status(must_be_admin=True, destination='marker-editor')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        # insert/modify markers:
+        insert_charLabel = request.form['insert-charLabel']
+        insert_longitude = request.form['insert-longitude']
+        insert_latitude = request.form['insert-latitude']
+
+        if insert_charLabel:
+            cursor.execute('SELECT * FROM marker WHERE charLabel = ?', (insert_charLabel,))
+            found_marker = cursor.fetchone()
+
+            if found_marker:
+                cursor.execute('UPDATE marker SET availability = ? WHERE name = ?', (int(insert_longitude), insert_charLabel))
+
+                if insert_latitude:
+                    cursor.execute('UPDATE marker SET description = ? WHERE name = ?', (insert_latitude, insert_charLabel))
+
+                msg = 'Updated marker %s.' % insert_charLabel
+            else:
+                cursor.execute('INSERT INTO marker (name, availability, description) VALUES (?, ?, ?)', (insert_charLabel, int(insert_longitude), insert_latitude))
+                msg = 'Added new marker %s.' % insert_charLabel
+
+        # remove items
+        remove_name = request.form['remove-name']
+
+        if remove_name:
+            cursor.execute('DELETE FROM marker WHERE name = ?', (remove_name,))
+            msg = 'Removed marker %s.' % remove_name
+
+    # fetch current marker table
+    cursor.execute('SELECT * FROM marker')
+    markers = cursor.fetchall()
+
+    conn.commit()
+
+    return render_template("marker-editor.html", session=session, msg=msg, markers=markers)
 
 
 @app.route('/bait')
@@ -333,4 +379,4 @@ def register():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

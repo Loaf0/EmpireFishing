@@ -16,6 +16,8 @@
           </div>
 </div>
 
+<meta id="locations" content="{{locations}}">
+
 <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpsD5tBlCs42-ATKcOLdeZ8pYswGCASN0&callback=initMap">
 </script>
@@ -30,11 +32,10 @@
             zoom: 16,
             mapId: "cc841db38dc214c6",
         });
-        //let locations = [{"lat":39.604400, "long":-74.341130, "label":"A"}, {"lat":39.602400, "long":-74.341130, "label":"B"}, {"lat":39.606500, "long":-74.3412, "label":"C"},]
 
-        {{locations}}
-        locations = locations.replaceAll("/", "")
-        console.log(locations)
+        var s = document.getElementById("locations").content
+        var locations = JSON.parse(s)
+        console.log(s)
 
         //Process data from flask server
         data = {};

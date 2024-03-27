@@ -195,21 +195,24 @@ def brands_list():
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():
+
+    # add SQL query to fill lat long and label arrays
     lat = [39.603400, 39.603440]
     long = [-74.341130, -74.341140]
     label = ['A', 'B']
 
-    locations = 'let locations = ['
+    locations = '['
     count = 0
     while count < len(label):
 
-        locations += '{"lat":' + str(lat[count]) + ',"long":' + str(long[count]) + ',"label":' + str(
+        locations += '{"lat":' + str(lat[count]) + ',"long":' + str(long[count]) + ',"label":"' + str(
             label[count]) + '"},'
         count += 1
-    locations += "]"
+    locations = locations[:-1]
+    locations += ']'
     print(locations)
 
-    return render_template("fishingSpots.html", locations=)
+    return render_template("fishingSpots.html", locations=locations)
 
 
 @app.route('/home')

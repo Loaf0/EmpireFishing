@@ -4,6 +4,7 @@ from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
 import os
+import random
 
 app = Flask(__name__)
 
@@ -105,6 +106,7 @@ def live_bait():
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM bait')
     baits = cursor.fetchall()
+    baits.sort(key=lambda x: x['name'])
 
     return render_template("bait.html", session=session, baits=baits)
 
@@ -168,9 +170,16 @@ def brand_editor():
 
 @app.route('/brands')
 def brands_list():
+    sort = request.args.get('sort', default='random')
+
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM brands')
     brands = cursor.fetchall()
+
+    if sort == 'alphabetical':
+        brands.sort(key=lambda x: x['name'])
+    else:
+        random.shuffle(brands)
 
     return render_template("brands.html", session=session, brands=brands)
 

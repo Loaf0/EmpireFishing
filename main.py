@@ -1,5 +1,6 @@
 from datetime import date
-from flask import Flask, render_template, request, redirect, url_for, session, abort
+from flask import Flask, render_template, request, redirect, url_for, session, abort, json
+from packages.flask_googlemaps import GoogleMaps, Map  # pip install Flask Jinja2
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
@@ -19,6 +20,8 @@ connection_string = (
 conn = odbc.connect(connection_string)
 
 mysql = MySQL(app)
+
+GoogleMaps(app, key="AIzaSyCpsD5tBlCs42-ATKcOLdeZ8pYswGCASN0")
 
 
 def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):
@@ -75,14 +78,16 @@ def bait_editor():
             found_bait = cursor.fetchone()
 
             if found_bait:
-                cursor.execute('UPDATE bait SET availability = ? WHERE name = ?', (int(insert_availability), insert_name))
+                cursor.execute('UPDATE bait SET availability = ? WHERE name = ?',
+                               (int(insert_availability), insert_name))
 
                 if insert_description:
                     cursor.execute('UPDATE bait SET description = ? WHERE name = ?', (insert_description, insert_name))
 
                 msg = 'Updated bait %s.' % insert_name
             else:
-                cursor.execute('INSERT INTO bait (name, availability, description) VALUES (?, ?, ?)', (insert_name, int(insert_availability), insert_description))
+                cursor.execute('INSERT INTO bait (name, availability, description) VALUES (?, ?, ?)',
+                               (insert_name, int(insert_availability), insert_description))
                 msg = 'Added new bait %s.' % insert_name
 
         # remove items
@@ -99,7 +104,6 @@ def bait_editor():
     conn.commit()
 
     return render_template("bait-editor.html", session=session, msg=msg, baits=baits)
-
 
 @app.route('/bait')
 def live_bait():
@@ -137,11 +141,13 @@ def brand_editor():
                     cursor.execute('UPDATE brands SET logo = ? WHERE name = ?', (insert_logo_name, insert_name))
 
                 if insert_description:
-                    cursor.execute('UPDATE brands SET description = ? WHERE name = ?', (insert_description, insert_name))
+                    cursor.execute('UPDATE brands SET description = ? WHERE name = ?',
+                                   (insert_description, insert_name))
 
                 msg = 'Updated brand %s.' % insert_name
             else:
-                cursor.execute('INSERT INTO brands (logo, name, description) VALUES (?, ?, ?)', (insert_logo_name, insert_name, insert_description))
+                cursor.execute('INSERT INTO brands (logo, name, description) VALUES (?, ?, ?)',
+                               (insert_logo_name, insert_name, insert_description))
                 msg = 'Added new brand %s.' % insert_name
 
             # upload logo to brands folder
@@ -184,9 +190,83 @@ def brands_list():
     return render_template("brands.html", session=session, brands=brands)
 
 
-@app.route('/fishingSpots')
+@app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():
-    return render_template("fishingSpots.html", session=session)
+    lat = []
+    long = []
+    label = []
+
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM markedFishingSpots')
+    spot = cursor.fetchone()
+    while spot is not None:
+        lat.append(spot['lat'])
+        long.append(spot['long'])
+        label.append(spot['label'])
+        spot = cursor.fetchone()
+
+
+    locations = '['
+    count = 0
+    while count < len(label):
+
+        locations += '{"lat":' + str(lat[count]) + ',"long":' + str(long[count]) + ',"label":"' + str(
+            label[count]) + '"},'
+        count += 1
+    locations = locations[:-1]
+    locations += ']'
+    print(locations)
+
+    return render_template("fishingSpots.html", locations=locations)
+
+@app.route('/map-editor', methods=['GET', 'POST'])
+def map_editor():
+    login_status = require_login_status(must_be_admin=True, destination='map-editor')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        # insert/modify items:
+        insert_label = request.form['insert-label']
+        insert_longitude = 'insert-long' in request.form
+        insert_latitude = 'insert-lat' in request.form
+
+        if insert_label:
+            cursor.execute('SELECT * FROM markedFishingSpots WHERE label = ?', (insert_label,))
+            found_label = cursor.fetchone()
+
+            if found_label:
+                cursor.execute('UPDATE markedFishingSpots SET long = ? WHERE label = ?',
+                               (insert_longitude, insert_label))
+
+                if insert_latitude:
+                    cursor.execute('UPDATE markedFishingSpots SET lat = ? WHERE label = ?', (insert_latitude, insert_label))
+                msg = 'Updated marker %s.' % insert_label
+            else:
+                cursor.execute('INSERT INTO markedFishingSpots (lat, long, label) VALUES (?, ?, ?)',
+                               (insert_latitude, insert_longitude, insert_label)
+                )
+                msg = 'Added new marker %s.' % insert_label
+
+        # remove marker
+        remove_marker = request.form['remove-label']
+
+        if remove_marker:
+            cursor.execute('DELETE FROM markedFishingSpots WHERE label = ?', (remove_marker,))
+            msg = 'Removed marker %s.' % remove_marker
+
+    # fetch current marker table
+    cursor.execute('SELECT * FROM markedFishingSpots')
+    markers = cursor.fetchall()
+
+    conn.commit()
+
+    return render_template("map-editor.html", session=session, msg=msg, markers=markers)
+
 
 
 @app.route('/home')
@@ -251,7 +331,7 @@ def profile():
         return login_status
 
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM userdata WHERE username = ?', (session['username'], ))
+    cursor.execute('SELECT * FROM userdata WHERE username = ?', (session['username'],))
     account = cursor.fetchone()
 
     username = session['username']
@@ -265,7 +345,8 @@ def profile():
         cursor.execute('UPDATE userdata SET email_consent = ? WHERE username = ?;', (int(consent), username))
         conn.commit()
 
-    return render_template("profile.html", session=session, username=username, email=email, phone=phone, consent=consent)
+    return render_template("profile.html", session=session, username=username, email=email, phone=phone,
+                           consent=consent)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -292,7 +373,7 @@ def register():
 
         # Check if account exists using MySQL
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username, ))
+        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
         account = cursor.fetchone()
 
         # If account exists show error and validation checks

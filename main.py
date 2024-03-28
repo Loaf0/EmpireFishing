@@ -104,18 +104,6 @@ def bait_editor():
 
     return render_template("bait-editor.html", session=session, msg=msg, baits=baits)
 
-
-@app.route('/map-editor', methods=['GET', 'POST'])
-def map_editor():
-    login_status = require_login_status(must_be_admin=True)
-    if login_status is not None:
-        return login_status
-
-    msg = ''
-
-    return render_template("map-editor.html", session=session, msg=msg)
-
-
 @app.route('/bait')
 def live_bait():
     cursor = conn.cursor()
@@ -195,10 +183,19 @@ def brands_list():
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():
-    # add SQL query to fill lat long and label arrays
-    lat = [39.603400, 39.603440]
-    long = [-74.341130, -74.341140]
-    label = ['A', 'B']
+    lat = []
+    long = []
+    label = []
+
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM markedFishingSpots')
+    spot = cursor.fetchone()
+    while spot is not None:
+        lat.append(spot['lat'])
+        long.append(spot['long'])
+        label.append(spot['label'])
+        spot = cursor.fetchone()
+
 
     locations = '['
     count = 0
@@ -214,7 +211,7 @@ def fishingSpots():
     return render_template("fishingSpots.html", locations=locations)
 
 @app.route('/map-editor', methods=['GET', 'POST'])
-def marker_editor():
+def map_editor():
     login_status = require_login_status(must_be_admin=True, destination='map-editor')
     if login_status is not None:
         return login_status
@@ -226,19 +223,19 @@ def marker_editor():
     if request.method == 'POST':
         # insert/modify items:
         insert_label = request.form['insert-label']
-        insert_longitude = request.form['insert-long']
-        insert_latitude = request.form['insert-lat']
+        insert_longitude = 'insert-long' in request.form
+        insert_latitude = 'insert-lat' in request.form
 
         if insert_label:
             cursor.execute('SELECT * FROM markedFishingSpots WHERE label = ?', (insert_label,))
             found_label = cursor.fetchone()
 
             if found_label:
-                cursor.execute('UPDATE markedFishingSpots SET longitude = ? WHERE label = ?',
-                               (int(insert_longitude), insert_label))
+                cursor.execute('UPDATE markedFishingSpots SET long = ? WHERE label = ?',
+                               (insert_longitude, insert_label))
 
                 if insert_latitude:
-                    cursor.execute('UPDATE markedFishingSpots SET latitude = ? WHERE label = ?', (insert_latitude, insert_label))
+                    cursor.execute('UPDATE markedFishingSpots SET lat = ? WHERE label = ?', (insert_latitude, insert_label))
                 msg = 'Updated marker %s.' % insert_label
             else:
                 cursor.execute('INSERT INTO markedFishingSpots (lat, long, label) VALUES (?, ?, ?)',

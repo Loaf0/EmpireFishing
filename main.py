@@ -20,6 +20,7 @@ conn = odbc.connect(connection_string)
 
 mysql = MySQL(app)
 
+
 def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):
     # if user needs to be logged in but isn't, return to login page
     if 'loggedin' not in session.keys() and not must_be_logged_out:
@@ -202,11 +203,9 @@ def fishingSpots():
         label.append(spot['label'])
         spot = cursor.fetchone()
 
-
     locations = '['
     count = 0
     while count < len(label):
-
         locations += '{"lat":' + str(lat[count]) + ',"long":' + str(long[count]) + ',"label":"' + str(
             label[count]) + '"},'
         count += 1
@@ -215,6 +214,7 @@ def fishingSpots():
     print(locations)
 
     return render_template("fishingSpots.html", locations=locations)
+
 
 @app.route('/map-editor', methods=['GET', 'POST'])
 def map_editor():
@@ -241,7 +241,8 @@ def map_editor():
                                (insert_longitude, insert_label))
 
                 if insert_latitude:
-                    cursor.execute('UPDATE markedFishingSpots SET lat = ? WHERE label = ?', (insert_latitude, insert_label))
+                    cursor.execute('UPDATE markedFishingSpots SET lat = ? WHERE label = ?',
+                                   (insert_latitude, insert_label))
                 msg = 'Updated marker %s.' % insert_label
             else:
                 cursor.execute('INSERT INTO markedFishingSpots (lat, long, label) VALUES (?, ?, ?)',
@@ -262,7 +263,6 @@ def map_editor():
     conn.commit()
 
     return render_template("map-editor.html", session=session, msg=msg, markers=markers)
-
 
 
 @app.route('/home')

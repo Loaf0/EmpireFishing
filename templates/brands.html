@@ -7,6 +7,7 @@
           <div class="brands-hero1 heroContainer">
             <div class="brands-container1" >
               <h1 class="brands-text2" style="font-size: 40px; width: 100%" align="center">Brands</h1>
+                <p>Sort : <a class="buttonlink" href="{{ url_for('brands_list') }}?sort=alphabetical">Alphabetically,</a><a class="buttonlink" href="{{ url_for('brands_list') }}">Random</a><br> </p>
               <div class="brands-table">
                   {% for brand in brands %}
                     <div class="responsive" >
@@ -27,6 +28,9 @@
         </div>
 
 <style>
+    .buttonlink{
+        margin: 10px;
+    }
 div.gallery {
   border: 1px solid #ccc;
 
@@ -45,6 +49,7 @@ div.gallery img {
 div.desc {
   padding: 10px;
   text-align: center;
+  height: fit-container;
 }
 
 * {
@@ -55,7 +60,7 @@ div.desc {
   padding: 0 6px;
   float: left;
   width: 33.3333%;
-  height: 400px
+  height: 380px
 
 }
 

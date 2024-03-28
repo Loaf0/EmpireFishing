@@ -9,10 +9,10 @@
               <h1 class="brands-text2" style="font-size: 40px; width: 100%" align="center">Brands</h1>
               <div class="brands-table">
                   {% for brand in brands %}
-                    <div class="responsive">
+                    <div class="responsive" >
                       <div class="gallery">
                         <a target="_blank" href="static/images/brands/{{ brand['logo'] }}">
-                          <img src="static/images/brands/{{ brand['logo'] }}" alt="{{ brand['name'] }}">
+                          <img height="200px" src="static/images/brands/{{ brand['logo'] }}" alt="{{ brand['name'] }}">
                         </a>
                         <div class="desc">
                             <h1>{{ brand['name'] }}</h1><br>
@@ -21,7 +21,6 @@
                       </div>
                     </div>
                     {% endfor %}
-                    <div class="clearfix"></div>
               </div>
             </div>
           </div>
@@ -30,6 +29,7 @@
 <style>
 div.gallery {
   border: 1px solid #ccc;
+
 }
 
 div.gallery:hover {
@@ -38,11 +38,12 @@ div.gallery:hover {
 
 div.gallery img {
   width: 100%;
-  height: auto;
+  height: fit-content;
+  overflow:hidden;
 }
 
 div.desc {
-  padding: 15px;
+  padding: 10px;
   text-align: center;
 }
 
@@ -53,7 +54,9 @@ div.desc {
 .responsive {
   padding: 0 6px;
   float: left;
-  width: 24.99999%;
+  width: 33.3333%;
+  height: 400px
+
 }
 
 @media only screen and (max-width: 700px) {
@@ -71,7 +74,7 @@ div.desc {
 
 .clearfix:after {
   content: "";
-  display: table;
+  display: grid;
   clear: both;
 }
 </style>

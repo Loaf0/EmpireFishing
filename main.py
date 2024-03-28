@@ -4,6 +4,7 @@ from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
 import os
+import random
 
 app = Flask(__name__)
 
@@ -106,6 +107,7 @@ def live_bait():
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM bait')
     baits = cursor.fetchall()
+    baits.sort(key=lambda x: x['name'])
 
     return render_template("bait.html", session=session, baits=baits)
 
@@ -171,16 +173,22 @@ def brand_editor():
 
 @app.route('/brands')
 def brands_list():
+    sort = request.args.get('sort', default='random')
+
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM brands')
     brands = cursor.fetchall()
+
+    if sort == 'alphabetical':
+        brands.sort(key=lambda x: x['name'])
+    else:
+        random.shuffle(brands)
 
     return render_template("brands.html", session=session, brands=brands)
 
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():
-    # add SQL query to fill lat long and label arrays
     lat = []
     long = []
     label = []
@@ -193,6 +201,7 @@ def fishingSpots():
         long.append(spot['long'])
         label.append(spot['label'])
         spot = cursor.fetchone()
+
 
     locations = '['
     count = 0
@@ -226,17 +235,15 @@ def map_editor():
         if insert_label:
             cursor.execute('SELECT * FROM markedFishingSpots WHERE label = ?', (insert_label,))
             found_label = cursor.fetchone()
-            print("looking for label")
+
             if found_label:
-                print("got to update")
                 cursor.execute('UPDATE markedFishingSpots SET long = ? WHERE label = ?',
-                               (int(insert_longitude), insert_label))
+                               (insert_longitude, insert_label))
 
                 if insert_latitude:
                     cursor.execute('UPDATE markedFishingSpots SET lat = ? WHERE label = ?', (insert_latitude, insert_label))
                 msg = 'Updated marker %s.' % insert_label
             else:
-                print("got to insert")
                 cursor.execute('INSERT INTO markedFishingSpots (lat, long, label) VALUES (?, ?, ?)',
                                (insert_latitude, insert_longitude, insert_label))
                 msg = 'Added new marker %s.' % insert_label
@@ -255,6 +262,7 @@ def map_editor():
     conn.commit()
 
     return render_template("map-editor.html", session=session, msg=msg, markers=markers)
+
 
 
 @app.route('/home')

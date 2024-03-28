@@ -213,9 +213,9 @@ def fishingSpots():
 
     return render_template("fishingSpots.html", locations=locations)
 
-@app.route('/marker-editor', methods=['GET', 'POST'])
+@app.route('/map-editor', methods=['GET', 'POST'])
 def marker_editor():
-    login_status = require_login_status(must_be_admin=True, destination='marker-editor')
+    login_status = require_login_status(must_be_admin=True, destination='map-editor')
     if login_status is not None:
         return login_status
 
@@ -226,8 +226,8 @@ def marker_editor():
     if request.method == 'POST':
         # insert/modify items:
         insert_label = request.form['insert-label']
-        insert_longitude = request.form['insert-longitude']
-        insert_latitude = request.form['insert-latitude']
+        insert_longitude = request.form['insert-long']
+        insert_latitude = request.form['insert-lat']
 
         if insert_label:
             cursor.execute('SELECT * FROM markedFishingSpots WHERE label = ?', (insert_label,))
@@ -241,24 +241,25 @@ def marker_editor():
                     cursor.execute('UPDATE markedFishingSpots SET latitude = ? WHERE label = ?', (insert_latitude, insert_label))
                 msg = 'Updated marker %s.' % insert_label
             else:
-                cursor.execute('INSERT INTO markedFishingSpots (label, longitude, latitude) VALUES (?, ?, ?)',
-                               (insert_label, int(insert_longitude), insert_latitude))
+                cursor.execute('INSERT INTO markedFishingSpots (lat, long, label) VALUES (?, ?, ?)',
+                               (insert_latitude, insert_longitude, insert_label)
+                )
                 msg = 'Added new marker %s.' % insert_label
 
         # remove marker
-        remove_marker = request.form['remove-marker']
+        remove_marker = request.form['remove-label']
 
         if remove_marker:
             cursor.execute('DELETE FROM markedFishingSpots WHERE label = ?', (remove_marker,))
             msg = 'Removed marker %s.' % remove_marker
 
-    # fetch current bait table
+    # fetch current marker table
     cursor.execute('SELECT * FROM markedFishingSpots')
     markers = cursor.fetchall()
 
     conn.commit()
 
-    return render_template("marker-editor.html", session=session, msg=msg, markers=markers)
+    return render_template("map-editor.html", session=session, msg=msg, markers=markers)
 
 
 

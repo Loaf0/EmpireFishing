@@ -1,5 +1,4 @@
 from datetime import date
-from flask import Flask, render_template, request, redirect, url_for, session, abort, json
 from flask import Flask, render_template, request, redirect, url_for, session, abort
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
@@ -19,9 +18,6 @@ connection_string = (
 conn = odbc.connect(connection_string)
 
 mysql = MySQL(app)
-
-GoogleMaps(app, key="AIzaSyCpsD5tBlCs42-ATKcOLdeZ8pYswGCASN0")
-
 
 def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):
     # if user needs to be logged in but isn't, return to login page
@@ -105,17 +101,6 @@ def bait_editor():
     return render_template("bait-editor.html", session=session, msg=msg, baits=baits)
 
 
-@app.route('/map-editor', methods=['GET', 'POST'])
-def map_editor():
-    login_status = require_login_status(must_be_admin=True)
-    if login_status is not None:
-        return login_status
-
-    msg = ''
-
-    return render_template("map-editor.html", session=session, msg=msg)
-
-
 @app.route('/bait')
 def live_bait():
     cursor = conn.cursor()
@@ -196,9 +181,18 @@ def brands_list():
 @app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():
     # add SQL query to fill lat long and label arrays
-    lat = [39.603400, 39.603440]
-    long = [-74.341130, -74.341140]
-    label = ['A', 'B']
+    lat = []
+    long = []
+    label = []
+
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM markedFishingSpots')
+    spot = cursor.fetchone()
+    while spot is not None:
+        lat.append(spot['lat'])
+        long.append(spot['long'])
+        label.append(spot['label'])
+        spot = cursor.fetchone()
 
     locations = '['
     count = 0
@@ -214,7 +208,7 @@ def fishingSpots():
     return render_template("fishingSpots.html", locations=locations)
 
 @app.route('/map-editor', methods=['GET', 'POST'])
-def marker_editor():
+def map_editor():
     login_status = require_login_status(must_be_admin=True, destination='map-editor')
     if login_status is not None:
         return login_status
@@ -232,18 +226,19 @@ def marker_editor():
         if insert_label:
             cursor.execute('SELECT * FROM markedFishingSpots WHERE label = ?', (insert_label,))
             found_label = cursor.fetchone()
-
+            print("looking for label")
             if found_label:
-                cursor.execute('UPDATE markedFishingSpots SET longitude = ? WHERE label = ?',
+                print("got to update")
+                cursor.execute('UPDATE markedFishingSpots SET long = ? WHERE label = ?',
                                (int(insert_longitude), insert_label))
 
                 if insert_latitude:
-                    cursor.execute('UPDATE markedFishingSpots SET latitude = ? WHERE label = ?', (insert_latitude, insert_label))
+                    cursor.execute('UPDATE markedFishingSpots SET lat = ? WHERE label = ?', (insert_latitude, insert_label))
                 msg = 'Updated marker %s.' % insert_label
             else:
+                print("got to insert")
                 cursor.execute('INSERT INTO markedFishingSpots (lat, long, label) VALUES (?, ?, ?)',
-                               (insert_latitude, insert_longitude, insert_label)
-                )
+                               (insert_latitude, insert_longitude, insert_label))
                 msg = 'Added new marker %s.' % insert_label
 
         # remove marker
@@ -260,7 +255,6 @@ def marker_editor():
     conn.commit()
 
     return render_template("map-editor.html", session=session, msg=msg, markers=markers)
-
 
 
 @app.route('/home')

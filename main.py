@@ -1,3 +1,4 @@
+
 from datetime import date
 from flask import Flask, render_template, request, redirect, url_for, session, abort
 from flask_mysqldb import MySQL
@@ -39,6 +40,9 @@ def require_login_status(must_be_logged_out=False, must_be_admin=False, destinat
 def home():
     return render_template("index.html", session=session)
 
+@app.route('/lineSpooling')
+def lineSpooling():
+    return render_template("lineSpooling.html", session=session)
 
 @app.errorhandler(404)
 def error404(error):

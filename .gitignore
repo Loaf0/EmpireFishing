@@ -1,3 +1,5 @@
-.idea/
-.venv/
-/static/images/brands
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.gitignore

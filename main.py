@@ -211,7 +211,6 @@ def fishingSpots():
         count += 1
     locations = locations[:-1]
     locations += ']'
-    print(locations)
 
     return render_template("fishingSpots.html", locations=locations)
 

@@ -188,6 +188,11 @@ def brands_list():
     return render_template("brands.html", session=session, brands=brands)
 
 
+@app.route('/community')
+def community():
+    return render_template("community.html", session=session)
+
+
 @app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():
     lat = []

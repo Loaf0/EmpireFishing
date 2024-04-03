@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 app.secret_key = 'your secret key'
 
-server = 'empirefishing.database.windows.net'
+server = 'empirefishingv2.database.windows.net'
 database = 'EmpireFishingCSCI-4485'
 dbusername = 'empirefishing'
 dbpassword = '@Stockton'

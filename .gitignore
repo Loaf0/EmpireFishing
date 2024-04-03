@@ -6,4 +6,4 @@
 /.vs
 .idea/
 .venv/
-/static/images/brands
+/static/images/brands/*

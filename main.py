@@ -110,8 +110,10 @@ def bait_editor():
 
 @app.route('/bait')
 def live_bait():
+    must_be_available = request.args.get('available', default='false') == "true"
+
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM bait')
+    cursor.execute('SELECT * FROM bait' + (' WHERE availability = 1' if must_be_available else ''))
     baits = cursor.fetchall()
     baits.sort(key=lambda x: x['name'])
 

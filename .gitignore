@@ -4,3 +4,6 @@
 
 /.gitignore
 /.vs
+.idea/
+.venv/
+/static/images/brands

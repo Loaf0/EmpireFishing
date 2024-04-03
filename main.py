@@ -1,11 +1,12 @@
 
-from datetime import date
+import time
 from flask import Flask, render_template, request, redirect, url_for, session, abort
 from flask_mysqldb import MySQL
 import pypyodbc as odbc  # pip install pypyodbc
 import re
 import os
 import random
+import math
 
 app = Flask(__name__)
 
@@ -397,7 +398,7 @@ def register():
 
             # Account doesn't exist and the form data is valid, now insert new account into accounts table
             cursor.execute('INSERT INTO userdata VALUES ( ?, ?, ?, ?, ?, ?, ?)',
-                           (username, password, email, consent, phone, 0, date.today()))
+                           (username, password, email, consent, phone, 0, math.floor(time.time())))
 
             # today sets the account creation date, zero is for not admin
 

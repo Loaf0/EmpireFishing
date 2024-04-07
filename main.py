@@ -200,6 +200,10 @@ def community():
     return render_template("community.html", session=session)
 
 
+@app.route('/shop')
+def shop():
+    return render_template("shop.html", session=session)
+
 @app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():
     lat = []

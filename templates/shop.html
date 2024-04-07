@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Shop{% endblock %}
+{% block content %}
+<link href="../static/shop.css" rel="stylesheet" />
+<section id = featured class = "my-5 py-5">
+    <div class = "container mt-5 py-5">
+        <h3> Our Featured </h3>
+        <hr>
+        <p> Here you can check out some of our products. </p>
+    </div>
+    <div class="row mx-auto container">
+        <div class="product text-center col-lg-3 col-mid-4 col-12">
+            <img class="img-fluid mb-3" src="pictures/shop images/fishing poles/H-10332.webp" alt="">
+            <div class="star">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <h5 class="p-name">Fishing Pole</h5>
+            <h4 class="p-price">$50.00</h4>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

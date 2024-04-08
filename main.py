@@ -1,17 +1,18 @@
-
-import time
 from flask import Flask, render_template, request, redirect, url_for, session, abort
 from flask_mysqldb import MySQL
-import pypyodbc as odbc  # pip install pypyodbc
+import pypyodbc as odbc
+import requests
+import random
+import time
+import math
 import re
 import os
-import random
-import math
 
 app = Flask(__name__)
 
 app.secret_key = 'your secret key'
 
+#SQL Azure Server
 server = 'empirefishingv2.database.windows.net'
 database = 'EmpireFishingCSCI-4485'
 dbusername = 'empirefishing'
@@ -22,6 +23,30 @@ conn = odbc.connect(connection_string)
 
 mysql = MySQL(app)
 
+
+# Mailgun API
+api_key = "b87eb1e2828aef10ccb994a97375d0b6-4b670513-129e8904"
+domain = "sandboxfff78680340b4054ae4daddac1b07ff2.mailgun.org"
+sender = "Empire Fishing and Tackle <EmpireFishingAndTackle@sandboxfff78680340b4054ae4daddac1b07ff2.mailgun.org>"
+
+def send_email(recipient, subject, message):
+    # (because we are using for free I have to manually approve emails)
+    """
+    :param recipient: All array of emails who are going to be receiving message
+    :type recipient: string array
+    :param subject: Subject of email
+    :type subject: string
+    :param message: Message to be sent to users
+    :type message: string
+    :return:
+    """
+    return requests.post(
+        f"https://api.mailgun.net/v3/{domain}/messages",
+        auth=("api", api_key),
+        data={"from": sender,
+              "to": recipient,
+              "subject": subject,
+              "text": message})
 
 def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):
     # if user needs to be logged in but isn't, return to login page
@@ -41,9 +66,11 @@ def require_login_status(must_be_logged_out=False, must_be_admin=False, destinat
 def home():
     return render_template("index.html", session=session)
 
+
 @app.route('/lineSpooling')
 def lineSpooling():
     return render_template("lineSpooling.html", session=session)
+
 
 @app.errorhandler(404)
 def error404(error):
@@ -420,3 +447,5 @@ def register():
 
 if __name__ == '__main__':
     app.run()
+
+

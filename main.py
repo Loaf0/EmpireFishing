@@ -1,13 +1,12 @@
-import time
 from flask import Flask, render_template, request, redirect, url_for, session, abort
-import requests
 from flask_mysqldb import MySQL
-import pypyodbc as odbc  # pip install pypyodbc
+import pypyodbc as odbc
+import requests
+import random
+import time
+import math
 import re
 import os
-import random
-import math
-import requests
 
 app = Flask(__name__)
 
@@ -227,6 +226,10 @@ def brands_list():
 def community():
     return render_template("community.html", session=session)
 
+
+@app.route('/shop')
+def shop():
+    return render_template("shop.html", session=session)
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():

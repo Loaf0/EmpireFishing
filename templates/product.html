@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Product{% endblock %}
+{% block content %}
+
+<br>
+<br>
+<br>
+<br>
+<link href="../static/product.css" rel="stylesheet" />
+<div class="product-hero1 heroContainer">
+   <div class="product-container1">
+      <div class="product-container2">
+         <div class="product-image">
+           <img
+            src="https://play.teleporthq.io/static/svg/default-img.svg"
+            alt="image"
+            class="product-image1" />
+         </div>
+         <div class="product-product-details">
+            <div class="product-title-and-close">
+               <div class="product-container3">
+                  <div class="product-title">
+                     <h1 class="product-text02">[PRODUCT_NAME]</h1>
+                     <h2 class="product-text03">[PRODUCT_PROVIDER]</h2>
+                  </div>
+                  <div class="product-close-page">
+                    <button
+                     type="button"
+                     class="product-button button buttonFilled"
+                     style="font-size:30px"
+                    >X</button>
+                  </div>
+               </div>
+            </div>
+            <div class="product-price-and-rating">
+               <div class="product-title1">
+                  <h1 class="product-text04">
+                     <span>[Price]</span>
+                    <br />
+                  </h1>
+               </div>
+               <div class="product-rating">
+                  <h1 class="product-heading">
+                    <span>[ADD_RATING]</span>
+                    <br />
+                  </h1>
+               </div>
+            </div>
+            <div class="product-product-description">
+               <div class="product-title1">
+                  <span class="product-text09">[PRODUCT_DESCRIPTION]</span>
+               </div>
+            </div>
+            <div class="product-purchase-button">
+               <div class="product-purchase">
+                 <button
+                  type="button"
+                  class="product-add-to-cart button buttonFilled"
+                  style="font-size: 30px"
+                 >Add To Cart</button>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}

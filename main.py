@@ -231,6 +231,11 @@ def community():
 def shop():
     return render_template("shop.html", session=session)
 
+# WILL BE REMOVED ONLY FOR TESTING WILL BE INTEGRATED INTO THE SHOP
+@app.route('/product')
+def product():
+    return render_template("product.html", session=session)
+
 @app.route('/fishingSpots', methods=['GET', 'POST'])
 def fishingSpots():
     lat = []

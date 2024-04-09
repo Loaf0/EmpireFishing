@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Bait{% endblock %}
+{% block content %}
+<link href="../static/bait.css" rel="stylesheet" />
+
+<div class="live-bait-hero">
+          <div class="live-bait-hero1 heroContainer">
+            <div class="live-bait-container1">
+                <div class="outlined">
+                    <h1 class="live-bait-text2" style="padding: 8px; font-weight: bolder" align="center"> Fishing Map </h1>
+                    <p style="padding: 3px;"> Best fishing spots recommended by Empire Fishing and Tackle</p>
+                </div>
+
+                <div id="map"></div>
+            </div>
+          </div>
+</div>
+
+<meta id="locations" content="{{locations}}">
+
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpsD5tBlCs42-ATKcOLdeZ8pYswGCASN0&callback=initMap">
+</script>
+
+<script>
+    async function initMap() {
+        const { Map } = await google.maps.importLibrary("maps");
+
+        //create map with googlemaps api
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 39.603400, lng: -74.341130},
+            zoom: 12,
+            mapId: "cc841db38dc214c6",
+        });
+
+        var s = document.getElementById("locations").content
+        var locations = JSON.parse(s)
+        console.log(s)
+
+        //Process data from flask server
+        data = {};
+        keys = [];
+
+        for(let keyVal in locations[0]) {
+            keys.push(keyVal)
+            data[keyVal] = [];
+        }
+
+        locations.forEach(dt => {
+            keys.forEach( kv => {
+                data[kv].push(dt[kv])
+            })
+        })
+
+        //generate all markers based on locations received
+        console.log(locations)
+        counter = 0
+        while(counter < locations.length){
+            new google.maps.Marker({
+                map: map,
+                position: {lat: locations[counter].lat, lng: locations[counter].long},
+                label: locations[counter].label
+            });
+            counter++;
+        }
+    }
+
+</script>
+
+
+<style>
+    .outlined{
+        border: outset 15px #ED6A59;
+        margin: 0px;
+        padding: 0px;
+        background: #e6887c;
+        display: inline-block
+    }
+    #map {
+        height: 500px;
+        width: 80%;
+        border: outset 15px #ED6A59;
+        padding: 0px;
+        margin: 0px;
+        display: inline-block
+    }
+</style>
+
+{% endblock %}

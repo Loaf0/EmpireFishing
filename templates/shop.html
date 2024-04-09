@@ -2,26 +2,40 @@
 {% block title %}Shop{% endblock %}
 {% block content %}
 <link href="../static/shop.css" rel="stylesheet" />
-<section id = featured class = "my-5 py-5">
-    <div class = "container mt-5 py-5">
-        <h3> Our Featured </h3>
-        <hr>
-        <p> Here you can check out some of our products. </p>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css">
+<div class="small-container">
+    <div class="row row-2">
+        <h2>All Products</h2>
+        <select>
+            <option>Default Sorting</option>
+            <option>Sort by price</option>
+            <option>Sort by popularity</option>
+            <option>Sort by rating</option>
+            <option>Sort by sale</option>
+        </select>
     </div>
-    <div class="row mx-auto container">
-        <div class="product text-center col-lg-3 col-mid-4 col-12">
-            <img class="img-fluid mb-3" src="pictures/shop images/fishing poles/H-10332.webp" alt="">
-            <div class="star">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
+</div>
+    <div class="small-container">
+        <div class="row">
+            <div class="col-4">
+                <img src="fishing poles/H-10332.jpg">
+                <h4 class="p-name">Fishing Pole</h4>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+                <p>$50.00</p>
             </div>
-            <h5 class="p-name">Fishing Pole</h5>
-            <h4 class="p-price">$50.00</h4>
         </div>
     </div>
-</section>
-
+    <div class="page-button">
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>&#8594;</span>
+    </div>
 {% endblock %}

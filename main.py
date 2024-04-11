@@ -7,6 +7,7 @@ import time
 import math
 import re
 import os
+import argon2
 
 app = Flask(__name__)
 
@@ -23,6 +24,7 @@ conn = odbc.connect(connection_string)
 
 mysql = MySQL(app)
 
+hasher = argon2.PasswordHasher()
 
 # Mailgun API
 api_key = "b87eb1e2828aef10ccb994a97375d0b6-4b670513-129e8904"
@@ -343,24 +345,35 @@ def login():
 
         # Check if account exists using MySQL - Grabs from userdata table on Azure SQL Server
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM userdata WHERE username = ? AND password = ?', (username, password))
+        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
 
         # Fetch one record and return result
         account = cursor.fetchone()
 
         if account:
-            # Create session data, we can access this data in other routes
-            session['loggedin'] = True
-            session['id'] = account['id']
-            session['username'] = account['username']
+            try:
+                # verifies that input password, after salting+hashing, matches the hash in the database, and throws an error if not
+                hasher.verify(account['password'], password)
 
-            # add admin attribute to session if user is an admin
-            session['admin'] = bool(account['admin'])
+                # since the default parameters for argon2 will likely change over time, use this opportunity to update the database using the latest set of parameters since we do have the plaintext password at this moment
+                if (hasher.check_needs_rehash(account['password'])):
+                    cursor.execute('UPDATE userdata SET password = ? WHERE username = ?;', (hasher.hash(password), username))
 
-            # Redirect to desired page (profile by default)
-            return redirect('/' + destination)
+                # Create session data, we can access this data in other routes
+                session['loggedin'] = True
+                session['id'] = account['id']
+                session['username'] = account['username']
+
+                # add admin attribute to session if user is an admin
+                session['admin'] = bool(account['admin'])
+
+                # Redirect to desired page (profile by default)
+                return redirect('/' + destination)
+            except:
+                # Invalid password
+                msg = 'Incorrect username/password!'
         else:
-            # Account doesn't exist or username/password incorrect
+            # Account doesn't exist
             msg = 'Incorrect username/password!'
             # Show the login form with message (if any)
     return render_template('login.html', destination=destination, session=session, msg=msg)
@@ -441,10 +454,12 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form!'
         else:
+            # create hash for the password
+            hashed_password = hasher.hash(password)
 
             # Account doesn't exist and the form data is valid, now insert new account into accounts table
             cursor.execute('INSERT INTO userdata VALUES ( ?, ?, ?, ?, ?, ?, ?)',
-                           (username, password, email, consent, phone, 0, math.floor(time.time())))
+                           (username, hashed_password, email, consent, phone, 0, math.floor(time.time())))
 
             # today sets the account creation date, zero is for not admin
 

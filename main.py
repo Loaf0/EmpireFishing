@@ -88,6 +88,15 @@ def admin():
     return render_template("admin.html", session=session)
 
 
+@app.route('/send_promotional_emails')
+def send_promo():
+    login_status = require_login_status(must_be_admin=True, destination='admin')
+    if login_status is not None:
+        return login_status
+
+    return render_template("send-promo.html", session=session)
+
+
 @app.route('/bait-editor', methods=['GET', 'POST'])
 def bait_editor():
     login_status = require_login_status(must_be_admin=True, destination='bait-editor')

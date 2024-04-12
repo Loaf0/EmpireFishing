@@ -207,7 +207,6 @@ table{
   opacity: 0.95;
   padding: var(--dl-space-space-oneandhalfunits);
   position: relative;
-  align-items: center;
   padding-top: var(--dl-space-space-unit);
   padding-left: var(--dl-space-space-unit);
   padding-right: var(--dl-space-space-unit);

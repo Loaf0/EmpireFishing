@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Shop Editor{% endblock %}
+{% block content %}
+<link href="../static/shop-editor.css" rel="stylesheet" />
+      <link href="../static/shop.css" rel="stylesheet" />
+
+<div class="shop-editor-hero">
+  <div class="shop-editor-hero1 heroContainer" >
+    <div class="shop-editor-container1">
+      <h1 class="shop-editor-text02">Shop Page Editor</h1>
+    </div>
+      <form action="{{ url_for('shop_editor') }}" method="post" enctype="multipart/form-data">
+        <div class="container">
+          <h2 class="shop-editor-text03">Insert/modify item:</h2>
+        <hr>
+          <div class="itemPadding"> <p >Name:</p> <input type="text" name="insert-name" class="input" /></div>
+          <div class="itemPadding"> <p >Image:</p> <input type="file" name="insert-product-image" accept="image/*"/></div>
+          <div class="itemPadding"> <p >Description:</p> <input type="text" name="insert-description" class="input"/></div>
+          <div class="itemPadding"> <p >Cost:</p> <input type="file" name="insert-cost" accept="imput"/></div>
+        <hr>
+          <h2 class="brand-editor-text03">Remove item from shop:</h2>
+          <div class="itemPadding"><p>Name:</p> <input type="text" name="remove-name" class="input"/></div>
+          <input type="submit" class="buttonFlat">
+          <p style="text-align: center">{{ msg }}</p>
+        </div>
+      </form>
+    </div>
+</div>
+
+
+<style>
+.container {
+  align-content: center;
+  text-align: center;
+  width: 100%;
+  margin: auto;
+  margin-bottom: 10%;
+  background-color: #d3d3d3;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.itemPadding{
+  margin: 10px;
+}
+
+input[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+input[type="submit"]:hover {
+  transition: 0.3s;
+  background-color: #45a049;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+</style>
+
+{% endblock %}

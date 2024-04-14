@@ -2,20 +2,29 @@
     justify-content: space-between;
     margin: 200px auto 50px;
 }
-select{
+.shop_dicptLink
+{
+  width: 100%;
+  text-align: center;
+}
+select
+{
     boarder: 1px solid #ff523b;
     padding: 5px;
 }
-select:focus{
+select:focus
+{
     outline: none;
 }
-.small container{
+.small container
+{
     max-width:1080px;
     margin: auto;
     padding-left: 25px;
     padding-right: 25px;
 }
-.col-4{
+.col-4
+{
     flex-basis: 25%;
     padding: 10px;
     min-width: 200px;

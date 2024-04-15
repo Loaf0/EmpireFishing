@@ -7,3 +7,4 @@
 .idea/
 .venv/
 /static/images/brands/*
+/static/images/community/*

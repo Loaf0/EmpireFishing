@@ -18,7 +18,15 @@
                     </tr>
                   <tr>
                       <td><div class="fb-page" data-href="https://www.facebook.com/empirefishingandtackle/" data-tabs="timeline" data-width="" data-height="" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/empirefishingandtackle/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/empirefishingandtackle/">Empire Fishing and Tackle</a></blockquote></div></td>
-                      <td>(placeholder)</td>
+                      <td>
+                          {% for post in posts %}
+                          <div>
+                              {% if post['image'] is not none %}<img height="200px" src="static/images/community/{{ post['image'] }}">{% endif %}
+                          {% if post['text'] is not none %}<p>{{ post['text'] }}</p>{% endif %}
+                          <p>Posted by {{ post['usr'] }} on {{ datetime.fromtimestamp(post['date']).strftime('%Y-%m-%d') }}</p>
+                              </div>
+                          {% endfor %}
+                      </td>
                   </tr>
                 </table>
               </div>

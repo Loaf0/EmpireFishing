@@ -8,6 +8,7 @@ import math
 import re
 import os
 import argon2
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -235,7 +236,11 @@ def brands_list():
 
 @app.route('/community')
 def community():
-    return render_template("community.html", session=session)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM community WHERE visible = 1')
+    posts = cursor.fetchall()
+
+    return render_template("community.html", session=session, posts=posts, datetime=datetime)
 
 
 @app.route('/submit-post', methods=['GET', 'POST'])

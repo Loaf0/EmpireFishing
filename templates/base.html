@@ -1152,13 +1152,13 @@
             />
             <div data-thq="thq-navbar-nav" class="home-desktop-menu">
               <nav class="home-links">
-                <span class="home-nav4 bodySmall"><a href="{{ url_for('home') }}">Home</a></span>
-                <span class="home-nav4 bodySmall"><a href="{{ url_for('community') }}"> Community </a></span>
-                <span class="home-nav4 bodySmall"><a href="{{ url_for('profile') }}"> Profile </a></span>
-                <span class="home-nav4 bodySmall"><a href="{{ url_for('shop') }}"> Shop </a></span>
-                <span class="home-nav4 bodySmall"><a href="{{ url_for('cart') }}"> Cart </a></span>
+                <a href="{{ url_for('home') }}"><span class="home-nav4 bodySmall">Home</span></a>
+                <a href="{{ url_for('community') }}"><span class="home-nav4 bodySmall"> Community </span></a>
+                <a href="{{ url_for('profile') }}"><span class="home-nav4 bodySmall"> Profile </span></a>
+                <a href="{{ url_for('shop') }}"><span class="home-nav4 bodySmall"> Shop </span></a>
+                <a href="{{ url_for('cart') }}"><span class="home-nav4 bodySmall"> Cart </span></a>
                 {% if session['admin'] %}
-                <span class="home-nav4 bodySmall"><a href="{{ url_for('admin') }}">Admin</a></span>
+                <a href="{{ url_for('admin') }}"><span class="home-nav4 bodySmall">Admin</span></a>
                 {% endif %}
                 <div class="dropdown">
                   <button class="dropbtn">More ▼</button>

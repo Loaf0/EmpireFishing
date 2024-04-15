@@ -238,6 +238,46 @@ def community():
     return render_template("community.html", session=session)
 
 
+@app.route('/submit-post', methods=['GET', 'POST'])
+def submit_post():
+    login_status = require_login_status(destination='submit-post')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        image = request.files.getlist('image')[0]
+        image_type = image.filename[image.filename.rfind('.'):]
+
+        if image:
+            new_image_name = format(random.getrandbits(64), '016x') + image_type
+        else:
+            new_image_name = None
+
+        text = request.form.get('text')
+
+        if image or text:
+            cursor.execute('INSERT INTO community (visible, image, text, usr, date) VALUES (?, ?, ?, ?, ?)', (0, new_image_name, text, session['username'], math.floor(time.time())))
+            msg = 'Post submitted for admin approval.'
+
+            # upload image to community folder
+            if image:
+                # create community folder if it doesn't already exist
+                if not os.path.exists("static/images/community"):
+                    os.mkdir("static/images/community")
+
+                image.save("static/images/community/" + new_image_name)
+        else:
+            msg = 'Please add either an image or text to your post.'
+
+    conn.commit()
+
+    return render_template("submit-post.html", session=session, msg=msg)
+
+
 @app.route('/shop')
 def shop():
     return render_template("shop.html", session=session)

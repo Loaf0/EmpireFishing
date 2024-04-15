@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Submit Community Post{% endblock %}
+{% block content %}
+<link href="../static/brand-editor.css" rel="stylesheet" />
+      <link href="../static/brands.css" rel="stylesheet" />
+
+<div class="brand-editor-hero">
+  <div class="brand-editor-hero1 heroContainer" >
+    <div class="brand-editor-container1">
+      <h1 class="brand-editor-text02">Submit Community Post</h1>
+    </div>
+      <form action="{{ url_for('submit_post') }}" method="post" enctype="multipart/form-data">
+        <div class="container">
+          <p>Posts should relate to Empire Fishing & Tackle.</p>
+            <p>Image and text are both optional, but posts containing neither will be rejected.</p>
+            <p>Text posts can have a maximum length of 500 characters.</p>
+            <p>Note that your username will also be visible.</p>
+          <div class="itemPadding"> <p >Image:</p> <input type="file" name="image" accept="image/*"/></div>
+          <div class="itemPadding"> <p >Text:</p> <input type="text" name="text" class="input"/></div>
+          <input type="submit" class="buttonFlat" value="Submit Post">
+          <p style="text-align: center">{{ msg }}</p>
+        </div>
+      </form>
+    </div>
+</div>
+
+
+<style>
+.container {
+  align-content: center;
+  text-align: center;
+  width: 100%;
+  margin: auto;
+  margin-bottom: 10%;
+  background-color: #d3d3d3;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.itemPadding{
+  margin: 10px;
+}
+
+input[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+input[type="submit"]:hover {
+  transition: 0.3s;
+  background-color: #45a049;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+</style>
+
+{% endblock %}

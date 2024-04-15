@@ -89,13 +89,32 @@ def admin():
     return render_template("admin.html", session=session)
 
 
-@app.route('/send_promotional_emails')
+@app.route('/send_promotional_emails', methods=['GET', 'POST'])
 def send_promo():
     login_status = require_login_status(must_be_admin=True, destination='admin')
     if login_status is not None:
         return login_status
 
-    return render_template("send-promo.html", session=session)
+    msg = ''
+
+    if request.method == 'POST':
+        # get user input from form
+        email_subject = request.form['subject']
+        email_message = request.form['message']
+
+        # get all users with consent from sql database
+        cursor = conn.cursor()
+        cursor.execute('SELECT email FROM userdata WHERE email_consent = 1')
+        emails = cursor.fetchall()
+
+        # sending emails
+        for email in emails:
+            send_email(email, email_subject, email_message)
+
+        conn.commit()
+        msg = "The email has been sent!"
+
+    return render_template("send-promo.html", msg=msg, session=session)
 
 
 @app.route('/bait-editor', methods=['GET', 'POST'])

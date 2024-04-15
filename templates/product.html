@@ -51,15 +51,17 @@
                   <span class="product-text09">[PRODUCT_DESCRIPTION]</span>
                </div>
             </div>
-            <div class="product-purchase-button">
-               <div class="product-purchase">
-                 <button
-                  type="button"
-                  class="product-add-to-cart button buttonFilled"
-                  style="font-size: 30px"
-                 >Add To Cart</button>
+            <a href="{{ url_for('cart') }}">
+               <div class="product-purchase-button">
+                  <div class="product-purchase">
+                   <button
+                     type="button"
+                     class="product-add-to-cart button buttonFilled"
+                     style="font-size: 30px"
+                     >Add To Cart</button>
+                  </div>
                </div>
-            </div>
+            </a>
          </div>
       </div>
    </div>

@@ -1,16 +1,21 @@
-from datetime import date
-from flask import Flask, render_template, request, redirect, url_for, session, abort, json
-from packages.flask_googlemaps import GoogleMaps, Map  # pip install Flask Jinja2
+from flask import Flask, render_template, request, redirect, url_for, session, abort
 from flask_mysqldb import MySQL
-import pypyodbc as odbc  # pip install pypyodbc
+import pypyodbc as odbc
+import requests
+import random
+import time
+import math
 import re
 import os
+import argon2
+from datetime import datetime
 
 app = Flask(__name__)
 
 app.secret_key = 'your secret key'
 
-server = 'empirefishing.database.windows.net'
+# SQL Azure Server
+server = 'empirefishingv2.database.windows.net'
 database = 'EmpireFishingCSCI-4485'
 dbusername = 'empirefishing'
 dbpassword = '@Stockton'
@@ -20,8 +25,31 @@ conn = odbc.connect(connection_string)
 
 mysql = MySQL(app)
 
-GoogleMaps(app, key="AIzaSyCpsD5tBlCs42-ATKcOLdeZ8pYswGCASN0")
+hasher = argon2.PasswordHasher()
 
+# Mailgun API
+api_key = "b87eb1e2828aef10ccb994a97375d0b6-4b670513-129e8904"
+domain = "sandboxfff78680340b4054ae4daddac1b07ff2.mailgun.org"
+sender = "Empire Fishing and Tackle <EmpireFishingAndTackle@sandboxfff78680340b4054ae4daddac1b07ff2.mailgun.org>"
+
+def send_email(recipient, subject, message):
+    # (because we are using for free I have to manually approve emails)
+    """
+    :param recipient: All array of emails who are going to be receiving message
+    :type recipient: string array
+    :param subject: Subject of email
+    :type subject: string
+    :param message: Message to be sent to users
+    :type message: string
+    :return:
+    """
+    return requests.post(
+        f"https://api.mailgun.net/v3/{domain}/messages",
+        auth=("api", api_key),
+        data={"from": sender,
+              "to": recipient,
+              "subject": subject,
+              "text": message})
 
 def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):
     # if user needs to be logged in but isn't, return to login page
@@ -42,6 +70,11 @@ def home():
     return render_template("index.html", session=session)
 
 
+@app.route('/lineSpooling')
+def lineSpooling():
+    return render_template("lineSpooling.html", session=session)
+
+
 @app.errorhandler(404)
 def error404(error):
     return render_template("404.html", session=session)
@@ -56,6 +89,34 @@ def admin():
     return render_template("admin.html", session=session)
 
 
+@app.route('/send_promotional_emails', methods=['GET', 'POST'])
+def send_promo():
+    login_status = require_login_status(must_be_admin=True, destination='admin')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    if request.method == 'POST':
+        # get user input from form
+        email_subject = request.form['subject']
+        email_message = request.form['message']
+
+        # get all users with consent from sql database
+        cursor = conn.cursor()
+        cursor.execute('SELECT email FROM userdata WHERE email_consent = 1')
+        emails = cursor.fetchall()
+
+        # sending emails looping for each user on list
+        for email in emails:
+            send_email(email, email_subject, email_message)
+
+        conn.commit()
+        msg = "The email has been sent!"
+
+    return render_template("send-promo.html", msg=msg, session=session)
+
+
 @app.route('/bait-editor', methods=['GET', 'POST'])
 def bait_editor():
     login_status = require_login_status(must_be_admin=True, destination='bait-editor')
@@ -67,11 +128,12 @@ def bait_editor():
     cursor = conn.cursor()
 
     if request.method == 'POST':
-        # insert/modify items:
+        # collect data from html form
         insert_name = request.form['insert-name']
         insert_availability = 'insert-availability' in request.form
         insert_description = request.form['insert-description']
 
+        # if name exists
         if insert_name:
             cursor.execute('SELECT * FROM bait WHERE name = ?', (insert_name,))
             found_bait = cursor.fetchone()
@@ -104,11 +166,15 @@ def bait_editor():
 
     return render_template("bait-editor.html", session=session, msg=msg, baits=baits)
 
+
 @app.route('/bait')
 def live_bait():
+    must_be_available = request.args.get('available', default='false') == "true"
+
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM bait')
+    cursor.execute('SELECT * FROM bait' + (' WHERE availability = 1' if must_be_available else ''))
     baits = cursor.fetchall()
+    baits.sort(key=lambda x: x['name'])
 
     return render_template("bait.html", session=session, baits=baits)
 
@@ -174,11 +240,136 @@ def brand_editor():
 
 @app.route('/brands')
 def brands_list():
+    sort = request.args.get('sort', default='random')
+
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM brands')
     brands = cursor.fetchall()
 
+    if sort == 'alphabetical':
+        brands.sort(key=lambda x: x['name'])
+    else:
+        random.shuffle(brands)
+
     return render_template("brands.html", session=session, brands=brands)
+
+
+@app.route('/community')
+def community():
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM community WHERE visible = 1')
+    posts = cursor.fetchall()
+
+    return render_template("community.html", session=session, posts=posts, datetime=datetime)
+
+
+@app.route('/submit-post', methods=['GET', 'POST'])
+def submit_post():
+    login_status = require_login_status(destination='submit-post')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        image = request.files.getlist('image')[0]
+        image_type = image.filename[image.filename.rfind('.'):]
+
+        if image:
+            new_image_name = format(random.getrandbits(64), '016x') + image_type
+        else:
+            new_image_name = None
+
+        text = request.form.get('text')
+
+        if image or text:
+            cursor.execute('INSERT INTO community (visible, image, text, usr, date) VALUES (?, ?, ?, ?, ?)', (0, new_image_name, text, session['username'], math.floor(time.time())))
+            msg = 'Post submitted for admin approval.'
+
+            # upload image to community folder
+            if image:
+                # create community folder if it doesn't already exist
+                if not os.path.exists("static/images/community"):
+                    os.mkdir("static/images/community")
+
+                image.save("static/images/community/" + new_image_name)
+        else:
+            msg = 'Please add either an image or text to your post.'
+
+    conn.commit()
+
+    return render_template("submit-post.html", session=session, msg=msg)
+
+
+@app.route('/shop')
+def shop():
+    return render_template("shop.html", session=session)
+
+
+@app.route('/shop-editor', methods=['GET', 'POST'])
+def shop_editor():
+    login_status = require_login_status(must_be_admin=True, destination='shop-editor')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        # insert/modify items:
+        ##insert_product = request.files.getlist('insert-logo')[0]
+        ##insert_product_name = insert_product.filename
+        insert_name = request.form.get('insert-name')
+        insert_product_id = request.form.get('insert_product_ID')
+        insert_provider = request.form.get('insert_provider')
+        insert_description = request.form['insert-description']
+        insert_price = request.form.get('insert_price')
+
+        if insert_name:
+            cursor.execute('SELECT * FROM product WHERE name = ?', (insert_name,))
+            found_product = cursor.fetchone()
+            if insert_product_id:
+                cursor.execute('UPDATE product SET product_id = ? WHERE name = ?', (insert_product_id, insert_name))
+                if insert_provider:
+                    cursor.execute('UPDATE product SET product_provider = ? WHERE name = ?', (insert_provider, insert_name))
+                    if insert_description:
+                        cursor.execute('UPDATE bait SET description = ? WHERE name = ?', (insert_description, insert_name))
+                        if insert_price:
+                            cursor.execute('UPDATE product SET price = ? WHERE name = ?', (insert_price, insert_name))
+                msg = 'Updated bait %s.' % insert_name
+            else:
+                cursor.execute('INSERT INTO product (product_name,product_id,product_provider,description,price) VALUES (?, ?, ?, ?, ?)',
+                               (insert_name, int(insert_product_id), insert_description, int(insert_price)))
+                msg = 'Added new bait %s.' % insert_name
+
+        # remove items
+        remove_name = request.form['remove-name']
+
+        if remove_name:
+            cursor.execute('DELETE FROM product WHERE name = ?', (remove_name,))
+            msg = 'Removed product %s.' % remove_name
+
+    # fetch current product table
+    cursor.execute('SELECT * FROM products')
+    products = cursor.fetchall()
+
+    conn.commit()
+
+    return render_template("shop-editor.html", session=session, msg=msg, products=products)
+
+# WILL BE REMOVED ONLY FOR TESTING WILL BE INTEGRATED INTO THE SHOP
+@app.route('/product')
+def product():
+    return render_template("product.html", session=session)
+
+
+# WILL BE REMOVED ONLY FOR TESTING WILL BE INTEGRATED INTO THE SHOP
+@app.route('/cart')
+def cart():
+    return render_template("cart.html", session=session)
 
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])
@@ -196,19 +387,17 @@ def fishingSpots():
         label.append(spot['label'])
         spot = cursor.fetchone()
 
-
     locations = '['
     count = 0
     while count < len(label):
-
         locations += '{"lat":' + str(lat[count]) + ',"long":' + str(long[count]) + ',"label":"' + str(
             label[count]) + '"},'
         count += 1
     locations = locations[:-1]
     locations += ']'
-    print(locations)
 
     return render_template("fishingSpots.html", locations=locations)
+
 
 @app.route('/map-editor', methods=['GET', 'POST'])
 def map_editor():
@@ -223,8 +412,8 @@ def map_editor():
     if request.method == 'POST':
         # insert/modify items:
         insert_label = request.form['insert-label']
-        insert_longitude = 'insert-long' in request.form
-        insert_latitude = 'insert-lat' in request.form
+        insert_longitude = request.form['insert-long']
+        insert_latitude = request.form['insert-lat']
 
         if insert_label:
             cursor.execute('SELECT * FROM markedFishingSpots WHERE label = ?', (insert_label,))
@@ -235,12 +424,12 @@ def map_editor():
                                (insert_longitude, insert_label))
 
                 if insert_latitude:
-                    cursor.execute('UPDATE markedFishingSpots SET lat = ? WHERE label = ?', (insert_latitude, insert_label))
+                    cursor.execute('UPDATE markedFishingSpots SET lat = ? WHERE label = ?',
+                                   (insert_latitude, insert_label))
                 msg = 'Updated marker %s.' % insert_label
             else:
                 cursor.execute('INSERT INTO markedFishingSpots (lat, long, label) VALUES (?, ?, ?)',
-                               (insert_latitude, insert_longitude, insert_label)
-                )
+                               (insert_latitude, insert_longitude, insert_label))
                 msg = 'Added new marker %s.' % insert_label
 
         # remove marker
@@ -257,7 +446,6 @@ def map_editor():
     conn.commit()
 
     return render_template("map-editor.html", session=session, msg=msg, markers=markers)
-
 
 
 @app.route('/home')
@@ -283,24 +471,35 @@ def login():
 
         # Check if account exists using MySQL - Grabs from userdata table on Azure SQL Server
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM userdata WHERE username = ? AND password = ?', (username, password))
+        cursor.execute('SELECT * FROM userdata WHERE username = ?', (username,))
 
         # Fetch one record and return result
         account = cursor.fetchone()
 
         if account:
-            # Create session data, we can access this data in other routes
-            session['loggedin'] = True
-            session['id'] = account['id']
-            session['username'] = account['username']
+            try:
+                # verifies that input password, after salting+hashing, matches the hash in the database, and throws an error if not
+                hasher.verify(account['password'], password)
 
-            # add admin attribute to session if user is an admin
-            session['admin'] = bool(account['admin'])
+                # since the default parameters for argon2 will likely change over time, use this opportunity to update the database using the latest set of parameters since we do have the plaintext password at this moment
+                if (hasher.check_needs_rehash(account['password'])):
+                    cursor.execute('UPDATE userdata SET password = ? WHERE username = ?;', (hasher.hash(password), username))
 
-            # Redirect to desired page (profile by default)
-            return redirect('/' + destination)
+                # Create session data, we can access this data in other routes
+                session['loggedin'] = True
+                session['id'] = account['id']
+                session['username'] = account['username']
+
+                # add admin attribute to session if user is an admin
+                session['admin'] = bool(account['admin'])
+
+                # Redirect to desired page (profile by default)
+                return redirect('/' + destination)
+            except:
+                # Invalid password
+                msg = 'Incorrect username/password!'
         else:
-            # Account doesn't exist or username/password incorrect
+            # Account doesn't exist
             msg = 'Incorrect username/password!'
             # Show the login form with message (if any)
     return render_template('login.html', destination=destination, session=session, msg=msg)
@@ -381,10 +580,12 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form!'
         else:
+            # create hash for the password
+            hashed_password = hasher.hash(password)
 
             # Account doesn't exist and the form data is valid, now insert new account into accounts table
             cursor.execute('INSERT INTO userdata VALUES ( ?, ?, ?, ?, ?, ?, ?)',
-                           (username, password, email, consent, phone, 0, date.today()))
+                           (username, hashed_password, email, consent, phone, 0, math.floor(time.time())))
 
             # today sets the account creation date, zero is for not admin
 
@@ -400,3 +601,5 @@ def register():
 
 if __name__ == '__main__':
     app.run()
+
+

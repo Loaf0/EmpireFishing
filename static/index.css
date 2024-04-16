@@ -82,6 +82,7 @@
   align-items: center;
   flex-direction: column;
   background-color: var(--dl-color-gray-white);
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 .home-navbar-interactive {
   background-color: rgba(255, 255, 255, 0.81);
@@ -114,8 +115,15 @@
   margin-left: var(--dl-space-space-twounits);
 }
 .home-nav4 {
+  padding: 16px;
   transition: 0.3s;
-  margin-left: var(--dl-space-space-twounits);
+  margin-left: 5px;
+  border-radius: 4px;
+}
+.home-nav4:hover{
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  background-color: #f1f1f1
+
 }
 .home-nav5 {
   transition: 0.3s;

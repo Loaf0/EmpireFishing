@@ -1152,19 +1152,23 @@
             />
             <div data-thq="thq-navbar-nav" class="home-desktop-menu">
               <nav class="home-links">
-                <span><a href="{{ url_for('home') }}">Home</a></span>
-                <span class="home-nav2 bodySmall"><a href="{{ url_for('live_bait') }}"> Bait </a></span>
-                <span class="home-nav2 bodySmall"><a href="{{ url_for('brands_list') }}"> Brands </a></span>
-                <span class="home-nav3 bodySmall"><a href="thislinkdoesntwork"> Community </a></span>
-                <span class="home-nav4 bodySmall"><a href="{{ url_for('profile') }}"> Profile </a></span>
-                <span class="home-nav4 bodySmall"><a href="{{ url_for('fishingSpots') }}"> Fishing Locations </a></span>
-                <span class="home-nav5">
-                  <span class="bodySmall"><a href="thislinkdoesntwork"> Line Spooling</a></span>
-                  <br />
-                </span>
+                <a href="{{ url_for('home') }}"><span class="home-nav4 bodySmall">Home</span></a>
+                <a href="{{ url_for('community') }}"><span class="home-nav4 bodySmall"> Community </span></a>
+                <a href="{{ url_for('profile') }}"><span class="home-nav4 bodySmall"> Profile </span></a>
+                <a href="{{ url_for('shop') }}"><span class="home-nav4 bodySmall"> Shop </span></a>
+                <a href="{{ url_for('cart') }}"><span class="home-nav4 bodySmall"> Cart </span></a>
                 {% if session['admin'] %}
-                <span class="home-nav6 bodySmall"><a href="{{ url_for('admin') }}">Admin</a></span>
+                <a href="{{ url_for('admin') }}"><span class="home-nav4 bodySmall">Admin</span></a>
                 {% endif %}
+                <div class="dropdown">
+                  <button class="dropbtn">More ▼</button>
+                  <div class="dropdown-content">
+                    <a href="{{ url_for('live_bait') }}"> Bait </a>
+                    <a href="{{ url_for('brands_list') }}"> Brands </a>
+                    <a href="{{ url_for('lineSpooling') }}"> Line Spooling</a>
+                    <a href="{{ url_for('fishingSpots') }}"> Fishing Locations </a>
+                  </div>
+                </div>
               </nav>
               <div class="home-buttons">
                 {% if session['loggedin'] %}
@@ -1211,10 +1215,10 @@
                   <span class="home-nav11 bodySmall"><a href="{{ url_for('home') }}">Home</a></span>
                 <span class="home-nav21 bodySmall"><a href="{{ url_for('live_bait') }}"> Bait </a></span>
                 <span class="home-nav21 bodySmall"><a href="{{ url_for('brands_list') }}"> Brands </a></span>
-                <span class="home-nav31 bodySmall"><a href="thislinkdoesntwork"> Community </a></span>
+                <span class="home-nav31 bodySmall"><a href="{{ url_for('community') }}"> Community </a></span>
                 <span class="home-nav41 bodySmall"><a href="{{ url_for('profile') }}"> Profile </a></span>
                 <span class="home-nav41 bodySmall"><a href="{{ url_for('fishingSpots') }}"> Fishing Locations</a></span>
-                <span class="home-nav51 bodySmall"><a href="thislinkdoesntwork"> Line Spooling</a></span>
+                <span class="home-nav51 bodySmall"><a href="{{ url_for('lineSpooling') }}"> Line Spooling</a></span>
                   {% if session['admin'] %}
                 <span class="home-nav61 bodySmall"><a href="{{ url_for('admin') }}">Admin</a></span>
                 {% endif %}
@@ -1277,21 +1281,7 @@
                 class="home-pasted-image1"
               />
             </div>
-            <nav class="home-nav1">
-              <span><a href="{{ url_for('home') }}">Home</a></span>
-                <span class="home-navbottom bodySmall"><a href="{{ url_for('live_bait') }}"> Bait </a></span>
-              <span class="home-navbottom bodySmall"><a href="{{ url_for('brands_list') }}"> Brands </a></span>
-                <span class="home-navbottom bodySmall"><a href="thislinkdoesntwork"> Community </a></span>
-                <span class="home-navbottom bodySmall"><a href="{{ url_for('profile') }}"> Profile </a></span>
-                <span class="home-navbottom bodySmall"><a href="{{ url_for('fishingSpots') }}"> Fishing Locations </a></span>
-                <span class="home-navbottom">
-                  <span class="bodySmall"><a href="thislinkdoesntwork"> Line Spooling</a></span>
-                  <br />
-                </span>
-                {% if session['admin'] %}
-                <span class="home-navbottom bodySmall"><a href="{{ url_for('admin') }}">Admin</a></span>
-                {% endif %}
-            </nav>
+            
             <div class="home-separator"></div>
             <div class="home-container7">
               <span class="home-text56">
@@ -1339,4 +1329,53 @@
       src="https://unpkg.com/@teleporthq/teleport-custom-scripts"
     ></script>
   </body>
+
+  <style>
+    .dropdown {
+        position: relative;
+        display: inline-block;
+        margin-left: 3px;
+    }
+
+    .dropbtn {
+        margin-left: 0px;
+        color: black;
+        padding: 16px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f1f1f1
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown:hover .dropbtn {
+        background-color: #f1f1f1;
+        transition: 0.3s;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        
+    }
+</style>
+
 </html>

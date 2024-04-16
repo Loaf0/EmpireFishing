@@ -1,3 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.gitignore
+/.vs
 .idea/
 .venv/
-/static/images/brands
+/static/images/brands/*
+/static/images/community/*

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Bait Editor{% endblock %}
+{% block title %}Map Editor{% endblock %}
 {% block content %}
 <link href="../static/bait-editor.css" rel="stylesheet" />
       <link href="../static/bait.css" rel="stylesheet" />
@@ -10,20 +10,19 @@
               <h1 class="bait-editor-text02">Map Editor</h1>
             </div>
                 <form action="{{ url_for('map_editor') }}" method="post">
-                <div class="bait-editor-container2" style="background-color:lightgray;">
+                <div class="container">
                   <h2 class="bait-editor-text03">Insert/modify marker:</h2>
-                <hr>
-                 <p >Label:</p> <input type="text" name="insert-label" class="input"/>
-                 <p >Longitude:</p> <input type="text" name="insert-long" class="input"/>
-                 <p >Latitude:</p> <input type="text" name="insert-lat" class="input"/>
-                <hr>
-                 <h2 class="bait-editor-text03">Remove marker from list:</h2>
-                 <p>Name:</p> <input type="text" name="remove-label" class="input"/>
+                  <hr>
+                    <div class="itemPadding"><p>Label:</p> <input type="text" name="insert-label" class="input"/></div> 
+                    <div class="itemPadding"><p>Latitude:</p> <input type="text" name="insert-lat" class="input"/></div> 
+                    <div class="itemPadding"><p>Longitude:</p> <input type="text" name="insert-long" class="input"/></div> 
+                  <hr>
+                    <h2 class="bait-editor-text03">Remove marker from list:</h2>
+                    <div class="itemPadding"><p>Name:</p> <input type="text" name="remove-label" class="input"/></div> 
+                  <br>
+                  <input type="submit" class="buttonFlat">
 
-                 <br>
-                 <input type="submit" class="buttonFlat">
-
-                 <p style="text-align: center">{{ msg }}</p>
+                  <p style="text-align: center">{{ msg }}</p>
                 </div>
                 </form>
               <div>
@@ -32,4 +31,37 @@
             </div>
 
         </div>
+<style>
+  .container {
+    align-content: center;
+    text-align: center;
+    width: 100%;
+    margin: auto;
+    margin-bottom: 10%;
+    background-color: #d3d3d3;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .itemPadding{
+    padding: 10px;
+  }
+
+  input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    input[type="submit"]:hover {
+      transition: 0.3s;
+      background-color: #45a049;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    }
+</style>
 {% endblock %}

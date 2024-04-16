@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Brand Editor{% endblock %}
+{% block title %}Submit Community Post{% endblock %}
 {% block content %}
 <link href="../static/brand-editor.css" rel="stylesheet" />
       <link href="../static/brands.css" rel="stylesheet" />
@@ -7,19 +7,17 @@
 <div class="brand-editor-hero">
   <div class="brand-editor-hero1 heroContainer" >
     <div class="brand-editor-container1">
-      <h1 class="brand-editor-text02">Brand Table Editor</h1>
+      <h1 class="brand-editor-text02">Submit Community Post</h1>
     </div>
-      <form action="{{ url_for('brand_editor') }}" method="post" enctype="multipart/form-data">
+      <form action="{{ url_for('submit_post') }}" method="post" enctype="multipart/form-data">
         <div class="container">
-          <h2 class="brand-editor-text03">Insert/modify item:</h2>
-        <hr>
-          <div class="itemPadding"> <p >Logo:</p> <input type="file" name="insert-logo" accept="image/*"/></div>
-          <div class="itemPadding"> <p >Name:</p> <input type="text" name="insert-name" class="input" /></div>
-          <div class="itemPadding"> <p >Description:</p> <input type="text" name="insert-description" class="input"/></div>
-        <hr>
-          <h2 class="brand-editor-text03">Remove item from list:</h2>
-          <div class="itemPadding"><p>Name:</p> <input type="text" name="remove-name" class="input"/></div>
-          <input type="submit" class="buttonFlat">
+          <p>Posts should relate to Empire Fishing & Tackle.</p>
+            <p>Image and text are both optional, but posts containing neither will be rejected.</p>
+            <p>Text posts can have a maximum length of 500 characters.</p>
+            <p>Note that your username will also be visible.</p>
+          <div class="itemPadding"> <p >Image:</p> <input type="file" name="image" accept="image/*"/></div>
+          <div class="itemPadding"> <p >Text:</p> <input type="text" name="text" class="input"/></div>
+          <input type="submit" class="buttonFlat" value="Submit Post">
           <p style="text-align: center">{{ msg }}</p>
         </div>
       </form>

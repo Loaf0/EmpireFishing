@@ -5,25 +5,83 @@
 
 <div class="brands-hero">
           <div class="brands-hero1 heroContainer">
-            <div class="brands-container1">
-              <h1 class="brands-text2">Brands</h1>
+            <div class="brands-container1" >
+              <h1 class="brands-text2" style="font-size: 40px; width: 100%" align="center">Brands</h1>
+                <p>Sort :<a class="buttonlink" href="{{ url_for('brands_list') }}?sort=alphabetical">Alphabetically,</a><a class="buttonlink" href="{{ url_for('brands_list') }}">Random</a><br> </p>
               <div class="brands-table">
-                <table>
-                  <tr>
-                      <th class="table-header">Logo</th>
-                      <th class="table-header">Name</th>
-                      <th class="table-header" id="column3">Description</th>
-                  </tr>
-                     {% for brand in brands %}
-                        <tr>
-                            <td><img src="static/images/brands/{{ brand['logo'] }}" alt="{{ brand['name'] }}" style="width:100%"></td>
-                            <td>{{ brand['name'] }}</td>
-                            <td>{{ brand['description'] }}</td>
-                        </tr>
+                  {% for brand in brands %}
+                    <div class="responsive" >
+                      <div class="gallery">
+                        <a target="_blank" href="static/images/brands/{{ brand['logo'] }}">
+                          <img height="200px" src="static/images/brands/{{ brand['logo'] }}" alt="{{ brand['name'] }}">
+                        </a>
+                        <div class="desc">
+                            <h1>{{ brand['name'] }}</h1><br>
+                            <p>{{ brand['description'] }}</p>
+                        </div>
+                      </div>
+                    </div>
                     {% endfor %}
-                </table>
               </div>
             </div>
           </div>
         </div>
+
+<style>
+    .buttonlink{
+        margin: 10px;
+    }
+div.gallery {
+  border: 1px solid #ccc;
+
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: fit-content;
+  overflow:hidden;
+}
+
+div.desc {
+  padding: 10px;
+  text-align: center;
+  height: fit-container;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.responsive {
+  padding: 0 6px;
+  float: left;
+  width: 33.3333%;
+  height: 380px
+
+}
+
+@media only screen and (max-width: 700px) {
+  .responsive {
+    width: 49.99999%;
+    margin: 6px 0;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .responsive {
+    width: 100%;
+  }
+}
+
+.clearfix:after {
+  content: "";
+  display: grid;
+  clear: both;
+}
+</style>
+
 {% endblock %}

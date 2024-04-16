@@ -8,12 +8,47 @@
           <div class="admin-hero1 heroContainer">
             <div class="admin-container1">
               <h1 class="admin-text2">Admin Panel</h1>
-              <div class="admin-container2">
-                <a href="{{ url_for('bait_editor') }}"> <button type="button" class="button">Bait Table Editor</button> </a>
-                <a href="{{ url_for('map_editor') }}"> <button type="button" class="button">Map Editor</button> </a>
-                <a href="{{ url_for('brand_editor') }}"> <button type="button" class="button">Brand Table Editor</button> </a>
+              <div class="container">
+                <div class="itemPadding"><a href="{{ url_for('map_editor') }}"> <button type="button" class="adminButton">Map Editor</button> </a></div>
+                <div class="itemPadding"><a href="{{ url_for('bait_editor') }}"> <button type="button" class="adminButton">Bait Table Editor</button> </a></div>
+                <div class="itemPadding"><a href="{{ url_for('brand_editor') }}"> <button type="button" class="adminButton">Brand Table Editor</button> </a></div>
+                <div class="itemPadding"><a href="{{ url_for('shop_editor') }}"> <button type="button" class="adminButton">Shop Editor</button> </a></div>
+                <div class="itemPadding"><a href="{{ url_for('send_promo') }}"> <button type="button" class="adminButton">Send Promotional Email</button> </a></div>
               </div>
             </div>
           </div>
         </div>
+
+<style>
+.itemPadding{
+    margin: 10px;
+  }
+.container {
+    align-content: center;
+    text-align: center;
+    height: 250px;
+    margin: auto;
+    background-color: #d3d3d3;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.adminButton {
+  box-sizing: border-box;
+  transition: 0.3s;
+  background-color: white;
+  color: black;
+  padding: 10px 20px;
+  border: solid black 1px;  
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.adminButton:hover{
+  border: none;
+  background-color: #a0a0a0;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+
+}
+</style>
 {% endblock %}

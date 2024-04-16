@@ -1,28 +1,9 @@
-table, th, td {
-  border: thin solid;
-  height: 40px;
-  padding: 12px 15px;
-  
-}
-
-table{
-    border-bottom: 2px solid #009879;
-    table-layout: fixed;
-    width: 70%;
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 0.9em;
-    font-family: sans-serif;
-    min-width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
 #column3{
   width: 50%;
 }
 
 .table-header {
-  color: black;
+  color: #8cbce6;
   font-size: 30px;
   height: 60px;
   width: auto;
@@ -207,7 +188,6 @@ table{
   opacity: 0.95;
   padding: var(--dl-space-space-oneandhalfunits);
   position: relative;
-  align-items: center;
   padding-top: var(--dl-space-space-unit);
   padding-left: var(--dl-space-space-unit);
   padding-right: var(--dl-space-space-unit);

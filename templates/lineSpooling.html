@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Bait{% endblock %}
+{% block content %}
+<link href="../static/index.css" rel="stylesheet" />
+
+<div class="live-bait-hero">
+    <div class="live-bait-hero1 heroContainer" style="background-color: #5D576A">
+        <div class="live-bait-container1" >
+            <h1 class="home-features-heading heading2" style="padding-top:100px">Oh Snap! Don't Let Your Line Go Brittle</h1> 
+            
+            <table style="padding:10px">
+                <tr>
+                    <td colspan="2">
+                        <h2 class="feature-card-text1 bodySmall" style="font-weight:bold; font-size:larger"> We do line spooling for fishing reels in Tuckerton, NJ </h2> <br>
+                        <p class="feature-card-text1 bodySmall"> Over time, your fishing line will start to deteriorate. If your line doesn't feel quite right, it might be time to change it out. Whether you do inshore, offshore or freshwater fishing, you can rely on Empire Fishing and Tackle LLC for fishing reel line spooling services in Tuckerton, NJ. <br> <br> We offer both braided and monofilament lines, so you can get the supplies you need to fish in any water. Come on in today to browse our selection of lines and reels. Once you've finished shopping, we'll complete the line spooling for your fishing equipment.</pclass="feature-card-text1>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1 class="feature-card-text1 bodySmall" style="font-weight:bold; font-size:larger">Make sure you're ready to reel in a big catch</h1> <br>
+                        <p class="feature-card-text1 bodySmall">At Empire Fishing and Tackle, we use professional equipment for every fishing reel line spooling job. You can trust us to be thorough and careful so that you won't have to worry about issues with your line.<br><br> We use fishing lines from top-rated brands like Power Pro and Sufix. When you visit our shop, you can rest assured that you'll leave with some of the best fishing equipment available. Stop by the store today to learn more about how we do line spooling for fishing.</p>
+                    </td>
+                    <td style="background-color: #656072">
+                        <img src="{{url_for('static', filename='images/lineSpooling.jpg')}}" style="width: auto; height:300px;">
+                    </td>
+                </tr>
+            </table>
+
+         </div>
+    </div>
+</div>
+
+<style>
+    h2 {
+    color: aliceblue;
+    }
+    h1 {
+        color: aliceblue;
+    }
+    p {
+        color: aliceblue;
+        padding-right: 10px;
+    }
+    img {
+        padding:20px;
+    }
+
+</style>
+
+{% endblock %}

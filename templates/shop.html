@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Shop{% endblock %}
+{% block content %}
+<link href="../static/shop.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css">
+
+<div class="small-container">
+    <div class="row row-2">
+        <h2>All Products</h2>
+        <select>
+            <option>Default Sorting</option>
+            <option>Sort by price</option>
+            <option>Sort by popularity</option>
+            <option>Sort by rating</option>
+            <option>Sort by sale</option>
+        </select>
+    </div>
+</div>
+        <div class="small-container">
+            <table class="row", class="column">
+                    {% for product in products %}
+                        <tr>
+                            <a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg">
+                            <td>{{ product['product_name'] }}</td></a>
+                            <td>{{ product['price'] }}</td>
+                            <td>{{ product['rating'] }}</td>
+                        </tr>
+                    {% endfor %}
+            </table>
+        </div>
+    <!--<div class="small-container">
+        <div class="row">
+            <div class="column">
+                <a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg">
+                    <h4 class="p-name">Fishing Pole</h4></a>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+                <p>$50.00</p>
+            </div>
+            <div class="column">
+                <a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg">
+                    <h4 class="p-name">Fishing Pole</h4></a>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+                <p>$50.00</p>
+            </div>
+        </div>
+    </div>-->
+    <div class="page-button">
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>&#8594;</span>
+    </div>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+/* Create four equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 25%;
+  padding: 10px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - makes the four columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
+}
+</style>
+{% endblock %}

@@ -320,8 +320,8 @@ def shop_editor():
 
     if request.method == 'POST':
         # insert/modify items:
-        ##insert_product = request.files.getlist('insert-logo')[0]
-        ##insert_product_name = insert_product.filename
+        #insert_product = request.files.getlist('insert-logo')[0]
+        #insert_product_name = insert_product.filename
         insert_name = request.form.get('insert-name')
         insert_product_id = request.form.get('insert_product_ID')
         insert_provider = request.form.get('insert_provider')
@@ -329,27 +329,27 @@ def shop_editor():
         insert_price = request.form.get('insert_price')
 
         if insert_name:
-            cursor.execute('SELECT * FROM product WHERE name = ?', (insert_name,))
+            cursor.execute('SELECT * FROM products WHERE name = ?', (insert_name,))
             found_product = cursor.fetchone()
             if insert_product_id:
-                cursor.execute('UPDATE product SET product_id = ? WHERE name = ?', (insert_product_id, insert_name))
+                cursor.execute('UPDATE products SET product_id = ? WHERE name = ?', (insert_product_id, insert_name))
                 if insert_provider:
-                    cursor.execute('UPDATE product SET product_provider = ? WHERE name = ?', (insert_provider, insert_name))
+                    cursor.execute('UPDATE products SET product_provider = ? WHERE name = ?', (insert_provider, insert_name))
                     if insert_description:
-                        cursor.execute('UPDATE bait SET description = ? WHERE name = ?', (insert_description, insert_name))
+                        cursor.execute('UPDATE products SET description = ? WHERE name = ?', (insert_description, insert_name))
                         if insert_price:
-                            cursor.execute('UPDATE product SET price = ? WHERE name = ?', (insert_price, insert_name))
-                msg = 'Updated bait %s.' % insert_name
+                            cursor.execute('UPDATE products SET price = ? WHERE name = ?', (insert_price, insert_name))
+                msg = 'Updated product %s.' % insert_name
             else:
-                cursor.execute('INSERT INTO product (product_name,product_id,product_provider,description,price) VALUES (?, ?, ?, ?, ?)',
+                cursor.execute('INSERT INTO products (product_name,product_id,product_provider,description,price) VALUES (?, ?, ?, ?, ?)',
                                (insert_name, int(insert_product_id), insert_description, int(insert_price)))
-                msg = 'Added new bait %s.' % insert_name
+                msg = 'Added new product %s.' % insert_name
 
         # remove items
         remove_name = request.form['remove-name']
 
         if remove_name:
-            cursor.execute('DELETE FROM product WHERE name = ?', (remove_name,))
+            cursor.execute('DELETE FROM products WHERE name = ?', (remove_name,))
             msg = 'Removed product %s.' % remove_name
 
     # fetch current product table

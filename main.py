@@ -352,7 +352,7 @@ def shop_editor():
             msg = 'Removed product %s.' % remove_name
 
     # fetch current product table
-    cursor.execute('SELECT * FROM product')
+    cursor.execute('SELECT * FROM products')
     products = cursor.fetchall()
 
     conn.commit()

@@ -107,7 +107,7 @@ def send_promo():
         cursor.execute('SELECT email FROM userdata WHERE email_consent = 1')
         emails = cursor.fetchall()
 
-        # sending emails
+        # sending emails looping for each user on list
         for email in emails:
             send_email(email, email_subject, email_message)
 
@@ -128,11 +128,12 @@ def bait_editor():
     cursor = conn.cursor()
 
     if request.method == 'POST':
-        # insert/modify items:
+        # collect data from html form
         insert_name = request.form['insert-name']
         insert_availability = 'insert-availability' in request.form
         insert_description = request.form['insert-description']
 
+        # if name exists
         if insert_name:
             cursor.execute('SELECT * FROM bait WHERE name = ?', (insert_name,))
             found_bait = cursor.fetchone()

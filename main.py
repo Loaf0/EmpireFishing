@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 app.secret_key = 'your secret key'
 
-#SQL Azure Server
+# SQL Azure Server
 server = 'empirefishingv2.database.windows.net'
 database = 'EmpireFishingCSCI-4485'
 dbusername = 'empirefishing'

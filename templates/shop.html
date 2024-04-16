@@ -21,9 +21,9 @@
                     {% for product in products %}
                         <tr>
                             <a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg">
-                            <td>{{ product['product_name'] }}</td></a>
-                            <td>{{ product['price'] }}</td>
-                            <td>{{ product['rating'] }}</td>
+                            <td>{{ product['PRODUCT_NAME'] }}</td></a>
+                            <td>{{ product['PRICE'] }}</td>
+                            <td>{{ product['RATING'] }}</td>
                         </tr>
                     {% endfor %}
             </table>

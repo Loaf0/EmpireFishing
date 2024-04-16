@@ -303,11 +303,6 @@ def submit_post():
     return render_template("submit-post.html", session=session, msg=msg)
 
 
-@app.route('/shop')
-def shop():
-    return render_template("shop.html", session=session)
-
-
 @app.route('/shop-editor', methods=['GET', 'POST'])
 def shop_editor():
     login_status = require_login_status(must_be_admin=True, destination='shop-editor')
@@ -323,27 +318,30 @@ def shop_editor():
         #insert_product = request.files.getlist('insert-logo')[0]
         #insert_product_name = insert_product.filename
         insert_name = request.form.get('insert-name')
-        insert_product_id = request.form.get('insert_product_ID')
-        insert_provider = request.form.get('insert_provider')
+        insert_product_id = request.form.get('insert-product-ID')
+        insert_provider = request.form.get('insert-provider')
         insert_description = request.form['insert-description']
-        insert_price = request.form.get('insert_price')
+        insert_price = request.form.get('insert-price')
+        print(insert_price)
 
         if insert_name:
-            cursor.execute('SELECT * FROM products WHERE name = ?', (insert_name,))
+            cursor.execute('SELECT * FROM products WHERE product_name = ?', (insert_name,))
             found_product = cursor.fetchone()
-            if insert_product_id:
-                cursor.execute('UPDATE products SET product_id = ? WHERE name = ?', (insert_product_id, insert_name))
-                if insert_provider:
-                    cursor.execute('UPDATE products SET product_provider = ? WHERE name = ?', (insert_provider, insert_name))
-                    if insert_description:
-                        cursor.execute('UPDATE products SET description = ? WHERE name = ?', (insert_description, insert_name))
-                        if insert_price:
-                            cursor.execute('UPDATE products SET price = ? WHERE name = ?', (insert_price, insert_name))
+            #if insert_product_id:
+                #cursor.execute('UPDATE products SET product_id = ? WHERE product_name = ?', (int(insert_product_id), insert_name))
+            if insert_provider:
+                cursor.execute('UPDATE products SET product_provider = ? WHERE product_name = ?', (insert_provider, insert_name))
+                if insert_description:
+                    cursor.execute('UPDATE products SET product_description = ? WHERE product_name = ?', (insert_description, insert_name))
+                    if insert_price:
+                        cursor.execute('UPDATE products SET price = ? WHERE product_name = ?', (float(insert_price), insert_name))
                 msg = 'Updated product %s.' % insert_name
             else:
-                cursor.execute('INSERT INTO products (product_name,product_id,product_provider,description,price) VALUES (?, ?, ?, ?, ?)',
-                               (insert_name, int(insert_product_id), insert_description, int(insert_price)))
+
+                cursor.execute('INSERT INTO products (product_name, product_id, product_provider, product_description, price) VALUES (?, ?, ?, ?)',
+                               (insert_name, insert_provider, insert_description, float(insert_price)))
                 msg = 'Added new product %s.' % insert_name
+
 
         # remove items
         remove_name = request.form['remove-name']
@@ -360,6 +358,10 @@ def shop_editor():
 
     return render_template("shop-editor.html", session=session, msg=msg, products=products)
 
+
+@app.route('/shop')
+def shop():
+    return render_template("shop.html", session=session)
 # WILL BE REMOVED ONLY FOR TESTING WILL BE INTEGRATED INTO THE SHOP
 @app.route('/product')
 def product():

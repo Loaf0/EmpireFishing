@@ -307,6 +307,58 @@ def shop():
     return render_template("shop.html", session=session)
 
 
+@app.route('/shop-editor', methods=['GET', 'POST'])
+def shop_editor():
+    login_status = require_login_status(must_be_admin=True, destination='shop-editor')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        # insert/modify items:
+        ##insert_product = request.files.getlist('insert-logo')[0]
+        ##insert_product_name = insert_product.filename
+        insert_name = request.form.get('insert-name')
+        insert_product_id = request.form.get('insert_product_ID')
+        insert_provider = request.form.get('insert_provider')
+        insert_description = request.form['insert-description']
+        insert_price = request.form.get('insert_price')
+
+        if insert_name:
+            cursor.execute('SELECT * FROM product WHERE name = ?', (insert_name,))
+            found_product = cursor.fetchone()
+            if insert_product_id:
+                cursor.execute('UPDATE product SET product_id = ? WHERE name = ?', (insert_product_id, insert_name))
+                if insert_provider:
+                    cursor.execute('UPDATE product SET product_provider = ? WHERE name = ?', (insert_provider, insert_name))
+                    if insert_description:
+                        cursor.execute('UPDATE bait SET description = ? WHERE name = ?', (insert_description, insert_name))
+                        if insert_price:
+                            cursor.execute('UPDATE product SET price = ? WHERE name = ?', (insert_price, insert_name))
+                msg = 'Updated bait %s.' % insert_name
+            else:
+                cursor.execute('INSERT INTO product (product_name,product_id,product_provider,description,price) VALUES (?, ?, ?, ?, ?)',
+                               (insert_name, int(insert_product_id), insert_description, int(insert_price)))
+                msg = 'Added new bait %s.' % insert_name
+
+        # remove items
+        remove_name = request.form['remove-name']
+
+        if remove_name:
+            cursor.execute('DELETE FROM product WHERE name = ?', (remove_name,))
+            msg = 'Removed product %s.' % remove_name
+
+    # fetch current product table
+    cursor.execute('SELECT * FROM product')
+    products = cursor.fetchall()
+
+    conn.commit()
+
+    return render_template("shop-editor.html", session=session, msg=msg, products=products)
+
 # WILL BE REMOVED ONLY FOR TESTING WILL BE INTEGRATED INTO THE SHOP
 @app.route('/product')
 def product():

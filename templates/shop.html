@@ -16,7 +16,19 @@
         </select>
     </div>
 </div>
-    <div class="small-container">
+        <div class="small-container">
+            <table class="row", class="column">
+                    {% for product in products %}
+                        <tr>
+                            <a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg">
+                            <td>{{ product['product_name'] }}</td></a>
+                            <td>{{ product['price'] }}</td>
+                            <td>{{ product['rating'] }}</td>
+                        </tr>
+                    {% end for %}
+            </table>
+        </div>
+    <!--<div class="small-container">
         <div class="row">
             <div class="column">
                 <a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg">
@@ -43,7 +55,7 @@
                 <p>$50.00</p>
             </div>
         </div>
-    </div>
+    </div>-->
     <div class="page-button">
         <span>1</span>
         <span>2</span>
@@ -51,8 +63,6 @@
         <span>4</span>
         <span>&#8594;</span>
     </div>
-<a class="shop_dicptLink" style="cursor: pointer" href=http://127.0.0.1:5000/shop/fishingpole"></a>
-
 
 <style>
 * {

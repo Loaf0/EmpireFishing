@@ -474,28 +474,28 @@ def community_editor():  # we are going to delete this and change to an on page 
 
     if request.method == 'POST':
         # collect data from html form
-        insert_name = request.form['insert-name']
+        insert_id = request.form['insert-id']
         insert_text = request.form['insert-text']
         insert_visibility = 'insert-visibility' in request.form
         insert_in_queue = 'insert-in-queue' in request.form
 
-        # if name exists
-        if insert_name:
-            cursor.execute('SELECT * FROM usr WHERE name = ?', (insert_name,))
+        # if user ID exists
+        if insert_id:
+            cursor.execute('SELECT * FROM usr WHERE name = ?', (insert_id,))
             found_id = cursor.fetchone()
 
             if found_id:
                 cursor.execute('UPDATE text SET id = ? WHERE usr = ?',
-                               (int(insert_visibility), insert_name))
+                               (int(insert_visibility), insert_id))
 
                 if insert_text:
-                    cursor.execute('UPDATE community SET text = ? WHERE usr = ?', (insert_text, insert_name))
+                    cursor.execute('UPDATE community SET text = ? WHERE usr = ?', (insert_text, insert_id))
 
-                msg = 'Updated visibility %s.' % insert_name
+                msg = 'Updated visibility %s.' % insert_id
             else:
                 cursor.execute('INSERT INTO bait (name, availability, description) VALUES (?, ?, ?)',
-                               (insert_name, int(insert_visibility), insert_text))
-                msg = 'Added new text %s.' % insert_name
+                               (insert_id, int(insert_visibility), insert_text))
+                msg = 'Added new text %s.' % insert_id
 
         # Identify community posts
         insert_name = request.form['insert-name']

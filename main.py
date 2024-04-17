@@ -463,7 +463,7 @@ def map_editor():
     return render_template("map-editor.html", session=session, msg=msg, markers=markers)
 
 @app.route('/community-editor', methods=['GET', 'POST'])
-def community_editor():
+def community_editor():  # we are going to delete this and change to an on page delete post button
     login_status = require_login_status(must_be_admin=True, destination='community-editor')
     if login_status is not None:
         return login_status

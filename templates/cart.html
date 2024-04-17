@@ -3,14 +3,31 @@
 {% block content %}
 <link href="../static/cart.css" rel="stylesheet" />
 
-<div class="small-container cart-page" style="padding-top:3%">
-    <table>
+<!--<div class="small-container cart-page" style="padding-top:3%">
+     <table>
         <tr>
             <th>Product</th>
             <th>Quantity</th>
             <th>Subtotal</th>
-        </tr>
-        <tr>
+        </tr>-->
+    <div class="cart-info">
+        <table class="container">
+            <tr>
+                <th class="table-header" >Product</th>
+                <th class="table-header">Quantity?</th>
+                <th class="table-header" id="column3">Subtotal</th>
+            </tr>
+            {% for product in cart %}
+            <tr>
+                <td>{{ product['product_id'] }}</td>
+                <td>{{ product['quantity'] }}</td>
+                <td>{{ product['price']*quantity }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+        <!--<tr>
             <td>
                 <div class="cart-info">
                     <img src="fishing poles/H-10332.jpg">
@@ -72,5 +89,5 @@
             </tr>
         </table>
     </div>
-</div>
+</div>-->
 {% endblock %}

@@ -382,7 +382,10 @@ def product(product_id):
 
 @app.route('/cart')
 def cart():
-    return render_template("cart.html", session=session)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM cart')
+    carts = cursor.fetchall()
+    return render_template("cart.html", session=session, carts=cart)
 
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])

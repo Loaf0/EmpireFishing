@@ -389,7 +389,6 @@ def cart():
     if login_status is not None:
         return login_status
 
-    msg = ''
     cursor = conn.cursor()
 
     if request.method == 'POST':

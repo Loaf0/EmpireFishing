@@ -257,7 +257,7 @@ def brands_list():
 @app.route('/community')
 def community():
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM community WHERE visible = 1')
+    cursor.execute('SELECT * FROM community')
     posts = cursor.fetchall()
 
     return render_template("community.html", session=session, posts=posts, datetime=datetime)
@@ -285,7 +285,7 @@ def submit_post():
         text = request.form.get('text')
 
         if image or text:
-            cursor.execute('INSERT INTO community (visible, image, text, usr, date) VALUES (?, ?, ?, ?, ?)', (0, new_image_name, text, session['username'], math.floor(time.time())))
+            cursor.execute('INSERT INTO community (image, text, usr, date) VALUES (?, ?, ?, ?)', (new_image_name, text, session['username'], math.floor(time.time())))
             msg = 'Post submitted for admin approval.'
 
             # upload image to community folder

@@ -473,9 +473,35 @@ def community_editor():  # we are going to delete this and change to an on page 
     cursor = conn.cursor()
 
     if request.method == 'POST':
+        # collect data from html form
+        insert_name = request.form['insert-name']
+        insert_text = request.form['insert-text']
+        insert_visibility = 'insert-visibility' in request.form
+        insert_in_queue = 'insert-in-queue' in request.form
+
+        # if name exists
+        if insert_name:
+            cursor.execute('SELECT * FROM usr WHERE name = ?', (insert_name,))
+            found_id = cursor.fetchone()
+
+            if found_id:
+                cursor.execute('UPDATE text SET id = ? WHERE usr = ?',
+                               (int(insert_visibility), insert_name))
+
+                if insert_text:
+                    cursor.execute('UPDATE community SET text = ? WHERE usr = ?', (insert_text, insert_name))
+
+                msg = 'Updated visibility %s.' % insert_name
+            else:
+                cursor.execute('INSERT INTO bait (name, availability, description) VALUES (?, ?, ?)',
+                               (insert_name, int(insert_visibility), insert_text))
+                msg = 'Added new text %s.' % insert_name
+
         # Identify community posts
         insert_name = request.form['insert-name']
         insert_availability = 'insert-availability' in request.form
+
+        # Add post from queue
 
 
         # Remove post from queue

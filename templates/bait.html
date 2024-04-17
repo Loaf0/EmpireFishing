@@ -18,7 +18,7 @@
                      {% for bait in baits %}
                         <tr>
                             <td>{{ bait['name'] }}</td>
-                            <td>{{ bait['availability'] }}</td>
+                            <td class="{{ 'green' if bait['availability'] == 1 else 'red' }}">{{ 'Yes' if bait['availability'] == 1 else 'No' }}</td>
                             <td>{{ bait['description'] }}</td>
                         </tr>
                     {% endfor %}
@@ -30,8 +30,7 @@
 <style>
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
 
-.blue { color: #185875; }
-.yellow { color: #FFF842; }
+
 
 .container td {
 	  font-weight: normal;
@@ -73,20 +72,13 @@
 
 .container tr:hover {
   transition: 0.3s;
-   background-color: #7d7d7d;
+   background-color: #b4b4b5;
 -webkit-box-shadow: 0 6px 6px -6px #0E1119;
 	   -moz-box-shadow: 0 6px 6px -6px #0E1119;
 	        box-shadow: 0 6px 6px -6px #0E1119;
 }
 
 .container td:hover {
-  background-color: #ccccc8;
-  color: #000000;
-  font-weight: bold;
-  
-  box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
-  transform: translate3d(6px, -6px, 0);
-  
   transition-delay: 0s;
 	  transition-duration: 0.4s;
 	  transition-property: all;
@@ -96,6 +88,35 @@
 @media (max-width: 800px) {
 .container td:nth-child(4),
 .container th:nth-child(4) { display: none; }
+}
+
+.green {
+    background-color: #4caf4f;
+}
+.green:hover {
+  transition: 0.3s;
+   background-color: #46a049;
+-webkit-box-shadow: 0 6px 6px -6px #0E1119;
+	   -moz-box-shadow: 0 6px 6px -6px #0E1119;
+	        box-shadow: 0 6px 6px -6px #0E1119;
+}
+.container tr:hover .green {
+    background-color: #46a049;
+    transition: background-color 0.3s;
+}
+.red {
+    background-color: #f44336;
+}
+.red:hover {
+  transition: 0.3s;
+   background-color: #d33a2f;
+-webkit-box-shadow: 0 6px 6px -6px #0E1119;
+	   -moz-box-shadow: 0 6px 6px -6px #0E1119;
+	        box-shadow: 0 6px 6px -6px #0E1119;
+}
+.container tr:hover .red {
+    background-color: #d33a2f;
+    transition: background-color 0.3s;
 }
 </style>
 {% endblock %}

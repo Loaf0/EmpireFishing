@@ -368,16 +368,16 @@ def shop():
     return render_template("shop.html", session=session, products=products)
 
 
-@app.route('/product')
-def product():
+@app.route('/product/<product_id>')
+def product(product_id):
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM products WHERE PRODUCT_ID = %s', (100001,))
-    product = cursor.fetchone()
+    cursor.execute('SELECT * FROM products WHERE PRODUCT_ID = ?', (product_id,))
+    focused_product = cursor.fetchone()
 
-    if product is None:
+    if focused_product is None:
         return render_template("404.html")
 
-    return render_template("product.html", session=session)
+    return render_template("product.html", session=session, focused_product=focused_product)
 
 
 @app.route('/cart')

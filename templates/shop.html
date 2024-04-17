@@ -18,7 +18,7 @@
 </div>
 
 <div class="small-container">
-    <table class="row", class="column">
+    <table class="row column">
         <tr>
             <th>Product</th>
             <th>Price</th>
@@ -26,14 +26,18 @@
         </tr>
         {% for product in products %}
         <tr>
-            <td><a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg"></td>
-            <td>{{ product['PRODUCT_NAME'] }}</td></a>
-            <td>{{ product['PRICE'] }}</td>
-            <td>{{ product['RATING'] }}</td>
+            <td>
+                <a href="">
+                    {{ product[0] }}
+                </a>
+            </td>
+            <td>{{ product[4] }}</td>
+            <td>{{ product[5] }}</td>
         </tr>
         {% endfor %}
     </table>
 </div>
+
 
 
 

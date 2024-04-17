@@ -361,16 +361,24 @@ def shop_editor():
 
 @app.route('/shop')
 def shop():
-
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM products')
     products = cursor.fetchall()
 
-    return render_template("shop.html", products=products, session=session)
+    return render_template("shop.html", session=session, products=products)
+
 
 @app.route('/product')
 def product():
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM products WHERE PRODUCT_ID = %s', (100001,))
+    product = cursor.fetchone()
+
+    if product is None:
+        return render_template("404.html")
+
     return render_template("product.html", session=session)
+
 
 @app.route('/cart')
 def cart():

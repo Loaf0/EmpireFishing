@@ -43,20 +43,20 @@ select:focus
 .rating .fa{
     color: #ff523b
 }
-.page-button{
-    margin: 0 auto 80px;
+ /* Pagination links */
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
 }
-.page-button span{
-    display: inline-block;
-    border: 1px solid #ff523b
-    margin-left: 10px;
-    width: 40px;
-    height: 40px;
-    text-align: center;
-    line-height: 40px;
-    cursor: pointer;
+
+/* Style the active/current link */
+.pagination a.active {
+  background-color: dodgerblue;
+  color: white;
 }
-.page-button span:hover{
-    background: #ff523b
-    color: #fff;
-}
+
+/* Add a grey background color on mouse-over */
+.pagination a:hover:not(.active) {background-color: #ddd;}

@@ -83,6 +83,7 @@
   transform: none !important;
 }
 .buttonFilled {
+  border-radius: 5px;
   color: var(--dl-color-custom-neutral-light);
   transition: 0.3s;
   font-family: Lato;

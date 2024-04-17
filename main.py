@@ -315,8 +315,8 @@ def shop_editor():
 
     if request.method == 'POST':
         # insert/modify items:
-        #insert_product = request.files.getlist('insert-logo')[0]
-        #insert_product_name = insert_product.filename
+        # insert_product = request.files.getlist('insert-logo')[0]
+        # insert_product_name = insert_product.filename
         insert_name = request.form.get('insert-name')
         insert_product_id = request.form.get('insert-product-ID')
         insert_provider = request.form.get('insert-provider')
@@ -341,7 +341,6 @@ def shop_editor():
                 cursor.execute('INSERT INTO products (product_name, product_provider, product_description, price) VALUES (?, ?, ?, ?)',
                                (insert_name, insert_provider, insert_description, float(insert_price)))
                 msg = 'Added new product %s.' % insert_name
-
 
         # remove items
         remove_name = request.form['remove-name']
@@ -387,7 +386,10 @@ def product(product_id):
 
 @app.route('/cart')
 def cart():
-    return render_template("cart.html", session=session)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM cart')
+    carts = cursor.fetchall()
+    return render_template("cart.html", session=session, carts=cart)
 
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])
@@ -400,8 +402,8 @@ def fishingSpots():
     cursor.execute('SELECT * FROM markedFishingSpots')
     spot = cursor.fetchone()
     while spot is not None:
-        lat.append(spot['lat'])
-        long.append(spot['long'])
+        lat.append(spot['latitude'])
+        long.append(spot['longitude'])
         label.append(spot['label'])
         spot = cursor.fetchone()
 
@@ -464,6 +466,32 @@ def map_editor():
     conn.commit()
 
     return render_template("map-editor.html", session=session, msg=msg, markers=markers)
+
+@app.route('/community-editor', methods=['GET', 'POST'])
+def community_editor():  # we are going to delete this and change to an on page delete post button
+    login_status = require_login_status(must_be_admin=True, destination='community-editor')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        # Identify community posts
+        insert_name = request.form['insert-name']
+        insert_availability = 'insert-availability' in request.form
+
+
+        # Remove post from queue
+        remove_post_queue = request.form['remove-post-queue']
+
+        if remove_post_queue:
+            cursor.execute('DELETE * FROM community WHERE usr = ?', (remove_post_queue,))
+            msg = 'Removed post from queue.'
+
+
+    return render_template('community-editor.html', session=session, msg=msg)
 
 
 @app.route('/home')
@@ -619,5 +647,3 @@ def register():
 
 if __name__ == '__main__':
     app.run()
-
-

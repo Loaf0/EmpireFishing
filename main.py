@@ -361,11 +361,16 @@ def shop_editor():
 
 @app.route('/shop')
 def shop():
+    count = int(request.args.get('count', default='10'))
+    page = int(request.args.get('page', default='1'))
+
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM products')
     products = cursor.fetchall()
 
-    return render_template("shop.html", session=session, products=products)
+    pagerange = range(max(1, page - 3), min(math.ceil(len(products)/count), page+3) + 1)
+
+    return render_template("shop.html", session=session, count=count, page=page, pagerange=pagerange, products=products, len=len, min=min, ceil=math.ceil)
 
 
 @app.route('/product/<product_id>')

@@ -20,13 +20,19 @@
           </tr>
         <tr >
             <td ><div class="fb-page" data-href="https://www.facebook.com/empirefishingandtackle/" data-tabs="timeline" data-width="" data-height="2000px" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/empirefishingandtackle/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/empirefishingandtackle/">Empire Fishing and Tackle</a></blockquote></div></td>
-            <td class="posts">
+            <td class="feed">
                 {% for post in posts %}
-                <div>
+                <div class="post">
+                  <div class="post-image">
                     {% if post['image'] is not none %}<img height="200px" src="static/images/community/{{ post['image'] }}">{% endif %}
-                {% if post['text'] is not none %}<p>{{ post['text'] }}</p>{% endif %}
-                <p>Posted by {{ post['usr'] }} on {{ datetime.fromtimestamp(post['date']).strftime('%Y-%m-%d') }}</p>
-                    </div>
+                  </div>
+                  <div class="post-content">
+                    <h3>{{ post['usr'] }} : </h3>
+                    {% if post['text'] is not none %}<p>{{ post['text'] }}</p>{% endif %}
+                    <p class="date-time">Posted on {{ datetime.fromtimestamp(post['date']).strftime('%Y-%m-%d') }}</p>
+                  </div>
+                </div>
+                <hr style="height:2px;border-width:0;color:gray;background-color:gray">
                 {% endfor %}
             </td>
         </tr>
@@ -36,10 +42,31 @@
 </div>
 
 <style>
-.posts{
+.post {
+    display: flex;
+    align-items: center; 
+    gap: 20px; 
+}
+
+.post-image img {
+    display: block;
+    max-height: 200px; 
+    width: auto; 
+}
+
+.post-content {
+    flex: 1; 
+}
+
+.feed{
   margin-top: 5px;
   margin-bottom: 10px;
   vertical-align: top;
+}
+
+.date-time{
+  font-size: small;
+  color: lightseagreen;
 }
 
 .fixed-button {
@@ -65,6 +92,7 @@ th{
 }
 
 table {
+  font-family: Lato;
   background: transparent; 
   overflow: hidden;
   background: none;

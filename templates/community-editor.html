@@ -11,11 +11,12 @@
             </div>
               <form action="{{ url_for('map_editor') }}" method="post">
                 <div class="container">
-                  <h2 class="bait-editor-text03">Insert Post Name:</h2>
+                  <h2 class="bait-editor-text03">Insert/Modify Community Posts:</h2>
                   <hr>
-                    <div class="itemPadding"><p>Name:</p> <input type="text" name="insert-label" class="input"/></div>
-                    <div class="itemPadding"><p>Visible?</p> <input type="checkbox" name="insert-availability" /></div>
-                    <div class="itemPadding"><p>In Queue?</p> <input type="checkbox" name="insert-availability" /></div>
+                    <div class="itemPadding"><p>User's Name:</p> <input type="text" name="insert-name" class="input"/></div>
+                    <div class="itemPadding"><p>Date Posted:</p> <input type="text" name="insert-post-date" class="input"/></div>
+                    <div class="itemPadding"><p>Visible?</p> <input type="checkbox" name="insert-visibility" /></div>
+                    <div class="itemPadding"><p>In Queue?</p> <input type="checkbox" name="insert-in-queue" /></div>
                   <hr>
                   <br>
                   <input type="submit" class="buttonFlat">

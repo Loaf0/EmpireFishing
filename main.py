@@ -457,6 +457,18 @@ def community_editor():
 
     cursor = conn.cursor()
 
+    if request.method == 'POST':
+        # edit posts visibility
+        insert_name = request.form['insert-name']
+        insert_visibility = 'insert-visibility' in request.form
+        insert_in_queue = 'insert-in-queue' in request.form
+
+        # if name exists
+        if insert_name:
+            cursor.execute('SELECT * FROM community WHERE usr = ?', (insert_name,))
+            found_post = cursor.fetchone()
+
+
     return render_template('community-editor.html', session=session, msg=msg)
 
 

@@ -295,7 +295,7 @@ def submit_post():
 
         if image or text:
             cursor.execute('INSERT INTO community (image, text, usr, date) VALUES (?, ?, ?, ?)', (new_image_name, text, session['username'], math.floor(time.time())))
-            msg = 'Post submitted for admin approval.'
+            msg = 'Post submitted.'
 
             # upload image to community folder
             if image:

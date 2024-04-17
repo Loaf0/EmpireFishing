@@ -395,8 +395,8 @@ def fishingSpots():
     cursor.execute('SELECT * FROM markedFishingSpots')
     spot = cursor.fetchone()
     while spot is not None:
-        lat.append(spot['lat'])
-        long.append(spot['long'])
+        lat.append(spot['latitude'])
+        long.append(spot['longitude'])
         label.append(spot['label'])
         spot = cursor.fetchone()
 

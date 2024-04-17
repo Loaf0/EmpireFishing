@@ -4,13 +4,12 @@
 <link href="../static/bait.css" rel="stylesheet" />
 
 <div class="live-bait-hero">
-          <div class="live-bait-hero1 heroContainer" style="text-align: center; align-content: center;">
-            <div class="live-bait-container1" style="text-align: center; align-content: center;">
-                <div class="outlined" style="text-align: center; align-content: center;">
-                    <h1 class="live-bait-text2" style="padding: 8px; font-weight: bolder" align="center"> Fishing Map </h1>
+          <div class="live-bait-hero1 heroContainer">
+            <div class="container">
+                <div class="outlined">
+                    <h1 class="live-bait-text2"> Fishing Map </h1>
                     <p style="padding: 3px;"> Best fishing spots recommended by Empire Fishing and Tackle</p>
                 </div>
-
                 <div id="map"></div>
             </div>
           </div>
@@ -64,29 +63,71 @@
             counter++;
         }
     }
-
 </script>
 
 
 <style>
-    .outlined{
-        width: 50%;
-        align-self: center;
-        border: outset 15px #ED6A59;
-        margin: 0px;
-        padding: 0px;
-        background: #e6887c;
-        display: inline-block
+.live-bait-hero {
+    font-family: 'Open Sans', sans-serif;
+    color: #201f1f;
+    background-color: #f4f4f4;
+    padding: 5px;
+    text-align: center;
+    height: 70%;
+}
+
+.container {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 80%;
+}
+
+.heroContainer {
+    height: min-content;
+    margin: 0 auto;
+    overflow: hidden;
+    margin: auto;
+}
+
+.live-bait-container1 {
+    padding: auto;
+}
+
+.outlined {
+    margin: auto;
+    width: 70%;
+    border: 2px solid #ab4d41;
+    margin-bottom: 10px;
+    background-color: #ed6958;
+    border-radius: 10px;
+}
+
+.live-bait-text2 {
+    color: #201f1f;
+    margin-bottom: 0;
+}
+
+#map {
+    width: 100%;
+    height: 450px;
+    background-color: #ddd;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+@media (max-width: 768px) {
+    .heroContainer {
+        box-shadow: none;
+        border-radius: 0;
     }
+
     #map {
-        align-self: center;
-        height: 500px;
-        width: 80%;
-        border: outset 15px #ED6A59;
-        padding: 0px;
-        margin: 0px;
-        display: inline-block
+        height: 300px;
     }
+}
+
 </style>
 
 {% endblock %}

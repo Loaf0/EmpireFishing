@@ -4,28 +4,28 @@
 <link href="../static/brands.css" rel="stylesheet" />
 
 <div class="brands-hero">
-          <div class="brands-hero1 heroContainer">
-            <div class="brands-container1" >
-              <h1 class="brands-text2" style="font-size: 40px; width: 100%" align="center">Brands</h1>
-                <p>Sort :<a class="buttonlink" href="{{ url_for('brands_list') }}?sort=alphabetical">Alphabetically,</a><a class="buttonlink" href="{{ url_for('brands_list') }}">Random</a><br> </p>
-              <div class="brands-table">
-                  {% for brand in brands %}
-                    <div class="responsive" >
-                      <div class="gallery">
-                        <a target="_blank" href="static/images/brands/{{ brand['logo'] }}">
-                          <img height="200px" src="static/images/brands/{{ brand['logo'] }}" alt="{{ brand['name'] }}">
-                        </a>
-                        <div class="desc">
-                            <h1>{{ brand['name'] }}</h1><br>
-                            <p>{{ brand['description'] }}</p>
-                        </div>
-                      </div>
-                    </div>
-                    {% endfor %}
+  <div class="brands-hero1 heroContainer">
+    <div class="brands-container1" >
+      <h1 class="brands-text2" style="font-size: 40px; width: 100%" align="center">Brands</h1>
+        <p>Sort :<a class="buttonlink" href="{{ url_for('brands_list') }}?sort=alphabetical">Alphabetically,</a><a class="buttonlink" href="{{ url_for('brands_list') }}">Random</a><br> </p>
+      <div class="brands-table">
+          {% for brand in brands %}
+            <div class="responsive" >
+              <div class="gallery">
+                <a target="_blank" href="static/images/brands/{{ brand['logo'] }}">
+                  <img height="200px" src="static/images/brands/{{ brand['logo'] }}" alt="{{ brand['name'] }}">
+                </a>
+                <div class="desc">
+                    <h1>{{ brand['name'] }}</h1><br>
+                    <p>{{ brand['description'] }}</p>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+            {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
 
 <style>
     .buttonlink{

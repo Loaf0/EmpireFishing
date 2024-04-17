@@ -361,14 +361,17 @@ def shop_editor():
 
 @app.route('/shop')
 def shop():
-    return render_template("shop.html", session=session)
-# WILL BE REMOVED ONLY FOR TESTING WILL BE INTEGRATED INTO THE SHOP
+
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM products')
+    products = cursor.fetchall()
+
+    return render_template("shop.html", products=products, session=session)
+
 @app.route('/product')
 def product():
     return render_template("product.html", session=session)
 
-
-# WILL BE REMOVED ONLY FOR TESTING WILL BE INTEGRATED INTO THE SHOP
 @app.route('/cart')
 def cart():
     return render_template("cart.html", session=session)

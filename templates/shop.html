@@ -16,53 +16,63 @@
         </select>
     </div>
 </div>
-        <div class="small-container">
-            <table class="row", class="column">
-                    {% for product in products %}
-                        <tr>
-                            <a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg">
-                            <td>{{ product['PRODUCT_NAME'] }}</td></a>
-                            <td>{{ product['PRICE'] }}</td>
-                            <td>{{ product['RATING'] }}</td>
-                        </tr>
-                    {% endfor %}
-            </table>
-        </div>
-    <!--<div class="small-container">
-        <div class="row">
-            <div class="column">
-                <a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg">
-                    <h4 class="p-name">Fishing Pole</h4></a>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
+
+<div class="small-container">
+    <table class="row", class="column">
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Rating</th>
+        </tr>
+        {% for product in products %}
+        <tr>
+            <td><a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg"></td>
+            <td>{{ product['PRODUCT_NAME'] }}</td></a>
+            <td>{{ product['PRICE'] }}</td>
+            <td>{{ product['RATING'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+
+
+
+<!--<div class="small-container">
+    <div class="row">
+        <div class="column">
+            <a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg">
+                <h4 class="p-name">Fishing Pole</h4></a>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
             </div>
-            <div class="column">
-                <a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg">
-                    <h4 class="p-name">Fishing Pole</h4></a>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star-o"></i>
-                </div>
-                <p>$50.00</p>
-            </div>
+            <p>$50.00</p>
         </div>
-    </div>-->
-    <div class="page-button">
-        <span>1</span>
-        <span>2</span>
-        <span>3</span>
-        <span>4</span>
-        <span>&#8594;</span>
+        <div class="column">
+            <a href="{{ url_for('product') }}"><img src="fishing poles/H-10332.jpg">
+                <h4 class="p-name">Fishing Pole</h4></a>
+            <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-o"></i>
+            </div>
+            <p>$50.00</p>
+        </div>
     </div>
+</div>-->
+<div class="page-button">
+    <span>1</span>
+    <span>2</span>
+    <span>3</span>
+    <span>4</span>
+    <span>&#8594;</span>
+</div>
 
 <style>
 * {

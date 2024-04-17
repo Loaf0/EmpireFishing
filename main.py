@@ -65,6 +65,12 @@ def require_login_status(must_be_logged_out=False, must_be_admin=False, destinat
         abort(403)
 
 
+def average_product_rating(cursor, product_id):
+    cursor.execute('SELECT rating FROM ratings WHERE product = ?', (product_id,))
+    l = [i[0] for i in cursor.fetchall()]
+    return sum(l)/len(l) if len(l) != 0 else None
+
+
 @app.route('/')
 def home():
     return render_template("index.html", session=session)
@@ -367,21 +373,52 @@ def shop():
     cursor.execute('SELECT * FROM products')
     products = cursor.fetchall()
 
+    product_ids = [product['product_id'] for product in products]
+    ratings = {}
+
+    for id in product_ids:
+        ratings[id] = average_product_rating(cursor, id)
+
     pagerange = range(max(1, page - 3), min(math.ceil(len(products)/count), page+3) + 1)
 
-    return render_template("shop.html", session=session, count=count, page=page, pagerange=pagerange, products=products, len=len, min=min, ceil=math.ceil)
+    return render_template("shop.html", session=session, count=count, page=page, pagerange=pagerange, products=products, ratings=ratings, len=len, min=min, ceil=math.ceil)
 
 
-@app.route('/product/<product_id>')
+@app.route('/product/<product_id>', methods=['GET', 'POST'])
 def product(product_id):
+    msg = ''
+
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM products WHERE PRODUCT_ID = ?', (product_id,))
     focused_product = cursor.fetchone()
 
-    if focused_product is None:
-        return render_template("404.html")
+    cursor.execute('SELECT * FROM ratings WHERE usr = ? AND product = ?', (session['username'], product_id,))
+    found_rating = cursor.fetchone()
 
-    return render_template("product.html", session=session, focused_product=focused_product)
+    if found_rating:
+        user_rating = found_rating['rating']
+    else:
+        user_rating = None
+
+    if focused_product is None:
+        abort(404)
+
+    if request.method == 'POST':
+        user_rating = request.form['user-rating']
+
+        if found_rating:
+            cursor.execute('UPDATE ratings SET rating = ? WHERE usr = ? AND product = ?', (user_rating, session['username'], product_id))
+        else:
+            cursor.execute('INSERT INTO ratings (usr, product, rating) VALUES (?, ?, ?)', (session['username'], product_id, user_rating))
+
+        conn.commit()
+
+        msg = 'Rating updated.'
+
+        # cursor.execute('SELECT * FROM products WHERE PRODUCT_ID = ?', (product_id,))
+        # conn.commit()
+
+    return render_template("product.html", session=session, msg=msg, focused_product=focused_product, rating=average_product_rating(cursor, product_id), user_rating=user_rating)
 
 
 @app.route('/cart')

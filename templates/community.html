@@ -6,6 +6,9 @@
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0" nonce="X1NreoSu"></script>
 
+<a href="{{ url_for('submit_post') }}"><button class="fixed-button buttonFilled">Make Post</button></a>
+
+
 <div class="community-hero">
   <div class="community-hero1 heroContainer">
     <h1 class="community-text2" style="padding: 10px;">Empire Fishing Community</h1>
@@ -13,11 +16,11 @@
       <table>
           <tr>
               <th style="width: 25%;">Posts from Empire Fishing & Tackle</th>
-              <th style="width: 75%;">Community Posts (<a href="{{ url_for('submit_post') }}">click here to submit post</a>)</th>
+              <th style="width: 75%;">Community Posts</th>
           </tr>
         <tr >
             <td ><div class="fb-page" data-href="https://www.facebook.com/empirefishingandtackle/" data-tabs="timeline" data-width="" data-height="2000px" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/empirefishingandtackle/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/empirefishingandtackle/">Empire Fishing and Tackle</a></blockquote></div></td>
-            <td >
+            <td class="posts">
                 {% for post in posts %}
                 <div>
                     {% if post['image'] is not none %}<img height="200px" src="static/images/community/{{ post['image'] }}">{% endif %}
@@ -33,12 +36,36 @@
 </div>
 
 <style>
+.posts{
+  margin-top: 5px;
+  margin-bottom: 10px;
+  vertical-align: top;
+}
+
+.fixed-button {
+    position: fixed;
+    font-size: larger;
+    bottom: 20px; 
+    right: 20px; 
+    padding: 10px 20px; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    z-index: 1000; 
+}
+
+th{
+  border-bottom: solid black 1px;
+  border-bottom-style: dotted; 
+}
+
   th, td {
-  border: none; /* Remove borders from table headers and cells */
+  border: none; 
 }
 
 table {
-  background: transparent; /* Set the background of the table to be transparent */
+  background: transparent; 
   overflow: hidden;
   background: none;
   border: none;

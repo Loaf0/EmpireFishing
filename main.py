@@ -385,7 +385,7 @@ def product(product_id):
 
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
-    login_status = require_login_status(must_be_logged_in=True, destination='cart')
+    login_status = require_login_status(destination='cart')
     if login_status is not None:
         return login_status
 

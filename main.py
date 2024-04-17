@@ -447,6 +447,18 @@ def map_editor():
 
     return render_template("map-editor.html", session=session, msg=msg, markers=markers)
 
+@app.route('/community-editor', methods=['GET', 'POST'])
+def community_editor():
+    login_status = require_login_status(must_be_admin=True, destination='community-editor')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    cursor = conn.cursor()
+
+    return render_template('community-editor.html', session=session, msg=msg)
+
 
 @app.route('/home')
 def home_redirect():

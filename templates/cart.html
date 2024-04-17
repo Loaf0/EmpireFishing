@@ -3,8 +3,8 @@
 {% block content %}
 <link href="../static/cart.css" rel="stylesheet" />
 
-<!--<div class="small-container cart-page" style="padding-top:3%">
-     <table>
+<div class="small-container cart-page" style="padding-top:3%">
+     <!--<table>
         <tr>
             <th>Product</th>
             <th>Quantity</th>
@@ -19,6 +19,8 @@
             </tr>
             {% for product in cart %}
             <tr>
+                <input type="hidden" value="{{product_id}}">
+                <input type="submit" value="Add To Cart" />
                 <td>{{ product['product_id'] }}</td>
                 <td>{{ product['quantity'] }}</td>
                 <td>{{ product['price']*quantity }}</td>
@@ -26,7 +28,7 @@
             {% endfor %}
         </table>
     </div>
-
+</div>
         <!--<tr>
             <td>
                 <div class="cart-info">

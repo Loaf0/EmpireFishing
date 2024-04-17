@@ -328,7 +328,6 @@ def shop_editor():
         insert_provider = request.form.get('insert-provider')
         insert_description = request.form['insert-description']
         insert_price = request.form.get('insert-price')
-        print(insert_price)
 
         if insert_name:
             cursor.execute('SELECT * FROM products WHERE product_name = ?', (insert_name,))
@@ -421,12 +420,39 @@ def product(product_id):
     return render_template("product.html", session=session, msg=msg, focused_product=focused_product, rating=average_product_rating(cursor, product_id), user_rating=user_rating)
 
 
-@app.route('/cart')
+@app.route('/cart', methods=['GET', 'POST'])
 def cart():
+    login_status = require_login_status(destination='cart')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM cart')
-    carts = cursor.fetchall()
-    return render_template("cart.html", session=session, carts=cart)
+
+    if request.method == 'POST':
+        insert_username = request.form.get('insert-username')
+        insert_product_id = request.form.get('insert-product-ID')
+        insert_quantity = request.form.get('insert-quantity')
+        if insert_username:
+            cursor.execute('SELECT * FROM cart WHERE username= ?', (insert_username,))
+            found_product = cursor.fetchone()
+            if insert_product_id:
+                cursor.execute('UPDATE cart SET product_id = ? WHERE product_name = ?', (int(insert_product_id), insert_username))
+                if found_product:
+                    cursor.execute('UPDATE cart SET quantity = ? WHERE product_id = ?', (int(insert_quantity), insert_product_id))
+        else:
+            cursor.execute('INSERT INTO cart (username, product_id, quantity) VALUES (?, ?, ?)',
+                           (insert_username, int(insert_product_id), int(insert_quantity)))
+    remove_product_id = request.form['remove-name']
+    if remove_product_id:
+        cursor.execute('DELETE FROM cart WHERE product_id = ?', (remove_product_id,))
+
+        # fetch current cart table
+        cursor.execute('SELECT * FROM cart')
+        carts = cursor.fetchall()
+
+        conn.commit()
+    return render_template("cart.html", session=session, carts=carts)
 
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])

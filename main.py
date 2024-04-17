@@ -481,7 +481,7 @@ def community_editor():  # we are going to delete this and change to an on page 
 
         # if user ID exists
         if insert_id:
-            cursor.execute('SELECT * FROM usr WHERE name = ?', (insert_id,))
+            cursor.execute('SELECT * FROM usr WHERE id = ?', (insert_id,))
             found_id = cursor.fetchone()
 
             if found_id:
@@ -510,6 +510,12 @@ def community_editor():  # we are going to delete this and change to an on page 
         if remove_post_queue:
             cursor.execute('DELETE * FROM community WHERE usr = ?', (remove_post_queue,))
             msg = 'Removed post from queue.'
+
+
+        # Remove post from being the queue
+        remove_post_visibility = request.form[('remove-post-visibility']
+
+        # Remove post from being visible
 
 
     return render_template('community-editor.html', session=session, msg=msg)

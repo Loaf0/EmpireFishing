@@ -262,6 +262,15 @@ def community():
 
     return render_template("community.html", session=session, posts=posts, datetime=datetime)
 
+@app.route('/delete_post', methods=['POST'])
+def delete_post():
+    if 'admin' in session:
+        post_id = request.form.get('post_id')
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM community WHERE id = ?', (post_id,) )
+        return redirect(url_for('community'))
+    else:
+        return "Unauthorized"
 
 @app.route('/submit-post', methods=['GET', 'POST'])
 def submit_post():

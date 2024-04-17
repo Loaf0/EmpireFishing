@@ -458,15 +458,17 @@ def community_editor():
     cursor = conn.cursor()
 
     if request.method == 'POST':
-        # edit posts visibility
+        # Identify community posts
         insert_name = request.form['insert-name']
-        insert_visibility = 'insert-visibility' in request.form
-        insert_in_queue = 'insert-in-queue' in request.form
+        insert_availability = 'insert-availability' in request.form
 
-        # if name exists
-        if insert_name:
-            cursor.execute('SELECT * FROM community WHERE usr = ?', (insert_name,))
-            found_post = cursor.fetchone()
+
+        # Remove post from queue
+        remove_post_queue = request.form['remove-post-queue']
+
+        if remove_post_queue:
+            cursor.execute('DELETE * FROM community WHERE usr = ?', (remove_post_queue,))
+            msg = 'Removed post from queue.'
 
 
     return render_template('community-editor.html', session=session, msg=msg)

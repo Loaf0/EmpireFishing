@@ -329,7 +329,7 @@ def shop_editor():
             found_product = cursor.fetchone()
             #if insert_product_id:
                 #cursor.execute('UPDATE products SET product_id = ? WHERE product_name = ?', (int(insert_product_id), insert_name))
-            if insert_provider:
+            if found_product:
                 cursor.execute('UPDATE products SET product_provider = ? WHERE product_name = ?', (insert_provider, insert_name))
                 if insert_description:
                     cursor.execute('UPDATE products SET product_description = ? WHERE product_name = ?', (insert_description, insert_name))
@@ -337,8 +337,8 @@ def shop_editor():
                         cursor.execute('UPDATE products SET price = ? WHERE product_name = ?', (float(insert_price), insert_name))
                 msg = 'Updated product %s.' % insert_name
             else:
-
-                cursor.execute('INSERT INTO products (product_name, product_id, product_provider, product_description, price) VALUES (?, ?, ?, ?)',
+                print("test")
+                cursor.execute('INSERT INTO products (product_name, product_provider, product_description, price) VALUES (?, ?, ?, ?)',
                                (insert_name, insert_provider, insert_description, float(insert_price)))
                 msg = 'Added new product %s.' % insert_name
 
@@ -347,7 +347,7 @@ def shop_editor():
         remove_name = request.form['remove-name']
 
         if remove_name:
-            cursor.execute('DELETE FROM products WHERE name = ?', (remove_name,))
+            cursor.execute('DELETE FROM products WHERE product_name = ?', (remove_name,))
             msg = 'Removed product %s.' % remove_name
 
     # fetch current product table

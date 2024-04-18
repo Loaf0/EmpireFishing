@@ -472,6 +472,20 @@ def cart():
     msg = ''
 
     cursor = conn.cursor()
+    cursor.execute('SELECT * FROM cart')
+
+    if request.method == 'POST':
+        insert_username = request.form['insert-username']
+        insert_product = request.form['insert-product']
+        insert_quantity = request.form['insert-quantity']
+        add_to_cart = request.form['add-to cart']
+
+        if add_to_cart:
+            cursor.execute('INSERT INTO cart (username, PRODUCT_ID, QUANTITY) VALUES (?, ?, ?)',
+                           (insert_username, insert_product, insert_quantity))
+
+    carts = cursor.fetchall()
+    return render_template("cart.html", session=session, carts=cart)
     cursor.execute('SELECT products.product_id, products.product_name, products.price, cart.quantity FROM cart INNER JOIN products ON cart.product_id = products.product_id WHERE username = ?', (session['username'],))
     cart_items = cursor.fetchall()
 
@@ -565,6 +579,61 @@ def map_editor():
     conn.commit()
 
     return render_template("map-editor.html", session=session, msg=msg, markers=markers)
+
+@app.route('/community-editor', methods=['GET', 'POST'])
+def community_editor():  # we are going to delete this and change to an on page delete post button
+    login_status = require_login_status(must_be_admin=True, destination='community-editor')
+    if login_status is not None:
+        return login_status
+
+    msg = ''
+
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        # collect data from html form
+        insert_id = request.form['insert-id']
+        insert_text = request.form('insert-text')
+        insert_visibility = 'insert-visibility' in request.form
+        insert_in_queue = 'insert-in-queue' in request.form
+
+        # if user ID exists
+        if insert_id:
+            cursor.execute('SELECT * FROM usr WHERE id = ?', (insert_id,))
+            found_id = cursor.fetchone()
+
+            if found_id:
+                cursor.execute('UPDATE text SET id = ? WHERE usr = ?',
+                               (int(insert_visibility), insert_id))
+
+                if insert_text:
+                    cursor.execute('UPDATE community SET text = ? WHERE usr = ?', (insert_text, insert_id))
+
+                msg = 'Updated visibility %s.' % insert_id
+            else:
+                cursor.execute('INSERT INTO community (name, visibility, text) VALUES (?, ?, ?)',
+                               (insert_id, int(insert_visibility), insert_text))
+                msg = 'Added new text %s.' % insert_id
+
+        # Identify community posts
+        insert_id = request.form['insert-id']
+        insert_visbility = 'insert-visibility' in request.form
+
+        # Add post from queue
+
+
+        # Remove post from queue
+        remove_post_queue = request.form['remove-post-queue']
+
+        if remove_post_queue:
+            cursor.execute('DELETE * FROM community WHERE usr = ?', (remove_post_queue,))
+            msg = 'Removed post from queue.'
+
+
+        # Remove post from being visible
+
+
+    return render_template('community-editor.html', session=session, msg=msg)
 
 
 @app.route('/home')

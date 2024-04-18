@@ -473,18 +473,6 @@ def cart():
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM cart')
 
-    if request.method == 'POST':
-        insert_username = request.form['insert-username']
-        insert_product = request.form['insert-product']
-        insert_quantity = request.form['insert-quantity']
-        add_to_cart = request.form['add-to cart']
-
-        if add_to_cart:
-            cursor.execute('INSERT INTO cart (username, PRODUCT_ID, QUANTITY) VALUES (?, ?, ?)',
-                           (insert_username, insert_product, insert_quantity))
-
-    carts = cursor.fetchall()
-    return render_template("cart.html", session=session, carts=cart)
     cursor.execute('SELECT products.product_id, products.product_name, products.price, cart.quantity FROM cart INNER JOIN products ON cart.product_id = products.product_id WHERE username = ?', (session['username'],))
     cart_items = cursor.fetchall()
 

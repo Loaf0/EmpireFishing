@@ -4,12 +4,7 @@
 <link href="../static/cart.css" rel="stylesheet" />
 
 <div class="small-container cart-page" style="padding-top:3%">
-     <!--<table>
-        <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Subtotal</th>
-        </tr>-->
+
     <div class="cart-info">
         <table class="container">
             <tr>
@@ -31,73 +26,29 @@
         </table>
     </div>
 
-    <p>Total: ${{ '{0:.2f}'.format(total) }}</p>
+    <p style="padding: 10px;">Total: ${{ '{0:.2f}'.format(total) }}</p>
     <form action="{{ url_for('cart') }}" method="post" enctype="multipart/form-data">
-        <button class="buttonFilled" type="submit" name="email-receipt" value="1"> Email Receipt</button>
-            <p>{{ msg }}</p>
-        </form>
+        <button class="buttonFilled" type="submit" name="email-receipt" value="1"> Purchase </button>
+        <p>{{ msg }}</p>
+    </form>
 </div>
-        <!--<tr>
-            <td>
-                <div class="cart-info">
-                    <img src="fishing poles/H-10332.jpg">
-                    <div>
-                        <p>Fishing pole</p>
-                        <small>Price: $50.00</small>
-                        <br>
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$50.00</td>
-        </tr>
-         <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="fishing poles/H-10332.jpg">
-                    <div>
-                        <p>Fishing pole</p>
-                        <small>Price: $50.00</small>
-                        <br>
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$50.00</td>
-        </tr>
-         <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="fishing poles/H-10332.jpg">
-                    <div>
-                        <p>Fishing pole</p>
-                        <small>Price: $50.00</small>
-                        <br>
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$50.00</td>
-        </tr>
-    </table>
-    <div class="total-price">
-        <table>
-            <tr>
-                <td>Subtotal</td>
-                <td>$150.00</td>
-            </tr>
-            <tr>
-                <td>Tax</td>
-                <td>$25.00</td>
-            </tr>
-            <tr>
-                <td>Total</td>
-                <td>$175.00</td>
-            </tr>
-        </table>
-    </div>
-</div>-->
+
+<style>
+table{
+    background-color: #f2f0f0;
+    border-radius: 8px;
+    padding: 15px;
+}
+td{
+    background-color: #d3d3d3;
+    padding: 5px;
+    border-radius: 5px; 
+}
+ .table-header{
+        background-color: #ED6A5A;
+        padding: 5px;
+        border-radius: 5px; 
+    }
+    
+</style>
 {% endblock %}

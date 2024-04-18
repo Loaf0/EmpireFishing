@@ -566,15 +566,15 @@ def map_editor():
             found_label = cursor.fetchone()
 
             if found_label:
-                cursor.execute('UPDATE markedFishingSpots SET long = ? WHERE label = ?',
+                cursor.execute('UPDATE markedFishingSpots SET longitude = ? WHERE label = ?',
                                (insert_longitude, insert_label))
 
                 if insert_latitude:
-                    cursor.execute('UPDATE markedFishingSpots SET lat = ? WHERE label = ?',
+                    cursor.execute('UPDATE markedFishingSpots SET latitude = ? WHERE label = ?',
                                    (insert_latitude, insert_label))
                 msg = 'Updated marker %s.' % insert_label
             else:
-                cursor.execute('INSERT INTO markedFishingSpots (lat, long, label) VALUES (?, ?, ?)',
+                cursor.execute('INSERT INTO markedFishingSpots (latitude, longitude, label) VALUES (?, ?, ?)',
                                (insert_latitude, insert_longitude, insert_label))
                 msg = 'Added new marker %s.' % insert_label
 

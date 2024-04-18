@@ -24,7 +24,7 @@
             <td><h1>{{ product[0] }}</h1>
                 <h3>${{ '{0:.2f}'.format(product[4]) }}</h3><p>Rating:
                        {% if ratings[product['product_id']] != 0 %}
-                        {{ ratings[product['product_id']] }}/5
+                        {{ '{0:.2f}'.format(ratings[product['product_id']]) }}/5
                        {% else %}
                         N/A
                        {% endif %}</p>

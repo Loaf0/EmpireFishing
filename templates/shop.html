@@ -7,38 +7,31 @@
 <div class="small-container">
     <div class="row row-2">
         <h2>All Products</h2>
-        <select>
-            <option>Default Sorting</option>
-            <option>Sort by price</option>
-            <option>Sort by popularity</option>
-            <option>Sort by rating</option>
-            <option>Sort by sale</option>
-        </select>
-    </div>
-</div>
-
-<div class="small-container">
-    <table class="row column">
-        <tr>
-            <th>Results: ({{ (page-1)*count+1 }}-{{ min(page*count, len(products)) }} of {{ len(products) }})</th>
-            <th></th>
-        </tr>
-        {% for product in products[((page-1)*count):(page*count)] %}
-        <a href="{{ url_for('product', product_id=product[1]) }}">
-        <tr>
-            <td><a href="{{ url_for('product', product_id=product[1]) }}"><img src="../static/images/products/{{ product[1] }}.png"></a></td>
-            <td><h1>{{ product[0] }}</h1>
-                <h3>${{ product[4] }}</h3><p>Rating:
+            <p>Include:<a class="buttonlink" href="{{ url_for('shop') }}">Default Sorting,</a><a class="buttonlink" href="{{ url_for('shop') }}">Sort by price,</a><a class="buttonlink" href="{{ url_for('shop') }}">Sort by rating</a></p></option>
+        <div class="small-container">
+            <table class="row column">
+                <tr>
+                    <th>Results: ({{ (page-1)*count+1 }}-{{ min(page*count, len(products)) }} of {{ len(products) }})</th>
+                <th></th>
+                </tr>
+                {% for product in products[((page-1)*count):(page*count)] %}
+                <a href="{{ url_for('product', product_id=product[1]) }}">
+                <tr>
+                    <td><a href="{{ url_for('product', product_id=product[1]) }}"><img src="../static/images/products/{{ product[1] }}.png"></a></td>
+                    <td><h1>{{ product[0] }}</h1>
+                    <h3>${{ product[4] }}</h3><p>Rating:
                        {% if ratings[product['product_id']] %}
-                        {{ ratings[product['product_id']] }}/5
-                       {% else %}
-                        N/A
+                            {{ ratings[product['product_id']] }}/5
+                        {% else %}
+                            N/A
                        {% endif %}</p>
-            </td>
-        </tr>
-        </a>
-        {% endfor %}
-    </table>
+                    </td>
+                </tr>
+                </a>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 </div>
 
 <div class="pagination">

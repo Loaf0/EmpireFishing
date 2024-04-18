@@ -374,6 +374,7 @@ def shop_editor():
 
 @app.route('/shop')
 def shop():
+    sort = request.args.get('sort', default='random')
     count = int(request.args.get('count', default='10'))
     page = int(request.args.get('page', default='1'))
 
@@ -381,6 +382,14 @@ def shop():
     cursor.execute('SELECT * FROM products')
     products = cursor.fetchall()
 
+    if sort == 'Sort by price':
+        cursor.execute('Select * FROM products ORDER BY price')
+        products = cursor.fetchall()
+    elif sort =='Sort by rating':
+        cursor.execute('Select * FROM products ORDER BY rating')
+        products = cursor.fetchall()
+    else:
+        random.shuffle
     product_ids = [product['product_id'] for product in products]
     ratings = {}
 

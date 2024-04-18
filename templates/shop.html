@@ -4,8 +4,8 @@
 <link href="../static/shop.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css">
 
-<div class="small-container">
-    <div class="row row-2">
+<div class="small-container" style="padding-top: 13%;">
+    <div class="row">
         <h2>All Products</h2>
         <select>
             <option>Default Sorting</option>
@@ -18,15 +18,15 @@
 </div>
 
 <div class="small-container">
-    <table class="row column">
+    <table class="row column" style="width: 90%;">
         <tr>
-            <th>Results: ({{ (page-1)*count+1 }}-{{ min(page*count, len(products)) }} of {{ len(products) }})</th>
-            <th></th>
+            <th style="width: 30%;">Results: ({{ (page-1)*count+1 }}-{{ min(page*count, len(products)) }} of {{ len(products) }})</th>
+            <th style="width: 70%;"></th>
         </tr>
         {% for product in products[((page-1)*count):(page*count)] %}
         <a href="{{ url_for('product', product_id=product[1]) }}">
         <tr>
-            <td><a href="{{ url_for('product', product_id=product[1]) }}"><img src="../static/images/products/{{ product[5] }}"></a></td>
+            <td ><a href="{{ url_for('product', product_id=product[1]) }}"><img src="../static/images/products/{{ product[5] }}"></a></td>
             <td><h1>{{ product[0] }}</h1>
                 <h3>${{ product[4] }}</h3><p>Rating:
                        {% if ratings[product['product_id']] %}
@@ -54,9 +54,10 @@
 </div>
 
 <style>
+
 .small-container {
-    max-width: 90%;
-    margin: 0 auto;
+    width: 80%;
+    margin: auto;
 }
 
 table {
@@ -75,10 +76,14 @@ th {
 }
 
 td img {
-    max-width: 100px;
-    max-height: 100px;
-    vertical-align: middle;
+    margin: auto;
+    height: auto;
+    width: auto;
+    max-width: 300px;
+    max-height: 150px;
     margin-right: 10px;
+    display: flex; 
+    vertical-align: middle;
 }
 
 * {

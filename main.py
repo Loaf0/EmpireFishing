@@ -91,7 +91,7 @@ def require_login_status(must_be_logged_out=False, must_be_admin=False, destinat
 def average_product_rating(cursor, product_id):
     cursor.execute('SELECT rating FROM ratings WHERE product = ?', (product_id,))
     l = [i[0] for i in cursor.fetchall()]
-    return sum(l)/len(l) if len(l) != 0 else None
+    return sum(l)/len(l) if len(l) != 0 else 0
 
 
 @app.route('/')
@@ -399,10 +399,9 @@ def shop_editor():
 @app.route('/shop')
 def shop():
 
-    sort = request.args.get('sort', default='random')
+    sort = request.args.get('sort', default='default')
     count = int(request.args.get('count', default='10'))
     page = int(request.args.get('page', default='1'))
-    sort = request.args.get('sort', default='random')
 
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM products')
@@ -416,13 +415,13 @@ def shop():
 
     pagerange = range(max(1, page - 3), min(math.ceil(len(products)/count), page+3) + 1)
     if sort == 'price':
-        products.sort(key=lambda x: x['product_id'])
+        products.sort(key=lambda x: x['price'])
     elif sort == 'rating':
-        products.sort(key=lambda x: x['product_id'])
+        products.sort(key=lambda x: -average_product_rating(cursor, x['product_id']))
     else:
-        random.shuffle
+        products.sort(key=lambda x: x['product_id'])
 
-    return render_template("shop.html", session=session, count=count, page=page, pagerange=pagerange, products=products, ratings=ratings, len=len, min=min, ceil=math.ceil)
+    return render_template("shop.html", session=session, sort=sort, count=count, page=page, pagerange=pagerange, products=products, ratings=ratings, len=len, min=min, ceil=math.ceil)
 
 
 @app.route('/product/<product_id>', methods=['GET', 'POST'])

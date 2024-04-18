@@ -7,7 +7,7 @@
 <div class="small-container" style="padding-top: 13%;">
     <div class="row">
         <h2>All Products</h2>
-            <p>Include:<a class="buttonlink" href="{{ url_for('shop') }}">Default Sorting,</a><a class="buttonlink" href="{{ url_for('shop') }}?sort=price">Sort by price,</a><a class="buttonlink" href="{{ url_for('shop') }}?sort=rating">Sort by rating</a></p>
+            <p>Sort: <a class="buttonlink" href="{{ url_for('shop') }}">by default,</a> <a class="buttonlink" href="{{ url_for('shop') }}?sort=price">by price,</a> <a class="buttonlink" href="{{ url_for('shop') }}?sort=rating">by rating</a></p>
     </div>
 </div>
 
@@ -23,7 +23,7 @@
             <td ><a href="{{ url_for('product', product_id=product[1]) }}"><img src="../static/images/products/{{ product[5] }}"></a></td>
             <td><h1>{{ product[0] }}</h1>
                 <h3>${{ product[4] }}</h3><p>Rating:
-                       {% if ratings[product['product_id']] %}
+                       {% if ratings[product['product_id']] != 0 %}
                         {{ ratings[product['product_id']] }}/5
                        {% else %}
                         N/A
@@ -37,13 +37,13 @@
 
 <div class="pagination">
     {% if page > pagerange[0] %}
-    <a href="{{ url_for('shop') }}?count={{ count }}&page=1">&laquo;</a>
+    <a href="{{ url_for('shop') }}?sort={{ sort }}&count={{ count }}&page=1">&laquo;</a>
     {% endif %}
     {% for i in pagerange %}
-    <a href="{{ url_for('shop') }}?count={{ count }}&page={{ i }}" {% if i == page %}class="active"{% endif %}>{{ i }}</a>
+    <a href="{{ url_for('shop') }}?sort={{ sort }}&count={{ count }}&page={{ i }}" {% if i == page %}class="active"{% endif %}>{{ i }}</a>
     {% endfor %}
     {% if page < pagerange[-1] %}
-    <a href="{{ url_for('shop') }}?count={{ count }}&page={{ ceil(len(products)/count) }}">&raquo;</a>
+    <a href="{{ url_for('shop') }}?sort={{ sort }}&count={{ count }}&page={{ ceil(len(products)/count) }}">&raquo;</a>
     {% endif %}
 </div>
 

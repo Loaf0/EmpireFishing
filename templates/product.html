@@ -29,7 +29,7 @@
             </div>
             <div class="rating-section">
                <div class="current-rating">
-                  <h1>Rating: {% if rating %}{{ rating }}/5{% else %}N/A{% endif %}</h1>
+                  <h1>Rating: {% if rating != 0 %}{{ rating }}/5{% else %}N/A{% endif %}</h1>
                </div>
                {% if session['loggedin'] %}
                <div class="user-rating-form">

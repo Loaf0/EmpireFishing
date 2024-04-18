@@ -422,7 +422,7 @@ def shop():
             products.sort(key=lambda x: x['product_id'])
 
         return render_template("shop.html", session=session, sort=sort, count=count, page=page, pagerange=pagerange, products=products, ratings=ratings, len=len, min=min, ceil=math.ceil)
-    return "Shop is empty come back later!"
+    return "Shop is empty please come back later!"
 
 @app.route('/product/<product_id>', methods=['GET', 'POST'])
 def product(product_id):

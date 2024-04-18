@@ -408,11 +408,9 @@ def shop():
     products = cursor.fetchall()
 
     if sort == 'Sort by price':
-        cursor.execute('Select * FROM products ORDER BY price')
-        products = cursor.fetchall()
+        products.sort(key=lambda x: x['price'])
     elif sort =='Sort by rating':
-        cursor.execute('Select * FROM products ORDER BY rating')
-        products = cursor.fetchall()
+        products.sort(key=lambda x: x['rating'])
     else:
         random.shuffle
     product_ids = [product['product_id'] for product in products]

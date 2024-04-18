@@ -299,7 +299,7 @@ def delete_post():
         cursor.execute('DELETE FROM community WHERE id = ?', (post_id,) )
         return redirect(url_for('community'))
     else:
-        return "Unauthorized"
+        abort(403)
 
 @app.route('/submit-post', methods=['GET', 'POST'])
 def submit_post():
@@ -374,7 +374,6 @@ def shop_editor():
                         cursor.execute('UPDATE products SET price = ? WHERE product_name = ?', (float(insert_price), insert_name))
                 msg = 'Updated product %s.' % insert_name
             else:
-                print("test")
                 cursor.execute('INSERT INTO products (product_name, product_provider, product_description, price, product_image) VALUES (?, ?, ?, ?, ?)',
                                (insert_name, insert_provider, insert_description, float(insert_price), insert_image_name))
                 msg = 'Added new product %s.' % insert_name
@@ -463,33 +462,26 @@ def cart():
     if login_status is not None:
         return login_status
 
+    msg = ''
+
     cursor = conn.cursor()
+    cursor.execute('SELECT products.product_id, products.product_name, products.price, cart.quantity FROM cart INNER JOIN products ON cart.product_id = products.product_id WHERE username = ?', (session['username'],))
+    cart_items = cursor.fetchall()
 
-    if request.method == 'POST':
-        insert_username = request.form.get('insert-username')
-        insert_product_id = request.form.get('insert-product-ID')
-        insert_quantity = request.form.get('insert-quantity')
-        if insert_username:
-            cursor.execute('SELECT * FROM cart WHERE username= ?', (insert_username,))
-            found_product = cursor.fetchone()
-            if insert_product_id:
-                cursor.execute('UPDATE cart SET product_id = ? WHERE product_name = ?', (int(insert_product_id), insert_username))
-                if found_product:
-                    cursor.execute('UPDATE cart SET quantity = ? WHERE product_id = ?', (int(insert_quantity), insert_product_id))
-        else:
-            cursor.execute('INSERT INTO cart (username, product_id, quantity) VALUES (?, ?, ?)',
-                           (insert_username, int(insert_product_id), int(insert_quantity)))
-    remove_product_id = request.form.get('remove-name')
-    carts = None
+    remove_product_id = request.form.get('remove-id')
+    email_receipt = request.form.get('email-receipt')
+
     if remove_product_id:
-        cursor.execute('DELETE FROM cart WHERE product_id = ?', (remove_product_id,))
-
-        # fetch current cart table
-        cursor.execute('SELECT * FROM cart')
-        carts = cursor.fetchall()
-
+        cursor.execute('DELETE FROM cart WHERE username = ? AND product_id = ?', (session['username'], remove_product_id))
         conn.commit()
-    return render_template("cart.html", session=session, carts=carts)
+
+        return redirect(url_for('cart'))
+
+    if email_receipt:
+        send_receipt(session['username'])
+        msg = 'Receipt sent. You may need to check your Spam folder.'
+
+    return render_template("cart.html", session=session, msg=msg, cart=cart_items)
 
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])

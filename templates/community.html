@@ -24,7 +24,7 @@
               {% for post in posts %}
               <div class="post">
                 <div class="post-image">
-                  {% if post['image'] is not none %}<img height="200px" src="static/images/community/{{ post['image'] }}">{% endif %}
+                  {% if post['image'] is not none %}<a href="static/images/community/{{ post['image'] }}"><img height="200px" src="static/images/community/{{ post['image'] }}"></a>{% endif %}
                 </div>
                 <div class="post-content">
                   <h3 class="author">{{ post['usr'] }} : </h3>
@@ -87,6 +87,7 @@
     margin: auto;
     display: block;
     max-height: 200px;
+    max-width: 450px;
     width: auto;
 }
 

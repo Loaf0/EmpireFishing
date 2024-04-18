@@ -14,22 +14,27 @@
         <table class="container">
             <tr>
                 <th class="table-header" >Product</th>
-                <th class="table-header">Quantity?</th>
+                <th class="table-header">Quantity</th>
                 <th class="table-header" id="column3">Subtotal</th>
+                <th class="table-header">Remove</th>
             </tr>
             <form action="{{ url_for('cart') }}" method="post" enctype="multipart/form-data">
-                <input type="hidden" value="{{product_id}}">
-                <input type="submit" value="Add To Cart" />
             {% for product in cart %}
             <tr>
-                <td>{{ product['product_id'] }}</td>
+                <td>{{ product['product_name'] }}</td>
                 <td>{{ product['quantity'] }}</td>
-                <td>{{ product['price']*quantity }}</td>
+                <td>${{ '{0:.2f}'.format(product['price']*product['quantity']) }}</td>
+                <td><button class="buttonFilled delete" type="submit" name="remove-id" value="{{ product['product_id'] }}"> Remove </button></td>
             </tr>
             {% endfor %}
             </form>
         </table>
     </div>
+
+    <form action="{{ url_for('cart') }}" method="post" enctype="multipart/form-data">
+        <button class="buttonFilled" type="submit" name="email-receipt" value="1"> Email Receipt</button>
+            <p>{{ msg }}</p>
+        </form>
 </div>
         <!--<tr>
             <td>

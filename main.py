@@ -51,6 +51,29 @@ def send_email(recipient, subject, message):
               "subject": subject,
               "text": message})
 
+
+def send_receipt(username):
+    receipt_text = ""
+
+    cursor = conn.cursor()
+    cursor.execute('SELECT products.product_name, products.price, cart.quantity FROM cart INNER JOIN products ON cart.product_id = products.product_id WHERE username = ?', (username,))
+    cart_items = cursor.fetchall()
+
+    cursor.execute('SELECT email FROM userdata WHERE username = ?', (username,))
+    email = cursor.fetchone()[0]
+
+    total = 0
+
+    for item in cart_items:
+        receipt_text += "\n(%d * $%.2f) %s" % (item[2], item[1], item[0])
+        total += item[2]*item[1]
+
+    receipt_text += "\nTotal: $%.2f" % total
+    receipt_text += "\n\nThank you for shopping at Empire Fishing!"
+
+    send_email([email], "Your receipt", receipt_text)
+
+
 def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):
     # if user needs to be logged in but isn't, return to login page
     if 'loggedin' not in session.keys() and not must_be_logged_out:
@@ -276,7 +299,7 @@ def delete_post():
         cursor.execute('DELETE FROM community WHERE id = ?', (post_id,) )
         return redirect(url_for('community'))
     else:
-        return "Unauthorized"
+        abort(403)
 
 @app.route('/submit-post', methods=['GET', 'POST'])
 def submit_post():
@@ -330,8 +353,8 @@ def shop_editor():
 
     if request.method == 'POST':
         # insert/modify items:
-        # insert_product = request.files.getlist('insert-logo')[0]
-        # insert_product_name = insert_product.filename
+        insert_image = request.files.getlist('insert-image')[0]
+        insert_image_name = insert_image.filename
         insert_name = request.form.get('insert-name')
         insert_product_id = request.form.get('insert-product-ID')
         insert_provider = request.form.get('insert-provider')
@@ -341,8 +364,6 @@ def shop_editor():
         if insert_name:
             cursor.execute('SELECT * FROM products WHERE product_name = ?', (insert_name,))
             found_product = cursor.fetchone()
-            #if insert_product_id:
-                #cursor.execute('UPDATE products SET product_id = ? WHERE product_name = ?', (int(insert_product_id), insert_name))
             if found_product:
                 cursor.execute('UPDATE products SET product_provider = ? WHERE product_name = ?', (insert_provider, insert_name))
                 if insert_description:
@@ -351,11 +372,15 @@ def shop_editor():
                         cursor.execute('UPDATE products SET price = ? WHERE product_name = ?', (float(insert_price), insert_name))
                 msg = 'Updated product %s.' % insert_name
             else:
-                print("test")
-                cursor.execute('INSERT INTO products (product_name, product_provider, product_description, price) VALUES (?, ?, ?, ?)',
-                               (insert_name, insert_provider, insert_description, float(insert_price)))
+                cursor.execute('INSERT INTO products (product_name, product_provider, product_description, price, product_image) VALUES (?, ?, ?, ?, ?)',
+                               (insert_name, insert_provider, insert_description, float(insert_price), insert_image_name))
                 msg = 'Added new product %s.' % insert_name
+            if insert_image:
+                # create brands folder if it doesn't already exist
+                if not os.path.exists("static/images/products"):
+                    os.mkdir("static/images/products")
 
+                insert_image.save("static/images/products/" + insert_image_name)
         # remove items
         remove_name = request.form['remove-name']
 
@@ -444,32 +469,26 @@ def cart():
     if login_status is not None:
         return login_status
 
+    msg = ''
+
     cursor = conn.cursor()
+    cursor.execute('SELECT products.product_id, products.product_name, products.price, cart.quantity FROM cart INNER JOIN products ON cart.product_id = products.product_id WHERE username = ?', (session['username'],))
+    cart_items = cursor.fetchall()
 
-    if request.method == 'POST':
-        insert_username = request.form.get('insert-username')
-        insert_product_id = request.form.get('insert-product-ID')
-        insert_quantity = request.form.get('insert-quantity')
-        if insert_username:
-            cursor.execute('SELECT * FROM cart WHERE username= ?', (insert_username,))
-            found_product = cursor.fetchone()
-            if insert_product_id:
-                cursor.execute('UPDATE cart SET product_id = ? WHERE product_name = ?', (int(insert_product_id), insert_username))
-                if found_product:
-                    cursor.execute('UPDATE cart SET quantity = ? WHERE product_id = ?', (int(insert_quantity), insert_product_id))
-        else:
-            cursor.execute('INSERT INTO cart (username, product_id, quantity) VALUES (?, ?, ?)',
-                           (insert_username, int(insert_product_id), int(insert_quantity)))
-    remove_product_id = request.form['remove-name']
+    remove_product_id = request.form.get('remove-id')
+    email_receipt = request.form.get('email-receipt')
+
     if remove_product_id:
-        cursor.execute('DELETE FROM cart WHERE product_id = ?', (remove_product_id,))
-
-        # fetch current cart table
-        cursor.execute('SELECT * FROM cart')
-        carts = cursor.fetchall()
-
+        cursor.execute('DELETE FROM cart WHERE username = ? AND product_id = ?', (session['username'], remove_product_id))
         conn.commit()
-    return render_template("cart.html", session=session, carts=carts)
+
+        return redirect(url_for('cart'))
+
+    if email_receipt:
+        send_receipt(session['username'])
+        msg = 'Receipt sent. You may need to check your Spam folder.'
+
+    return render_template("cart.html", session=session, msg=msg, cart=cart_items)
 
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])
@@ -627,16 +646,15 @@ def profile():
     username = session['username']
     email = account['email']
     phone = account['phone']
-    consent = account['consent']
+    email_consent = account['email_consent']
 
-    if request.method == 'POST' and 'consent' in request.form:
-        consent = request.form['consent'] == 'on'
-
-        cursor.execute('UPDATE userdata SET email_consent = ? WHERE username = ?;', (int(consent), username))
+    if request.method == 'POST':
+        email_consent = 'consent' in request.form
+        cursor.execute('UPDATE userdata SET email_consent = ? WHERE username = ?;', (int(email_consent), username))
         conn.commit()
 
     return render_template("profile.html", session=session, username=username, email=email, phone=phone,
-                           consent=consent)
+                           email_consent=email_consent)
 
 
 @app.route('/register', methods=['GET', 'POST'])

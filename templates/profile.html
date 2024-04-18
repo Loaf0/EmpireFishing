@@ -4,71 +4,71 @@
 <link href="../static/profile.css" rel="stylesheet" />
 
 <div class="profile-hero">
-          <div class="profile-hero1 heroContainer">
-            <div class="profile-container01">
-              <h1 class="profile-text02">Welcome Back, {{username}}!</h1>
-              <span class="profile-hero-sub-heading bodyLarge">
-                <span>
-                  <span>
-                    <span>Your One-Stop Shop for Fishing Gear</span>
-                    <span></span>
-                  </span>
-                  <span>
-                    <span></span>
-                    <span></span>
-                  </span>
-                </span>
-                <span>
-                  <span>
-                    <span></span>
-                    <span></span>
-                  </span>
-                  <span>
-                    <span></span>
-                    <span></span>
-                  </span>
-                </span>
-              </span>
+    <div class="profile-hero1 heroContainer">
+      <div class="profile-container01">
+        <h1 class="profile-text02">Welcome Back, {{username}}!</h1>
+        <span class="profile-hero-sub-heading bodyLarge">
+          <span>
+            <span>
+              <span>Your One-Stop Shop for Fishing Gear</span>
+              <span></span>
+            </span>
+            <span>
+              <span></span>
+              <span></span>
+            </span>
+          </span>
+          <span>
+            <span>
+              <span></span>
+              <span></span>
+            </span>
+            <span>
+              <span></span>
+              <span></span>
+            </span>
+          </span>
+        </span>
 
-              <div class="profile-container02">
-                <div class="profile-container03">
-                  <span class="profile-username">Username:&nbsp;</span>
-                  <span class="profile-email">Email:&nbsp;</span>
-                  <span class="profile-phone">Phone:&nbsp;</span>
-                </div>
-                <div class="profile-container04">
-                  <span class="profile-username1">{{username}}</span>
-                  <span class="profile-email1">{{email}}</span>
-                  <span class="profile-phone1">{{phone}}</span>
-                </div>
-              </div>
-              <form style="align:center" action="{{ url_for('profile') }}" method="post" autocomplete="off">
-              <div class="profile-container05">
-                <div class="profile-container06">
-                  <span class="profile-email-consent">
-                    Do you consent to promotional emails?&nbsp;
-                  </span>
-                  <br>
-                </div>
-                <div class="profile-container07">
-                  <input
-                      type="checkbox"
-                      name="consent"
-                      {% if consent %} checked {% endif %}
-                      class="register-checkbox"
-                    />
-                </div>
-              </div>
-                <br>
-
-                <div style="padding-left:25%">
-                  <input type="submit" value="Update" class="profile-hero-button1 buttonFilled" >
-                  <a class="profile-hero-button1 buttonFilled" href="{{ url_for('logout') }}">Logout</a>
-                </div>
-              <br>
-              </form>
-
-            </div>
+        <div class="profile-container02">
+          <div class="profile-container03">
+            <span class="profile-username">Username:&nbsp;</span>
+            <span class="profile-email">Email:&nbsp;</span>
+            <span class="profile-phone">Phone:&nbsp;</span>
+          </div>
+          <div class="profile-container04">
+            <span class="profile-username1">{{username}}</span>
+            <span class="profile-email1">{{email}}</span>
+            <span class="profile-phone1">{{phone}}</span>
           </div>
         </div>
+        <form action="{{ url_for('profile') }}" method="post" autocomplete="off">
+        <div class="profile-container05">
+          <div class="profile-container06">
+            <span class="profile-email-consent">
+              Do you consent to promotional emails?&nbsp;
+            </span>
+            <br>
+          </div>
+          <div class="profile-container07">
+            <input
+                type="checkbox"
+                name="consent"
+                {% if email_consent %} checked {% endif %}
+                class="register-checkbox"
+              />
+          </div>
+        </div>
+          <br>
+
+          <div style="padding-left:25%">
+            <input type="submit" value="Update" class="profile-hero-button1 buttonFilled" >
+            <a class="profile-hero-button1 buttonFilled" href="{{ url_for('logout') }}">Logout</a>
+          </div>
+        <br>
+        </form>
+
+      </div>
+    </div>
+  </div>
 {% endblock %}

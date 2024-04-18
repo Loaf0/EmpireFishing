@@ -16,12 +16,12 @@
       <table>
           <tr class="header">
               <th style="width: 25%;" >Posts from Empire Fishing & Tackle</th>
-              <th style="width: 75%;" >Community Posts</th>
+              <th style="width: 75%;" >Community Posts ({{ (page-1)*count+1 }}-{{ min(page*count, len(posts)) }} of {{ len(posts) }})</th>
           </tr>
         <tr >
           <td ><div class="fb-page" data-href="https://www.facebook.com/empirefishingandtackle/" data-tabs="timeline" data-width="" data-height="2000px" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/empirefishingandtackle/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/empirefishingandtackle/">Empire Fishing and Tackle</a></blockquote></div></td>
           <td class="feed">
-              {% for post in posts %}
+              {% for post in posts[((page-1)*count):(page*count)] %}
               <div class="post">
                 <div class="post-image">
                   {% if post['image'] is not none %}<a href="static/images/community/{{ post['image'] }}"><img height="200px" src="static/images/community/{{ post['image'] }}"></a>{% endif %}
@@ -39,6 +39,18 @@
               </div>
               <hr style="height:2px;border-width:0;color:gray;background-color:gray">
               {% endfor %}
+
+              <div class="pagination">
+    {% if page > pagerange[0] %}
+    <a href="{{ url_for('community') }}?sort={{ sort }}&count={{ count }}&page=1">&laquo;</a>
+    {% endif %}
+    {% for i in pagerange %}
+    <a href="{{ url_for('community') }}?sort={{ sort }}&count={{ count }}&page={{ i }}" {% if i == page %}class="active"{% endif %}>{{ i }}</a>
+    {% endfor %}
+    {% if page < pagerange[-1] %}
+    <a href="{{ url_for('community') }}?sort={{ sort }}&count={{ count }}&page={{ ceil(len(products)/count) }}">&raquo;</a>
+    {% endif %}
+</div>
           </td>
         </tr>
       </table>

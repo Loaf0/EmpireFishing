@@ -284,11 +284,17 @@ def brands_list():
 
 @app.route('/community')
 def community():
+    count = int(request.args.get('count', default='10'))
+    page = int(request.args.get('page', default='1'))
+
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM community ORDER BY [date] DESC')
     posts = cursor.fetchall()
 
-    return render_template("community.html", session=session, posts=posts, datetime=datetime)
+    if len(posts) > 0:
+        pagerange = range(max(1, page - 3), min(math.ceil(len(posts) / count), page + 3) + 1)
+
+    return render_template("community.html", session=session, count=count, page=page, pagerange=pagerange, posts=posts, datetime=datetime, len=len, min=min, ceil=math.ceil)
 
 @app.route('/delete_post', methods=['POST'])
 def delete_post():

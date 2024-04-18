@@ -491,6 +491,7 @@ def cart():
 
     cursor.execute('SELECT products.product_id, products.product_name, products.price, cart.quantity FROM cart INNER JOIN products ON cart.product_id = products.product_id WHERE username = ?', (session['username'],))
     cart_items = cursor.fetchall()
+    total = sum([product['price']*product['quantity'] for product in cart_items])
 
     remove_product_id = request.form.get('remove-id')
     email_receipt = request.form.get('email-receipt')
@@ -505,7 +506,7 @@ def cart():
         send_receipt(session['username'])
         msg = 'Receipt sent. You may need to check your Spam folder.'
 
-    return render_template("cart.html", session=session, msg=msg, cart=cart_items)
+    return render_template("cart.html", session=session, msg=msg, cart=cart_items, total=total)
 
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])

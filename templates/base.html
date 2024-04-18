@@ -1213,15 +1213,17 @@
                 </div>
                 <nav class="home-links1">
                   <span class="home-nav11 bodySmall"><a href="{{ url_for('home') }}">Home</a></span>
+                  <span class="home-nav31 bodySmall"><a href="{{ url_for('community') }}"> Community </a></span>
+                  <span class="home-nav41 bodySmall"><a href="{{ url_for('profile') }}"> Profile </a></span>
+                  <span class="home-nav41 bodySmall"><a href="{{ url_for('shop') }}"> Shop </a></span>
+                  <span class="home-nav41 bodySmall"><a href="{{ url_for('cart') }}"> Cart </a></span>
+                  {% if session['admin'] %}
+                <span class="home-nav21 bodySmall"><a href="{{ url_for('admin') }}">Admin</a></span>
+                {% endif %}
                 <span class="home-nav21 bodySmall"><a href="{{ url_for('live_bait') }}"> Bait </a></span>
                 <span class="home-nav21 bodySmall"><a href="{{ url_for('brands_list') }}"> Brands </a></span>
-                <span class="home-nav31 bodySmall"><a href="{{ url_for('community') }}"> Community </a></span>
-                <span class="home-nav41 bodySmall"><a href="{{ url_for('profile') }}"> Profile </a></span>
-                <span class="home-nav41 bodySmall"><a href="{{ url_for('fishingSpots') }}"> Fishing Locations</a></span>
                 <span class="home-nav51 bodySmall"><a href="{{ url_for('lineSpooling') }}"> Line Spooling</a></span>
-                  {% if session['admin'] %}
-                <span class="home-nav61 bodySmall"><a href="{{ url_for('admin') }}">Admin</a></span>
-                {% endif %}
+                <span class="home-nav41 bodySmall"><a href="{{ url_for('fishingSpots') }}"> Fishing Locations</a></span>
                 </nav>
                 <div class="home-buttons1">
                   {% if session['loggedin'] %}

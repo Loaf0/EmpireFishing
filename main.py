@@ -390,9 +390,11 @@ def product(product_id):
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM products WHERE PRODUCT_ID = ?', (product_id,))
     focused_product = cursor.fetchone()
+    found_rating = None
 
-    cursor.execute('SELECT * FROM ratings WHERE usr = ? AND product = ?', (session['username'], product_id,))
-    found_rating = cursor.fetchone()
+    if 'loggedin' in session.keys():
+        cursor.execute('SELECT * FROM ratings WHERE usr = ? AND product = ?', (session['username'], product_id,))
+        found_rating = cursor.fetchone()
 
     if found_rating:
         user_rating = found_rating['rating']
@@ -405,17 +407,15 @@ def product(product_id):
     if request.method == 'POST':
         user_rating = request.form['user-rating']
 
-        if found_rating:
-            cursor.execute('UPDATE ratings SET rating = ? WHERE usr = ? AND product = ?', (user_rating, session['username'], product_id))
-        else:
-            cursor.execute('INSERT INTO ratings (usr, product, rating) VALUES (?, ?, ?)', (session['username'], product_id, user_rating))
+        if 'loggedin' in session.keys():
+            if found_rating:
+                cursor.execute('UPDATE ratings SET rating = ? WHERE usr = ? AND product = ?', (user_rating, session['username'], product_id))
+            else:
+                cursor.execute('INSERT INTO ratings (usr, product, rating) VALUES (?, ?, ?)', (session['username'], product_id, user_rating))
 
-        conn.commit()
+            conn.commit()
 
-        msg = 'Rating updated.'
-
-        # cursor.execute('SELECT * FROM products WHERE PRODUCT_ID = ?', (product_id,))
-        # conn.commit()
+            msg = 'Rating updated.'
 
     return render_template("product.html", session=session, msg=msg, focused_product=focused_product, rating=average_product_rating(cursor, product_id), user_rating=user_rating)
 

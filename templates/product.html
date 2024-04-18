@@ -53,12 +53,16 @@
                     <br />
                   </h1>
                </div>
+               {% if session['loggedin'] %}
                <form action="{{ url_for('product', product_id=focused_product['product_id']) }}" method="post">
                   <p>Your rating: (out of 5)</p>
                   <input type="number" min="1" max="5" value="{{ user_rating }}" name="user-rating" class="input"/>
                   <input type="submit" class="buttonFlat" value="Rate">
                   <p>{{ msg }}</p>
                </form>
+               {% else %}
+               <p>You must be logged in to submit product ratings.</p>
+               {% endif %}
             </div>
             <div class="product-product-description">
                <div class="product-title1">

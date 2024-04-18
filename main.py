@@ -383,6 +383,17 @@ def product(product_id):
 def cart():
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM cart')
+
+    if request.method == 'POST':
+        insert_username = request.form['insert-username']
+        insert_product = request.form['insert-product']
+        insert_quantity = request.form['insert-quantity']
+        add_to_cart = request.form['add-to cart']
+
+        if add_to_cart:
+            cursor.execute('INSERT INTO cart (username, PRODUCT_ID, QUANTITY) VALUES (?, ?, ?)',
+                           (insert_username, insert_product, insert_quantity))
+
     carts = cursor.fetchall()
     return render_template("cart.html", session=session, carts=cart)
 
@@ -475,7 +486,7 @@ def community_editor():  # we are going to delete this and change to an on page 
     if request.method == 'POST':
         # collect data from html form
         insert_id = request.form['insert-id']
-        insert_text = request.form['insert-text']
+        insert_text = request.form('insert-text')
         insert_visibility = 'insert-visibility' in request.form
         insert_in_queue = 'insert-in-queue' in request.form
 
@@ -493,13 +504,13 @@ def community_editor():  # we are going to delete this and change to an on page 
 
                 msg = 'Updated visibility %s.' % insert_id
             else:
-                cursor.execute('INSERT INTO bait (name, availability, description) VALUES (?, ?, ?)',
+                cursor.execute('INSERT INTO community (name, visibility, text) VALUES (?, ?, ?)',
                                (insert_id, int(insert_visibility), insert_text))
                 msg = 'Added new text %s.' % insert_id
 
         # Identify community posts
-        insert_name = request.form['insert-name']
-        insert_availability = 'insert-availability' in request.form
+        insert_id = request.form['insert-id']
+        insert_visbility = 'insert-visibility' in request.form
 
         # Add post from queue
 
@@ -511,9 +522,6 @@ def community_editor():  # we are going to delete this and change to an on page 
             cursor.execute('DELETE * FROM community WHERE usr = ?', (remove_post_queue,))
             msg = 'Removed post from queue.'
 
-
-        # Remove post from being the queue
-        remove_post_visibility = request.form[('remove-post-visibility']
 
         # Remove post from being visible
 

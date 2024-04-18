@@ -51,6 +51,29 @@ def send_email(recipient, subject, message):
               "subject": subject,
               "text": message})
 
+
+def send_receipt(username):
+    receipt_text = ""
+
+    cursor = conn.cursor()
+    cursor.execute('SELECT products.product_name, products.price, cart.quantity FROM cart INNER JOIN products ON cart.product_id = products.product_id WHERE username = ?', (username,))
+    cart_items = cursor.fetchall()
+
+    cursor.execute('SELECT email FROM userdata WHERE username = ?', (username,))
+    email = cursor.fetchone()[0]
+
+    total = 0
+
+    for item in cart_items:
+        receipt_text += "\n(%d * $%.2f) %s" % (item[2], item[1], item[0])
+        total += item[2]*item[1]
+
+    receipt_text += "\nTotal: $%.2f" % total
+    receipt_text += "\n\nThank you for shopping at Empire Fishing!"
+
+    send_email([email], "Your receipt", receipt_text)
+
+
 def require_login_status(must_be_logged_out=False, must_be_admin=False, destination='profile'):
     # if user needs to be logged in but isn't, return to login page
     if 'loggedin' not in session.keys() and not must_be_logged_out:

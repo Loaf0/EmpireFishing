@@ -364,8 +364,6 @@ def shop_editor():
         if insert_name:
             cursor.execute('SELECT * FROM products WHERE product_name = ?', (insert_name,))
             found_product = cursor.fetchone()
-            #if insert_product_id:
-                #cursor.execute('UPDATE products SET product_id = ? WHERE product_name = ?', (int(insert_product_id), insert_name))
             if found_product:
                 cursor.execute('UPDATE products SET product_provider = ? WHERE product_name = ?', (insert_provider, insert_name))
                 if insert_description:

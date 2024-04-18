@@ -442,7 +442,8 @@ def cart():
         else:
             cursor.execute('INSERT INTO cart (username, product_id, quantity) VALUES (?, ?, ?)',
                            (insert_username, int(insert_product_id), int(insert_quantity)))
-    remove_product_id = request.form['remove-name']
+    remove_product_id = request.form.get('remove-name')
+    carts = None
     if remove_product_id:
         cursor.execute('DELETE FROM cart WHERE product_id = ?', (remove_product_id,))
 

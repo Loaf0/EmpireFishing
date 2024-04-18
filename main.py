@@ -263,11 +263,20 @@ def brands_list():
 @app.route('/community')
 def community():
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM community WHERE visible = 1')
+    cursor.execute('SELECT * FROM community')
     posts = cursor.fetchall()
 
     return render_template("community.html", session=session, posts=posts, datetime=datetime)
 
+@app.route('/delete_post', methods=['POST'])
+def delete_post():
+    if 'admin' in session:
+        post_id = request.form.get('post_id')
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM community WHERE id = ?', (post_id,) )
+        return redirect(url_for('community'))
+    else:
+        return "Unauthorized"
 
 @app.route('/submit-post', methods=['GET', 'POST'])
 def submit_post():
@@ -291,8 +300,8 @@ def submit_post():
         text = request.form.get('text')
 
         if image or text:
-            cursor.execute('INSERT INTO community (visible, image, text, usr, date) VALUES (?, ?, ?, ?, ?)', (0, new_image_name, text, session['username'], math.floor(time.time())))
-            msg = 'Post submitted for admin approval.'
+            cursor.execute('INSERT INTO community (image, text, usr, date) VALUES (?, ?, ?, ?)', (new_image_name, text, session['username'], math.floor(time.time())))
+            msg = 'Post submitted.'
 
             # upload image to community folder
             if image:
@@ -529,32 +538,6 @@ def map_editor():
     conn.commit()
 
     return render_template("map-editor.html", session=session, msg=msg, markers=markers)
-
-@app.route('/community-editor', methods=['GET', 'POST'])
-def community_editor():  # we are going to delete this and change to an on page delete post button
-    login_status = require_login_status(must_be_admin=True, destination='community-editor')
-    if login_status is not None:
-        return login_status
-
-    msg = ''
-
-    cursor = conn.cursor()
-
-    if request.method == 'POST':
-        # Identify community posts
-        insert_name = request.form['insert-name']
-        insert_availability = 'insert-availability' in request.form
-
-
-        # Remove post from queue
-        remove_post_queue = request.form['remove-post-queue']
-
-        if remove_post_queue:
-            cursor.execute('DELETE * FROM community WHERE usr = ?', (remove_post_queue,))
-            msg = 'Removed post from queue.'
-
-
-    return render_template('community-editor.html', session=session, msg=msg)
 
 
 @app.route('/home')

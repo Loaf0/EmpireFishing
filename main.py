@@ -285,7 +285,7 @@ def brands_list():
 @app.route('/community')
 def community():
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM community')
+    cursor.execute('SELECT * FROM community ORDER BY [date] DESC')
     posts = cursor.fetchall()
 
     return render_template("community.html", session=session, posts=posts, datetime=datetime)
@@ -406,23 +406,23 @@ def shop():
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM products')
     products = cursor.fetchall()
+    if len(products)>0:
+        product_ids = [product['product_id'] for product in products]
+        ratings = {}
 
-    product_ids = [product['product_id'] for product in products]
-    ratings = {}
+        for id in product_ids:
+            ratings[id] = average_product_rating(cursor, id)
 
-    for id in product_ids:
-        ratings[id] = average_product_rating(cursor, id)
+        pagerange = range(max(1, page - 3), min(math.ceil(len(products)/count), page+3) + 1)
+        if sort == 'price':
+            products.sort(key=lambda x: x['price'])
+        elif sort == 'rating':
+            products.sort(key=lambda x: -average_product_rating(cursor, x['product_id']))
+        else:
+            products.sort(key=lambda x: x['product_id'])
 
-    pagerange = range(max(1, page - 3), min(math.ceil(len(products)/count), page+3) + 1)
-    if sort == 'price':
-        products.sort(key=lambda x: x['price'])
-    elif sort == 'rating':
-        products.sort(key=lambda x: -average_product_rating(cursor, x['product_id']))
-    else:
-        products.sort(key=lambda x: x['product_id'])
-
-    return render_template("shop.html", session=session, sort=sort, count=count, page=page, pagerange=pagerange, products=products, ratings=ratings, len=len, min=min, ceil=math.ceil)
-
+        return render_template("shop.html", session=session, sort=sort, count=count, page=page, pagerange=pagerange, products=products, ratings=ratings, len=len, min=min, ceil=math.ceil)
+    return "Shop is empty come back later!"
 
 @app.route('/product/<product_id>', methods=['GET', 'POST'])
 def product(product_id):

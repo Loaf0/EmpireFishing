@@ -22,7 +22,7 @@
         <tr>
             <td ><a href="{{ url_for('product', product_id=product[1]) }}"><img src="../static/images/products/{{ product[5] }}"></a></td>
             <td><h1>{{ product[0] }}</h1>
-                <h3>${{ product[4] }}</h3><p>Rating:
+                <h3>${{ '{0:.2f}'.format(product[4]) }}</h3><p>Rating:
                        {% if ratings[product['product_id']] != 0 %}
                         {{ ratings[product['product_id']] }}/5
                        {% else %}

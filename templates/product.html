@@ -20,7 +20,7 @@
                <h2>By: {{ focused_product[2] }}</h2>
             </div>
             <div class="price-cart">
-               <h1>${{ focused_product[4] }}</h1>
+               <h1>${{ '{0:.2f}'.format(focused_product[4]) }}</h1>
                   <form action="{{ url_for('product', product_id=focused_product['product_id']) }}" method="post">
                      <label style="text-align: right; right: 100%;">Quantity:</label>
                      <input type="number" value="1" name="quantity" class="input" />

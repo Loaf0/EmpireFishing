@@ -20,15 +20,20 @@
 <div class="small-container">
     <table class="row column">
         <tr>
-            <th>Results :</th>
+            <th>Results: ({{ (page-1)*count+1 }}-{{ min(page*count, len(products)) }} of {{ len(products) }})</th>
             <th></th>
         </tr>
-        {% for product in products %}
+        {% for product in products[((page-1)*count):(page*count)] %}
         <a href="{{ url_for('product', product_id=product[1]) }}">
         <tr>
             <td><a href="{{ url_for('product', product_id=product[1]) }}"><img src="../static/images/products/{{ product[1] }}.png"></a></td>
             <td><h1>{{ product[0] }}</h1>
-                <h3>${{ product[4] }}</h3><p>Rating : {{ product[5] }}/5</p>
+                <h3>${{ product[4] }}</h3><p>Rating:
+                       {% if ratings[product['product_id']] %}
+                        {{ ratings[product['product_id']] }}/5
+                       {% else %}
+                        N/A
+                       {% endif %}</p>
             </td>
         </tr>
         </a>
@@ -37,14 +42,15 @@
 </div>
 
 <div class="pagination">
-  <a href="#">&laquo;</a>
-  <a href="#">1</a>
-  <a class="active" href="#">2</a>
-  <a href="#">3</a>
-  <a href="#">4</a>
-  <a href="#">5</a>
-  <a href="#">6</a>
-  <a href="#">&raquo;</a>
+    {% if page > pagerange[0] %}
+    <a href="{{ url_for('shop') }}?count={{ count }}&page=1">&laquo;</a>
+    {% endif %}
+    {% for i in pagerange %}
+    <a href="{{ url_for('shop') }}?count={{ count }}&page={{ i }}" {% if i == page %}class="active"{% endif %}>{{ i }}</a>
+    {% endfor %}
+    {% if page < pagerange[-1] %}
+    <a href="{{ url_for('shop') }}?count={{ count }}&page={{ ceil(len(products)/count) }}">&raquo;</a>
+    {% endif %}
 </div>
 
 <style>

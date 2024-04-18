@@ -65,6 +65,12 @@ def require_login_status(must_be_logged_out=False, must_be_admin=False, destinat
         abort(403)
 
 
+def average_product_rating(cursor, product_id):
+    cursor.execute('SELECT rating FROM ratings WHERE product = ?', (product_id,))
+    l = [i[0] for i in cursor.fetchall()]
+    return sum(l)/len(l) if len(l) != 0 else None
+
+
 @app.route('/')
 def home():
     return render_template("index.html", session=session)
@@ -331,7 +337,6 @@ def shop_editor():
         insert_provider = request.form.get('insert-provider')
         insert_description = request.form['insert-description']
         insert_price = request.form.get('insert-price')
-        print(insert_price)
 
         if insert_name:
             cursor.execute('SELECT * FROM products WHERE product_name = ?', (insert_name,))
@@ -369,31 +374,93 @@ def shop_editor():
 
 @app.route('/shop')
 def shop():
+    count = int(request.args.get('count', default='10'))
+    page = int(request.args.get('page', default='1'))
+
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM products')
     products = cursor.fetchall()
 
-    return render_template("shop.html", session=session, products=products)
+    product_ids = [product['product_id'] for product in products]
+    ratings = {}
+
+    for id in product_ids:
+        ratings[id] = average_product_rating(cursor, id)
+
+    pagerange = range(max(1, page - 3), min(math.ceil(len(products)/count), page+3) + 1)
+
+    return render_template("shop.html", session=session, count=count, page=page, pagerange=pagerange, products=products, ratings=ratings, len=len, min=min, ceil=math.ceil)
 
 
-@app.route('/product/<product_id>')
+@app.route('/product/<product_id>', methods=['GET', 'POST'])
 def product(product_id):
+    msg = ''
+
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM products WHERE PRODUCT_ID = ?', (product_id,))
     focused_product = cursor.fetchone()
+    found_rating = None
+
+    if 'loggedin' in session.keys():
+        cursor.execute('SELECT * FROM ratings WHERE usr = ? AND product = ?', (session['username'], product_id,))
+        found_rating = cursor.fetchone()
+
+    if found_rating:
+        user_rating = found_rating['rating']
+    else:
+        user_rating = None
 
     if focused_product is None:
-        return render_template("404.html")
+        abort(404)
 
-    return render_template("product.html", session=session, focused_product=focused_product)
+    if request.method == 'POST':
+        user_rating = request.form['user-rating']
+
+        if 'loggedin' in session.keys():
+            if found_rating:
+                cursor.execute('UPDATE ratings SET rating = ? WHERE usr = ? AND product = ?', (user_rating, session['username'], product_id))
+            else:
+                cursor.execute('INSERT INTO ratings (usr, product, rating) VALUES (?, ?, ?)', (session['username'], product_id, user_rating))
+
+            conn.commit()
+
+            msg = 'Rating updated.'
+
+    return render_template("product.html", session=session, msg=msg, focused_product=focused_product, rating=average_product_rating(cursor, product_id), user_rating=user_rating)
 
 
-@app.route('/cart')
+@app.route('/cart', methods=['GET', 'POST'])
 def cart():
+    login_status = require_login_status(destination='cart')
+    if login_status is not None:
+        return login_status
+
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM cart')
-    carts = cursor.fetchall()
-    return render_template("cart.html", session=session, carts=cart)
+
+    if request.method == 'POST':
+        insert_username = request.form.get('insert-username')
+        insert_product_id = request.form.get('insert-product-ID')
+        insert_quantity = request.form.get('insert-quantity')
+        if insert_username:
+            cursor.execute('SELECT * FROM cart WHERE username= ?', (insert_username,))
+            found_product = cursor.fetchone()
+            if insert_product_id:
+                cursor.execute('UPDATE cart SET product_id = ? WHERE product_name = ?', (int(insert_product_id), insert_username))
+                if found_product:
+                    cursor.execute('UPDATE cart SET quantity = ? WHERE product_id = ?', (int(insert_quantity), insert_product_id))
+        else:
+            cursor.execute('INSERT INTO cart (username, product_id, quantity) VALUES (?, ?, ?)',
+                           (insert_username, int(insert_product_id), int(insert_quantity)))
+    remove_product_id = request.form['remove-name']
+    if remove_product_id:
+        cursor.execute('DELETE FROM cart WHERE product_id = ?', (remove_product_id,))
+
+        # fetch current cart table
+        cursor.execute('SELECT * FROM cart')
+        carts = cursor.fetchall()
+
+        conn.commit()
+    return render_template("cart.html", session=session, carts=carts)
 
 
 @app.route('/fishingSpots', methods=['GET', 'POST'])

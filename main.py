@@ -330,8 +330,8 @@ def shop_editor():
 
     if request.method == 'POST':
         # insert/modify items:
-        # insert_product = request.files.getlist('insert-logo')[0]
-        # insert_product_name = insert_product.filename
+        insert_image = request.files.getlist('insert-image')[0]
+        insert_image_name = insert_image.filename
         insert_name = request.form.get('insert-name')
         insert_product_id = request.form.get('insert-product-ID')
         insert_provider = request.form.get('insert-provider')
@@ -352,10 +352,15 @@ def shop_editor():
                 msg = 'Updated product %s.' % insert_name
             else:
                 print("test")
-                cursor.execute('INSERT INTO products (product_name, product_provider, product_description, price) VALUES (?, ?, ?, ?)',
-                               (insert_name, insert_provider, insert_description, float(insert_price)))
+                cursor.execute('INSERT INTO products (product_name, product_provider, product_description, price, product_image) VALUES (?, ?, ?, ?, ?)',
+                               (insert_name, insert_provider, insert_description, float(insert_price), insert_image_name))
                 msg = 'Added new product %s.' % insert_name
+            if insert_image:
+                # create brands folder if it doesn't already exist
+                if not os.path.exists("static/images/products"):
+                    os.mkdir("static/images/products")
 
+                insert_image.save("static/images/products/" + insert_image_name)
         # remove items
         remove_name = request.form['remove-name']
 

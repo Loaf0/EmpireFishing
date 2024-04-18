@@ -42,7 +42,7 @@
                   <span class="profile-phone1">{{phone}}</span>
                 </div>
               </div>
-              <form style="align:center" action="{{ url_for('profile') }}" method="post" autocomplete="off">
+              <form action="{{ url_for('profile') }}" method="post" autocomplete="off">
               <div class="profile-container05">
                 <div class="profile-container06">
                   <span class="profile-email-consent">
@@ -54,7 +54,7 @@
                   <input
                       type="checkbox"
                       name="consent"
-                      {% if consent %} checked {% endif %}
+                      {% if email_consent %} checked {% endif %}
                       class="register-checkbox"
                     />
                 </div>

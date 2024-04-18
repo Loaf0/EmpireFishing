@@ -190,7 +190,6 @@ def bait_editor():
     # fetch current bait table
     cursor.execute('SELECT * FROM bait')
     baits = cursor.fetchall()
-
     conn.commit()
 
     return render_template("bait-editor.html", session=session, msg=msg, baits=baits)
@@ -399,6 +398,7 @@ def shop_editor():
 
 @app.route('/shop')
 def shop():
+
     sort = request.args.get('sort', default='random')
     count = int(request.args.get('count', default='10'))
     page = int(request.args.get('page', default='1'))

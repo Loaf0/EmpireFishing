@@ -2,87 +2,109 @@
 {% block title %}Product{% endblock %}
 {% block content %}
 
-<br>
-<br>
-<br>
-<br>
 <link href="../static/product.css" rel="stylesheet" />
 
-<div class="product-hero1 heroContainer">
-   <div class="product-container1">
-      <div class="product-container2">
-         <div class="product-image">
-           <img
+<table style="width: 100%; margin-top: 15%;">
+   <tr>
+      <td style="width: 50%;">
+         <img
             src="../static/images/products/{{ focused_product[5] }}"
             alt="Product Image"
-            class="product-image1" />
-         </div>
-         <div class="product-product-details">
-            <div class="product-title-and-close">
-               <div class="product-container3">
-                  <div class="product-title">
-                     <h1 class="product-text02">{{ focused_product[0] }}</h1>
-                     <h2 class="product-text03">By : {{ focused_product[2] }}</h2>
-                  </div>
-                  <div class="product-close-page">
-                     <a href="javascript:history.back()">
-                        <button
-                           type="button"
-                           class="product-button button buttonFilled"
-                           style="font-size:30px"
-                        >X</button>
-                     </a>
-                  </div>
-               </div>
+            class="product-image1" />  
+      </td>
+      <td>
+         <div class="product-details">
+            <a href="javascript:history.back()" style="position: absolute; right: 10px; top: 170px; font-size: 20px;" class="buttonFilled">X</a>
+            <div class="header-section">
+               <h1>{{ focused_product[0] }}</h1> 
+               <h2>By: {{ focused_product[2] }}</h2>
             </div>
-            <div class="product-price-and-rating">
-               <div class="product-title1">
-                  <h1 class="product-text04">
-                     <span>${{ focused_product[4] }}</span>
-                    <br />
-                  </h1>
-               </div>
-               <div class="product-rating">
-                  <h1 class="product-heading">
-                    <span>Rating:
-                       {% if rating %}
-                        {{ rating }}/5
-                       {% else %}
-                        N/A
-                       {% endif %}</span>
-                    <br />
-                  </h1>
+            <div class="price-cart">
+               <h1>${{ focused_product[4] }}</h1>
+               <a href="{{ url_for('cart') }}" class="cart-button">
+                  <button type="button" class="button buttonFilled">Add To Cart</button>
+               </a>
+            </div>
+            <div class="rating-section">
+               <div class="current-rating">
+                  <h1>Rating: {% if rating %}{{ rating }}/5{% else %}N/A{% endif %}</h1>
                </div>
                {% if session['loggedin'] %}
-               <form action="{{ url_for('product', product_id=focused_product['product_id']) }}" method="post">
-                  <p>Your rating: (out of 5)</p>
-                  <input type="number" min="1" max="5" value="{{ user_rating }}" name="user-rating" class="input"/>
-                  <input type="submit" class="buttonFlat" value="Rate">
-                  <p>{{ msg }}</p>
-               </form>
+               <div class="user-rating-form">
+                  <form action="{{ url_for('product', product_id=focused_product['product_id']) }}" method="post">
+                     <label style="text-align: right; right: 100%;"> Your rating: (out of 5)</label>
+                     <input type="number" min="1" max="5" value="{{ user_rating }}" name="user-rating" class="input" />
+                     <input type="submit" value="Rate" class="buttonFlat">
+                     <p>{{ msg }}</p>
+                  </form>
+               </div>
                {% else %}
                <p>You must be logged in to submit product ratings.</p>
                {% endif %}
             </div>
-            <div class="product-product-description">
-               <div class="product-title1">
-                  <span class="product-text09">{{ focused_product[3] }}</span>
-               </div>
-            </div>
-            <a href="{{ url_for('cart') }}">
-               <div class="product-purchase-button">
-                  <div class="product-purchase">
-                   <button
-                     type="button"
-                     class="product-add-to-cart button buttonFilled"
-                     style="font-size: 30px"
-                     >Add To Cart</button>
-                  </div>
-               </div>
-            </a>
+            <p style="margin-top: 10px;">{{ focused_product[3] }}</p>
          </div>
-      </div>
-   </div>
-</div>
+      </td>
+   </tr>
+</table>
+
+<style>
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2%;
+}
+.product-details {
+    display: flex;
+    flex-direction: column;
+}
+.header-section h1, .header-section h2 {
+    margin: 0;
+}
+.close-button {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+.price-cart {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+.cart-button button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ff4242;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.rating-section {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-top: 20px;
+}
+.current-rating {
+    margin-right: 20px;
+}
+.user-rating-form {
+    display: flex;
+    align-items: center;
+}
+.product-image1 {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+.input, .buttonFlat {
+    margin-left: 10px;
+    vertical-align: middle;
+}
+</style>
 
 {% endblock %}

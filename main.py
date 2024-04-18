@@ -447,9 +447,12 @@ def product(product_id):
         abort(404)
 
     if request.method == 'POST':
-        user_rating = request.form['user-rating']
+        user_rating = request.form.get('user-rating')
+        quantity = request.form.get('quantity')
+        add_to_cart = request.form.get('add-to-cart')
+        print(add_to_cart)
 
-        if 'loggedin' in session.keys():
+        if 'loggedin' in session.keys() and user_rating:
             if found_rating:
                 cursor.execute('UPDATE ratings SET rating = ? WHERE usr = ? AND product = ?', (user_rating, session['username'], product_id))
             else:
@@ -458,6 +461,20 @@ def product(product_id):
             conn.commit()
 
             msg = 'Rating updated.'
+
+        if 'loggedin' in session.keys() and add_to_cart:
+            cursor.execute('SELECT * FROM cart WHERE username = ? AND product_id = ?', (session['username'], product_id))
+            found_cart_item = cursor.fetchone()
+            print(found_cart_item)
+
+            if found_cart_item:
+                cursor.execute('UPDATE cart SET quantity = ? WHERE username = ? AND product_id = ?', (found_cart_item['quantity']+int(quantity), session['username'], product_id))
+            else:
+                cursor.execute('INSERT INTO cart (username, product_id, quantity) VALUES (?, ?, ?)', (session['username'], product_id, quantity))
+
+            conn.commit()
+
+            msg = 'Added item(s) to cart.'
 
     return render_template("product.html", session=session, msg=msg, focused_product=focused_product, rating=average_product_rating(cursor, product_id), user_rating=user_rating)
 

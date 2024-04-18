@@ -367,13 +367,16 @@ def shop_editor():
                 cursor.execute('UPDATE products SET product_provider = ? WHERE product_name = ?', (insert_provider, insert_name))
                 if insert_description:
                     cursor.execute('UPDATE products SET product_description = ? WHERE product_name = ?', (insert_description, insert_name))
-                    if insert_price:
-                        cursor.execute('UPDATE products SET price = ? WHERE product_name = ?', (float(insert_price), insert_name))
+                if insert_price:
+                    cursor.execute('UPDATE products SET price = ? WHERE product_name = ?', (float(insert_price), insert_name))
                 msg = 'Updated product %s.' % insert_name
             else:
-                cursor.execute('INSERT INTO products (product_name, product_provider, product_description, price, product_image) VALUES (?, ?, ?, ?, ?)',
-                               (insert_name, insert_provider, insert_description, float(insert_price), insert_image_name))
-                msg = 'Added new product %s.' % insert_name
+                if insert_price:
+                    cursor.execute('INSERT INTO products (product_name, product_provider, product_description, price, product_image) VALUES (?, ?, ?, ?, ?)',
+                                   (insert_name, insert_provider, insert_description, float(insert_price), insert_image_name))
+                    msg = 'Added new product %s.' % insert_name
+                else:
+                    msg = 'Please add item price.'
             if insert_image:
                 # create brands folder if it doesn't already exist
                 if not os.path.exists("static/images/products"):

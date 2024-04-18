@@ -14,9 +14,9 @@
     <h1 class="community-text2" style="padding: 10px;">Empire Fishing Community</h1>
     <div class="community-table">
       <table>
-          <tr>
-              <th style="width: 25%;">Posts from Empire Fishing & Tackle</th>
-              <th style="width: 75%;">Community Posts</th>
+          <tr class="header">
+              <th style="width: 25%;" >Posts from Empire Fishing & Tackle</th>
+              <th style="width: 75%;" >Community Posts</th>
           </tr>
         <tr >
           <td ><div class="fb-page" data-href="https://www.facebook.com/empirefishingandtackle/" data-tabs="timeline" data-width="" data-height="2000px" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/empirefishingandtackle/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/empirefishingandtackle/">Empire Fishing and Tackle</a></blockquote></div></td>
@@ -27,7 +27,7 @@
                   {% if post['image'] is not none %}<img height="200px" src="static/images/community/{{ post['image'] }}">{% endif %}
                 </div>
                 <div class="post-content">
-                  <h3>{{ post['usr'] }} : </h3>
+                  <h3 class="author">{{ post['usr'] }} : </h3>
                   {% if post['text'] is not none %}<p>{{ post['text'] }}</p>{% endif %}
                   <p class="date-time">Posted on {{ datetime.fromtimestamp(post['date']).strftime('%Y-%m-%d') }}</p>
                 </div>
@@ -47,39 +47,53 @@
 </div>
 
 <style>
-.delete{
-  font-size: smaller;
-  background-color: #E14747;
-  color: w;
+.header{
+  font-size: x-large;
+  box-shadow: 0 4px 2px -2px gray;
 }
 
 .post {
     display: flex;
-    align-items: center; 
-    gap: 20px; 
-}
-
-.post-image img {
-    display: block;
-    max-height: 200px; 
-    width: auto; 
+    align-items: flex-start; 
+    gap: 20px;
+    margin-bottom: 20px; 
 }
 
 .post-content {
-    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    min-height: 200px; 
+    padding: 5px 10px; 
 }
 
-.feed{
-  margin-top: 5px;
-  margin-bottom: 10px;
-  vertical-align: top;
+.author {
+    margin-bottom: 5px;
+    font-size: 25px;
+    display: block;
+    width: 100%;
 }
 
-.date-time{
+.date-time {
   vertical-align: bottom;
-  align-items: flex-end;
+  margin-top: auto;
+  text-align: right; 
   font-size: smaller;
   color: lightseagreen;
+}
+
+.post-image img {
+    margin: auto;
+    display: block;
+    max-height: 200px;
+    width: auto;
+}
+
+.feed {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    vertical-align: top;
 }
 
 .fixed-button {
@@ -95,28 +109,33 @@
     z-index: 1000; 
 }
 
-th{
-  border-bottom: solid black 1px;
-  border-bottom-style: dotted; 
-}
-
-  th, td {
-  border: none; 
+th, td {
+    border: none;
 }
 
 table {
-  font-family: Lato;
-  background: transparent; 
-  overflow: hidden;
-  background: none;
-  border: none;
-  width: 100%;
+    font-family: Lato;
+    background: transparent;
+    overflow: hidden;
+    background: none;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
 }
 
 .fb-page {
-  height: 100%;
-  width: 100%;
+    padding-right: 10px;
+    height: 100%;
+    width: 100%;
 }
+
+@media (max-width: 900px) {
+    .community-table th:first-child, .community-table td:first-child {
+        display: none;
+    }
+}
+
 
 </style>
 

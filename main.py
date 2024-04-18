@@ -471,32 +471,6 @@ def map_editor():
 
     return render_template("map-editor.html", session=session, msg=msg, markers=markers)
 
-@app.route('/community-editor', methods=['GET', 'POST'])
-def community_editor():  # we are going to delete this and change to an on page delete post button
-    login_status = require_login_status(must_be_admin=True, destination='community-editor')
-    if login_status is not None:
-        return login_status
-
-    msg = ''
-
-    cursor = conn.cursor()
-
-    if request.method == 'POST':
-        # Identify community posts
-        insert_name = request.form['insert-name']
-        insert_availability = 'insert-availability' in request.form
-
-
-        # Remove post from queue
-        remove_post_queue = request.form['remove-post-queue']
-
-        if remove_post_queue:
-            cursor.execute('DELETE * FROM community WHERE usr = ?', (remove_post_queue,))
-            msg = 'Removed post from queue.'
-
-
-    return render_template('community-editor.html', session=session, msg=msg)
-
 
 @app.route('/home')
 def home_redirect():

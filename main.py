@@ -15,10 +15,10 @@ app = Flask(__name__)
 app.secret_key = 'your secret key'
 
 # SQL Azure Server
-server = 'empirefishingv2.database.windows.net'
-database = 'EmpireFishingCSCI-4485'
-dbusername = 'empirefishing'
-dbpassword = '@Stockton'
+server = ''
+database = ''
+dbusername = ''
+dbpassword = ''
 connection_string = (
         'Driver={ODBC Driver 18 for SQL Server};Server=' + server + ',1433;Database=' + database + ';Uid=' + dbusername + ';Pwd=' + dbpassword + ';Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 conn = odbc.connect(connection_string)
@@ -28,9 +28,9 @@ mysql = MySQL(app)
 hasher = argon2.PasswordHasher()
 
 # Mailgun API
-api_key = "b87eb1e2828aef10ccb994a97375d0b6-4b670513-129e8904"
-domain = "sandboxfff78680340b4054ae4daddac1b07ff2.mailgun.org"
-sender = "Empire Fishing and Tackle <EmpireFishingAndTackle@sandboxfff78680340b4054ae4daddac1b07ff2.mailgun.org>"
+api_key = ""
+domain = ""
+sender = "Empire Fishing and Tackle <>"
 
 def send_email(recipient, subject, message):
     # (because we are using for free I have to manually approve emails)

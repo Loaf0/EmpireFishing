@@ -9,3 +9,6 @@ Contributors :
 <br>Tyler Snyder            (Project Manager & Assistant Programmer), 
 <br>Migeul Reyes            (Assistant Programmer), 
 <br>and Heather Krencicki   (Secretary & Assistant Programmer)
+
+https://drive.google.com/file/d/1O95nt-KSFrnNVHyvsUnyLf1sc57p-cfH/view?usp=sharing
+Video Example Lead By Ian Mays
